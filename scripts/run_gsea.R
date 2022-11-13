@@ -71,6 +71,25 @@ run_gsea<-function(ds.proc, db.name, minGSSize, maxGSSize, org.db.name,
   ggsave(p, file = file.path(output.dir,"gsea","plots",upset.fn), 
          width = 2500, height = 1600, units = "px", device='pdf')
   
+  enrichment.result.df <- as.data.frame(enrichment.result)
+  p<-EnhancedVolcano(enrichment.result.df,
+                     lab = enrichment.result.df$Description,
+                     selectLab = head(enrichment.result.df$Description,3),
+                     drawConnectors = TRUE,
+                     widthConnectors = 0.2,
+                     x = 'NES',
+                     y = 'pvalue',
+                     pCutoff = 1e-05,
+                     FCcutoff = 1,
+                     legendLabels=c('NS','NES','p-value',
+                                    'p-value & NES'),
+                     xlab = 'Normalized Enrichment Score',
+                     pointSize = 2.0,
+                     labSize = 5.0)
+  vol.fn <- paste(ds.noext, db.name,"volcano.pdf", sep = "_")
+  ggsave(p, file = file.path(output.dir,"gsea","plots",vol.fn), 
+         width = 2400, height = 2400, units = "px", device='pdf')
+  
   for (i in 1:5){
     nes.fn <- paste(ds.noext, db.name,i,"nes.pdf", sep = "_")
     pdf(file.path(output.dir,"gsea","plots",nes.fn))
@@ -84,7 +103,6 @@ run_gsea<-function(ds.proc, db.name, minGSSize, maxGSSize, org.db.name,
   }
   
   ## Write to TSV and XLSX
-  enrichment.result.df <- as.data.frame(enrichment.result)
   tsv.fn <- paste(ds.noext, db.name,"gsea.tsv", sep = "_")
   xlsx.fn <- paste(ds.noext, db.name,"gsea.xlsx", sep = "_")
   write.table(enrichment.result.df,file.path(output.dir,"gsea",tsv.fn),
