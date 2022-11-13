@@ -1,6 +1,8 @@
 # main script to set configs and execute enrichment
 
 library(fs)
+source("scripts/load_libs.R")
+source("scripts/proc_dataset.R")
 source("scripts/run_gsea.R")
 # source("run_ora.R")
 source("scripts/setup.R")
@@ -23,22 +25,23 @@ run.gsea <-'n'
 run.ora <- 'n'
 
 #Check and load
-check_database()
+check_databases()
 check_datasets()
+p_load(org.db.name, update = TRUE, character.only = TRUE)
 
 for (ds.name in ds.list){
   sprintf("Processing %s ", ds.name)
   ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
   output.dir <- file.path(output.dir.root, ds.noext)
-  ds.prep <- prep_dataset(ds.name, org.db.name, output.dir)
+  ds.proc <- proc_dataset(ds.name, org.db.name, output.dir)
   for (db.name in db.list){
     if(run.gsea){
-      sprintf("Running GSEA on %s using %s", ds.prep, db.name)
-      run_gsea(ds.name, db.name, minGSSize, maxGSSize, 
+      sprintf("Running GSEA on %s using %s", ds.name, db.name)
+      run_gsea(ds.proc, db.name, minGSSize, maxGSSize, 
                org.db.name, score.calculated, output.dir)
     }
     if(run.ora){
-      sprintf("Running ORA on %s using %s", ds.prep, db.name)
+      sprintf("Running ORA on %s using %s", ds.name, db.name)
       #TODO
     }
   }

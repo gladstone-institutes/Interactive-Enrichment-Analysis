@@ -1,6 +1,6 @@
-# Setup functions for enrichment analysis (see main.R)
+# Setup functions for enrichment analysis (see Enrichment_Analysis.R)
 
-check_database <- function(update=FALSE){
+check_databases <- function(update=FALSE){
   if (!update & exists("db.list")){
     print("These are the databases we will use in this run:")
     return(print.data.frame(as.data.frame(db.list)))
@@ -56,7 +56,7 @@ check_datasets <- function(){
   } 
   print("These are the datasets we will analyze in this run:")
   print.data.frame(as.data.frame(ds.list))
-  
+  cat('\n')
   print("Assuming all datasets are of the same format, let's examine the first one...")
   ds.fn <- file.path("datasets",ds.list[1])
   ds.one <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
@@ -69,6 +69,7 @@ check_datasets <- function(){
     stop('Please reformat your CSV to have a "gene" column with gene names.')
   }
   #RANK AND THRESHOLD CHECKS
+  cat('\n')
   if(!'fold.change' %in% ds.names){
     if(!'p.value' %in% ds.names){
       if(!'rank' %in% ds.names){
@@ -137,7 +138,7 @@ check_datasets <- function(){
   if(dir.exists(output.dir.root))
     safe.dir <- readline('Output folder with the same name already exists. Overwrite files? (y/N): ')
   if(tolower(safe.dir) == 'y'){
-    dir.create(output.dir.root, showWarnings = F)
+    dir.create(output.dir.root, recursive = T, showWarnings = F)
     sprintf('Analysis results will be found in %s/', output.dir.root)
   } else {
     stop('Please try again. A unique name for the run is required (or overwrite confirmation).')
