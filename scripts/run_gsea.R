@@ -141,13 +141,15 @@ run_gsea<-function(ds.name, db.name, minGSSize, maxGSSize, org.db.name,
          width = 2500, height = 1600, units = "px", device='pdf')
   
   for (i in 1:5){
-    p <- gseaplot(enrichment.result, 
-                  geneSetID = i, 
-                  by = "runningScore", 
-                  title = enrichment.result$Description[i]) + coord_fixed(ratio=1200)
     nes.fn <- paste(ds.noext, db.name,i,"nes.pdf", sep = "_")
-    ggsave(p, file = file.path(output.dir,"gsea","plots",nes.fn), 
-           width = 2500, height = 1000, units = "px", device='pdf')
+    pdf(file.path(output.dir,"gsea","plots",nes.fn))
+    p <- gseaplot2(enrichment.result, 
+                  geneSetID = i, 
+                  title = enrichment.result$Description[i]) 
+    print(p)
+    dev.off()
+    # ggsave(pgrid, file = file.path(output.dir,"gsea","plots",nes.fn), 
+    #        width = 2500, height = 2000, units = "px", device='pdf')
   }
   
   ## Write to TSV and XLSX
