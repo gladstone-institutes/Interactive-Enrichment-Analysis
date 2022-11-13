@@ -3,7 +3,7 @@
 This project can be cloned and run locally to perform enrichment analysis across
 multiple pathway databases and datasets.
 
-The main script `Enrichment_Analysis.R` will initialize and check database and
+The main script `Enrichment_Analysis.R` will initialize and check databases and
 dataset files prior to launching an interactive session for user input. Once 
 launched, result files will be organized under a subfolder in `output`.
 

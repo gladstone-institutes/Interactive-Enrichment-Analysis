@@ -6,18 +6,18 @@ check_database <- function(update=FALSE){
     return(print.data.frame(as.data.frame(db.list)))
     check_db_colnames()
   }
-  rdata.list <- list.files("database", ".RData")
+  rdata.list <- list.files("databases", ".RData")
   if(length(rdata.list) == 0){
-    stop("No RData found in database folder. Please run prep_database() prior to run.")
+    stop("No RData found in databases folder. Please run prep_database() prior to run.")
     #TODO: check_gmts() to read and process gmt files in RData and then load_databases()
   } else if (length(rdata.list) == 1){
-    rdata.fn <- file.path("database",rdata.list[1])
+    rdata.fn <- file.path("databases",rdata.list[1])
     load_database(rdata.fn)
   } else {
     print("Which database object should we load for this run:")
     print.data.frame(as.data.frame(rdata.list))
     rdata.pick <- readline("Enter row number: ")
-    rdata.fn <- file.path("database",rdata.list[as.numeric(rdata.pick)])
+    rdata.fn <- file.path("databases",rdata.list[as.numeric(rdata.pick)])
     load_database(rdata.fn)
   }
 }
