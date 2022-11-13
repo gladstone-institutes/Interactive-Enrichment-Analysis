@@ -19,24 +19,26 @@ supported.orgs <- list(human = "org.Hs.eg.db",
 #Initialization
 ora.fc <- NULL
 ora.pv <- NULL
-run.gsea <- 'n'
+run.gsea <-'n'
 run.ora <- 'n'
 
 #Check and load
 check_database()
 check_datasets()
 
-for (db.name in db.list){
-  for (ds.name in ds.list){
+for (ds.name in ds.list){
+  sprintf("Processing %s ", ds.name)
+  ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
+  output.dir <- file.path(output.dir.root, ds.noext)
+  ds.prep <- prep_dataset(ds.name, org.db.name, output.dir)
+  for (db.name in db.list){
     if(run.gsea){
-      sprintf("Running GSEA on %s using %s", ds.name, db.name)
+      sprintf("Running GSEA on %s using %s", ds.prep, db.name)
       run_gsea(ds.name, db.name, minGSSize, maxGSSize, 
-               org.db.name = org.db.name,
-               score.calculated = score.calculated, 
-               output.dir = output.dir)
+               org.db.name, score.calculated, output.dir)
     }
     if(run.ora){
-      sprintf("Running ORA on %s using %s", ds.name, db.name)
+      sprintf("Running ORA on %s using %s", ds.prep, db.name)
       #TODO
     }
   }

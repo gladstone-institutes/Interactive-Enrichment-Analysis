@@ -133,12 +133,12 @@ check_datasets <- function(){
   output.name <<- gsub("^\\W+", "", output.name) #clean up any lingering non-alnum at start
   
   safe.dir <- 'y'
-  output.dir <<- file.path("output",output.name)
-  if(dir.exists(output.dir))
+  output.dir.root <<- file.path("output",output.name)
+  if(dir.exists(output.dir.root))
     safe.dir <- readline('Output folder with the same name already exists. Overwrite files? (y/N): ')
   if(tolower(safe.dir) == 'y'){
-    dir.create(output.dir, showWarnings = F)
-    sprintf('Analysis results will be found in %s/', output.dir)
+    dir.create(output.dir.root, showWarnings = F)
+    sprintf('Analysis results will be found in %s/', output.dir.root)
   } else {
     stop('Please try again. A unique name for the run is required (or overwrite confirmation).')
   }

@@ -7,8 +7,9 @@ The main script `Enrichment_Analysis.R` will initialize and check database and
 dataset files prior to launching an interactive session for user input. Once 
 launched, result files will be organized under a subfolder in `output`.
 
-A sample dataset `SAMPLE.csv` is provided to illustrate the format required
-for dataset files. And a sample GMT is provided as an example database file.
+A sample dataset `E-GEOD-30573.csv` is provided to illustrate the format required
+for dataset files ([Voineagu 2011](https://europepmc.org/article/MED/21614001)). 
+And a sample database file `WP_.gmt` is also provided from [WikiPathways](https://new.wikipathways.org/download.html).
 
 You can include any GMT you like. Here are some suggested sources:
  * ...
