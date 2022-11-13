@@ -5,7 +5,7 @@ source("scripts/run_gsea.R")
 # source("run_ora.R")
 source("scripts/setup.R")
 
-#Defaults and Params
+#Defaults and Parameters
 minGSSize <- 3 # see clusterProfiler
 maxGSSize <- 500 # see clusterProfiler
 ora.fc.default <- 1.0 # absolute value threshold for fold.change in ORA
