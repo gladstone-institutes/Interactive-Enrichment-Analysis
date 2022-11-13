@@ -85,12 +85,12 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
     ggsave(p, file = file.path(output.dir,"gsea","plots",vol2.fn), 
            width = 2400, height = 2400, units = "px", device='pdf')
     
-    # Sorted named list for clusterProfiler
+    # Sorted named list for clusterProfiler, a.k.a. geneList
     ranked.genes.entrez.nl<-ranked.genes.entrez.dedup$rank
     names(ranked.genes.entrez.nl)<-ranked.genes.entrez.dedup$ENTREZID
     ranked.genes.entrez.nl <- sort(ranked.genes.entrez.nl, decreasing = T)
     
-    return(ranked.genes.entrez.nl) 
+    return(ranked.genes.entrez.nl)
   }
 }
 

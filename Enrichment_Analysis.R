@@ -33,11 +33,11 @@ for (ds.name in ds.list){
   sprintf("Processing %s ", ds.name)
   ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
   output.dir <- file.path(output.dir.root, ds.noext)
-  ds.proc <- proc_dataset(ds.name, org.db.name, output.dir)
+  geneList <- proc_dataset(ds.name, org.db.name, output.dir)
   for (db.name in db.list){
     if(run.gsea){
       sprintf("Running GSEA on %s using %s", ds.name, db.name)
-      run_gsea(ds.proc, db.name, minGSSize, maxGSSize, 
+      run_gsea(geneList, db.name, minGSSize, maxGSSize, 
                org.db.name, score.calculated, output.dir)
     }
     if(run.ora){
