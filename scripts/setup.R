@@ -67,6 +67,14 @@ check_datasets <- function(){
   #GENE CHECK
   if(!'gene' %in% ds.names){
     stop('Please reformat your CSV to have a "gene" column with gene names.')
+  } else {
+    cat('\n')
+    print("Which type of identifier are we working with?")
+    print.data.frame(as.data.frame(supported.idTypes))
+    id.pick <- as.numeric(readline("Enter row number (or hit Return for SYMBOL): "))
+    if (is.na(id.pick)) #non-numeric response
+      id.pick <- 1
+    fromType <<- supported.idTypes[as.numeric(id.pick)]
   }
   #RANK AND THRESHOLD CHECKS
   cat('\n')

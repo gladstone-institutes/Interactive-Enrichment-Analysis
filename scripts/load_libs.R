@@ -1,6 +1,8 @@
 ## Load all library dependencies
 
 load.libs <- c(
+  "fs",
+  "writexl",
   "dplyr",
   "magrittr",
   "clusterProfiler",
@@ -8,8 +10,7 @@ load.libs <- c(
   "ggplot2",
   "ggupset",
   "enrichplot",
-  "EnhancedVolcano",
-  "writexl")
+  "EnhancedVolcano")
 options(install.packages.check.source = "no")
 options(install.packages.compile.from.source = "never")
 if (!require("pacman")) install.packages("pacman"); library(pacman)
