@@ -2,6 +2,7 @@
 database/*
 datasets/*
 output/*
+app/*.pdf
 
 # History files
 .Rhistory

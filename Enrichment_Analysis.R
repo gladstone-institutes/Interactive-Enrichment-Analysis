@@ -12,7 +12,7 @@ minGSSize <- 3 # min database geneset size (see clusterProfiler)
 maxGSSize <- 500 # max database geneset size (see clusterProfiler)
 ora.fc.default <- 1.0 # absolute value threshold for fold.change in ORA
 ora.pv.default <- 0.05 # threshold for p.value in ORA
-output.name.default <- format(Sys.time(), "%Y%m%d_%H%M%S") # timestamp by default
+output.name <- format(Sys.time(), "%Y%m%d_%H%M%S") # timestamp 
 supported.orgs <- list(human = "org.Hs.eg.db", # editable list of supported orgs
                        mouse = "org.Mm.eg.db",
                        rat = "org.Rn.eg.db")
@@ -26,6 +26,7 @@ ora.fc <- NULL
 ora.pv <- NULL
 run.gsea <-'n'
 run.ora <- 'n'
+output.dir.root <- file.path("output",output.name)
 
 #Check and load
 check_databases()

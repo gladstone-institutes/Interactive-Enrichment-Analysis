@@ -131,24 +131,4 @@ check_datasets <- function(){
     org.pick <- 1
   org.name <<- org.list[as.numeric(org.pick)]
   org.db.name <<- unlist(unname(supported.orgs[org.name]))
-  
-  # Run title
-  cat('\n')
-  output.name <<- readline('Custom name for this run? (Hit Return to use timestamp): ')
-  if (output.name == "")
-    output.name <<- output.name.default
-  
-  output.name <<- fs::path_sanitize(output.name, replacement = "")
-  output.name <<- gsub("^\\W+", "", output.name) #clean up any lingering non-alnum at start
-  
-  safe.dir <- 'y'
-  output.dir.root <<- file.path("output",output.name)
-  if(dir.exists(output.dir.root))
-    safe.dir <- readline('Output folder with the same name already exists. Overwrite files? (y/N): ')
-  if(tolower(safe.dir) == 'y'){
-    dir.create(output.dir.root, recursive = T, showWarnings = F)
-    sprintf('Analysis results will be found in %s/', output.dir.root)
-  } else {
-    stop('Please try again. A unique name for the run is required (or overwrite confirmation).')
-  }
 }

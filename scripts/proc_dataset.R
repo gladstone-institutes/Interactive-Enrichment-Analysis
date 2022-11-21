@@ -41,14 +41,14 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
       dplyr::filter(!gene %in% set.genes.entrez[[fromType]]) %>%
       {if('p.value' %in% ds.names) dplyr::arrange(.,p.value) else .} %>%
       dplyr::arrange(desc(ora.set))
-    save_plot_genes(set.genes.unmapped,"ora","excluded_unmapped", ora.fc, ora.pv)
+    save_genes_params(set.genes.unmapped,"ora", T, ora.fc, ora.pv)
     
     # Resolve duplicates (keep ENTREZID in ora.set and with smallest p.value, if available)
     set.genes.entrez.dedup <- set.genes.entrez %>%
       {if('p.value' %in% ds.names) dplyr::arrange(.,p.value) else .} %>%
       dplyr::arrange(desc(ora.set)) %>%
       dplyr::distinct(ENTREZID, .keep_all = T)
-    save_plot_genes(set.genes.entrez.dedup, "ora", "set_genes", ora.fc, ora.pv)
+    save_genes_params(set.genes.entrez.dedup, "ora", F, ora.fc, ora.pv)
     
     ora.geneList<<-set.genes.entrez.dedup
   } 
@@ -84,7 +84,7 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
     ranked.genes.unmapped <- ranked.genes %>%
       dplyr::filter(!gene %in% ranked.genes.entrez[[fromType]]) %>%
       dplyr::arrange(desc(rank))
-    save_plot_genes(ranked.genes.unmapped, "gsea", "excluded_unmapped")
+    save_genes_params(ranked.genes.unmapped, "gsea", T)
     
     # Resolve duplicates (keep ENTREZID with largest abs(rank))
     ranked.genes.entrez.dedup <- ranked.genes.entrez %>%
@@ -93,7 +93,7 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
       dplyr::distinct(ENTREZID, .keep_all = T) %>%
       dplyr::select(-absrank)  %>%
       dplyr::arrange(desc(rank))
-    save_plot_genes(ranked.genes.entrez.dedup, "gsea", "ranked_genes")
+    save_genes_params(ranked.genes.entrez.dedup, "gsea", F)
     
     # Sorted named list for clusterProfiler, a.k.a. geneList
     ranked.genes.entrez.nl<-ranked.genes.entrez.dedup$rank
@@ -104,30 +104,39 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
   }
 }
 
-save_plot_genes <- function(data, method.dir, suffix, fc=1, pv=1e-05){
-  this.fn <- paste0(ds.noext, "__", method.dir, "_", suffix,".xlsx")
-  writexl::write_xlsx(data, file.path(output.dir,method.dir,this.fn))  
-  
-  # volcano plot if both p.value and fold.change are present
-  if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
-    if(!fromType %in% names(data)) # i.e., unmapped cases
-      data[fromType] <- data$gene
-    
-    p<-EnhancedVolcano(data,
-                       lab = data[[fromType]],
-                       selectLab = c(head(data[[fromType]]),tail(data[[fromType]])),
-                       x = 'fold.change',
-                       y = 'p.value',
-                       pCutoff = pv,
-                       FCcutoff = fc,
-                       legendLabels=c('NS','FC','p-value',
-                                      'p-value & FC'),
-                       pointSize = 2.0,
-                       labSize = 5.0)
-    vol.fn <- paste0(ds.noext,"__",method.dir,"_volcano_",suffix,".pdf")
-    ggsave(p, file = file.path(output.dir,method.dir,"plots",vol.fn), 
-           width = 2400, height = 2400, units = "px", device='pdf')
-  }
+save_genes_params <- function(data, method.dir, excluded=F, fc=1, pv=1e-05){
+  #genes
+  suffix <- "input"
+  if (excluded)
+    suffix <- "excluded"
+  this.fn <- paste0(ds.noext, "__", method.dir, "_", suffix,".rds")
+  saveRDS(data, file.path(output.dir,method.dir,this.fn))  
+  #params
+  par.df<-data.frame(fromType = fromType, pv=pv,fc=fc)
+  this.fn <- paste0(ds.noext, "__", method.dir, "_params.rds")
+  saveRDS(par.df, file.path(output.dir,method.dir,this.fn))  
+
+  # 
+  # # volcano plot if both p.value and fold.change are present
+  # if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
+  #   if(!fromType %in% names(data)) # i.e., unmapped cases
+  #     data[fromType] <- data$gene
+  #   
+  #   p<-EnhancedVolcano(data,
+  #                      lab = data[[fromType]],
+  #                      selectLab = c(head(data[[fromType]]),tail(data[[fromType]])),
+  #                      x = 'fold.change',
+  #                      y = 'p.value',
+  #                      pCutoff = pv,
+  #                      FCcutoff = fc,
+  #                      legendLabels=c('NS','FC','p-value',
+  #                                     'p-value & FC'),
+  #                      pointSize = 2.0,
+  #                      labSize = 5.0)
+  #   vol.fn <- paste0(ds.noext,"__",method.dir,"_volcano_",suffix,".pdf")
+  #   ggsave(p, file = file.path(output.dir,method.dir,"plots",vol.fn), 
+  #          width = 2400, height = 2400, units = "px", device='pdf')
+  # }
 }
 
 map_ids <- function(input, fromType){

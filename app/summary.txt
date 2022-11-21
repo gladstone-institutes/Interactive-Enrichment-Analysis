@@ -1,0 +1,22 @@
+<html>
+<body>
+
+<p>This is a single cell RNA-seq dataset accompanying <a href="https://www.google.com/">TestUser et al.</a></p>
+
+<h4>Title</h4>
+<p>..</p>
+
+<h4>Authors</h4>
+<p>..</p>
+
+<h4>Abstract</h4>
+<p>..</p>
+
+<h4>Dataset description</h4>
+<p>For this generic app, we used the dataset of Peripheral Blood Mononuclear Cells (PBMC) freely available from 10X Genomics. There are 2,700 single cells that were sequenced on the Illumina NextSeq 500. This dataset was analyzed using the <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html">Seurat - Guided Clustering Tutorial</a>. To illustrate the use of different functionalities available in this app, "disease_label" and "gender" metadata were randomly assigned to the cells.</p>
+<br>
+
+<p><em>This Shiny application was designed by the <a href="https://labs.gladstone.org/bioinformatics/index.html">Gladstone Institutes Bioinformatics Core.</a></em></p>
+
+</body>
+</html>
