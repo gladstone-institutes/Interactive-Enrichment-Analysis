@@ -57,3 +57,6 @@ with subfolders for `gsea` and `ora` results, each of which includes a folder
 of `plots`. Results include TSV and XLSX tables of enriched terms and pathway, as well
 as RDS versions of the complete input and output for each clusterProfiler run. Plots
 include volcano, dot, cnet, heatmap, upset, and more.
+
+**A Shiny app is available to interactively explore results and download individual 
+files (see app dir). Its UI is organized in the same way as the output directory.**
