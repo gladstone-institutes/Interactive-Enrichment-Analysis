@@ -381,6 +381,39 @@ shinyServer(function(input, output, session) {
     # }
   )
   
+  #html result
+  makeHtmlResult <- function(){
+    resObject <- getResultObj()
+    req(input$table.result_rows_selected) #wait for table to load
+    i <- input$table.result_rows_selected #row selection
+    res.object.id <- resObject$ID[i]
+    res.object.id <- gsub("\\.jpg$","",res.object.id) #pfocr ids
+    switch (input$plot2,
+            "GSEA score" = NULL,
+            "STRING network" = NULL,
+            "WikiPathways" = paste0('View <a href="https://new.wikipathways.org/pathways/',
+                                           res.object.id,
+                                           '" target="_blank">',
+                                           res.object.id,
+                                           ' at WikiPathways</a><br/><br/>'),
+            "Pathway Figure" = paste0('View <a href="https://pfocr.wikipathways.org/figures/',
+                                             res.object.id,
+                                             '" target="_blank">',
+                                             res.object.id,
+                                             ' at PFOCR</a><br/><br/>'),
+            "Gene Ontology" = paste0('View <a href="http://amigo.geneontology.org/amigo/term/',
+                                            res.object.id,
+                                            '" target="_blank">',
+                                            res.object.id,
+                                            ' at Gene Ontology</a><br/><br/>')
+    )
+  }
+  
+  #render html
+  output$html.result <- renderText({ 
+    makeHtmlResult() 
+    })
+  
   #plot2 result
   makePlot2Result <- function(){
     resObject <- getResultObj()
@@ -398,9 +431,7 @@ shinyServer(function(input, output, session) {
     )
   }
   
-  
-  
-  #render and cache plot data
+  #render and plot 
   output$plot2.result <- renderPlot({
     makePlot2Result()
   })

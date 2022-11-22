@@ -41,7 +41,7 @@ dashboardPage(
         width = 12,
         collapsible = TRUE,
         collapsed = TRUE,
-        includeHTML("summary.txt")
+        includeHTML("../summary.txt")
       )
     ),
     fluidRow(
@@ -130,6 +130,7 @@ dashboardPage(
             ),
             column(
               width = 5,
+              htmlOutput("html.result"),
               plotOutput("plot2.result")
             )
           )

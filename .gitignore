@@ -1,8 +1,8 @@
-# Run-specific files
-database/*
-datasets/*
-output/*
-app/*.pdf
+# Run-specific files and output
+shiny_run/database/*
+shiny_run/datasets/*
+shiny_result/output/*
+shiny_result/app/*.pdf
 
 # History files
 .Rhistory
