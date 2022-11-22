@@ -48,7 +48,7 @@ plot_results<- function(resObject, geneList, db.name, methodType){
   # GSEA ONLY
   if(methodType == "gsea"){
     p <- heatplot(resObject, foldChange=geneList, 
-                  showCategory=10,
+                  showCategory=5,
                   label_format=50) + coord_fixed(ratio=2)
     heat.fn <- paste(ds.noext, db.name, methodType,"heatmap.pdf", sep = "_")
     ggsave(p, file = file.path(output.dir, methodType,"plots",heat.fn), 
@@ -87,7 +87,7 @@ plot_results<- function(resObject, geneList, db.name, methodType){
   # ORA only
   if(methodType == "ora"){
     p <- heatplot(resObject, #can't figure out foldChange param
-                  showCategory=10,
+                  showCategory=5,
                   label_format=50) + coord_fixed(ratio=2)
     heat.fn <- paste(ds.noext, db.name, methodType,"heatmap.pdf", sep = "_")
     ggsave(p, file = file.path(output.dir, methodType,"plots",heat.fn), 

@@ -30,9 +30,9 @@ run_ora<-function(geneList, db.name, minGSSize, maxGSSize, org.db.name,
   enrichResult <- setReadable(enrichResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
   
   # Save objects
-  gl.fn <- paste(ds.noext, db.name,"oraGeneList.rds", sep = "_")
+  gl.fn <- paste(ds.noext, db.name,"ora","geneList.rds", sep = "_")
   saveRDS(gene, file.path(output.dir,"ora",gl.fn))
-  er.fn <- paste(ds.noext, db.name,"enrichResult.rds", sep = "_")
+  er.fn <- paste(ds.noext, db.name,"ora","result.rds", sep = "_")
   saveRDS(enrichResult, file.path(output.dir,"ora",er.fn))
   
   ## Save df as TSV and XLSX

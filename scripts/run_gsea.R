@@ -19,9 +19,9 @@ run_gsea<-function(geneList, db.name, minGSSize, maxGSSize, org.db.name,
   gseaResult <- setReadable(gseaResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
 
   # Save objects
-  gl.fn <- paste(ds.noext, db.name,"gseaGeneList.rds", sep = "_")
+  gl.fn <- paste(ds.noext, db.name,"gsea","geneList.rds", sep = "_")
   saveRDS(geneList, file.path(output.dir,"gsea",gl.fn))
-  er.fn <- paste(ds.noext, db.name,"gseaResult.rds", sep = "_")
+  er.fn <- paste(ds.noext, db.name,"gsea","result.rds", sep = "_")
   saveRDS(gseaResult, file.path(output.dir,"gsea",er.fn))
   
   ## Save df as TSV and XLSX

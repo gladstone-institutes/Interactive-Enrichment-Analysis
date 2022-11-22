@@ -7,7 +7,7 @@ dashboardPage(
   
   #header
   dashboardHeader(
-    # Application title
+    #application title
     title = "Enrihcment Analysis Explorer"
   ),
   
@@ -49,10 +49,9 @@ dashboardPage(
       textOutput('debug.text')
     ),
     fluidRow(
-      #tabbed Box for plots and DE analysis
       tabBox(
         width = 12,
-        #data tab
+        #DATA TAB
         tabPanel(
           "Data",
           #checkbox to select data view
@@ -65,9 +64,10 @@ dashboardPage(
             #data table
             column(
               width = 6,
-              div(dataTableOutput("table.data"), style = "font-size:80%; line-height:30%")
+              div(DT::dataTableOutput("table.data"), style = "font-size:80%; line-height:30%")
               # DT::dataTableOutput("table.data")
             ),
+            #data plot
             column(
               width = 6,
               downloadButton("download.plot.data", "Download"),
@@ -75,60 +75,65 @@ dashboardPage(
             )
           )
         ),
-        do.call(tabsetPanel, c(id='t',lapply(1:5, function(i) {
-          tabPanel(
-            title=paste0('tab', i),
-            textOutput(paste0('a',i))
+        #RESULT TAB
+        tabPanel(
+          "Results",
+          selectInput(
+            "database",
+            "Choose a database",
+            choices = c(db.list)
+          ) ,
+          #results table
+          strong("Select a table row to update plot data"),
+          fluidRow(
+            column(
+              width = 12,
+              div(DT::dataTableOutput("table.result"), style = "font-size:80%; line-height:30%")
+            )
+          ) ,
+          #result plots
+          fluidRow(
+            #selections and download buttons for plots
+            column(
+              width = 7,
+              selectInput(
+                "plot1",
+                "Choose a plot type for top results:",
+                choices = c("Dot plot (gene ratio)",
+                            "Dot plot (count)",
+                            "Emap plot",
+                            "Concept network",
+                            "Concept network (circular)",
+                            "Volcano plot (GSEA)",
+                            "Volcano plot (ORA)",
+                            "Heatmap (GSEA)",
+                            "Heatmap (ORA)",
+                            "Upset (ORA)")
+              ),
+              downloadButton("download.plot1.result", "Download")
+            ),
+            column(
+              width = 5,
+              selectInput(
+                "plot2",
+                "Choose a plot type for a selected result:",
+                choices =c("GSEA score","STRING network")
+              )
+            ),
+            downloadButton("download.plot2.result", "Download")
+          ),
+          fluidRow(
+            #result plots
+            column(
+              width = 7,
+              plotOutput("plot1.result")
+            ),
+            column(
+              width = 5,
+              plotOutput("plot2.result")
+            )
           )
-        })))
-        
-        # lapply(1:5, function(i) {
-        #   tabPanel(title = i,
-        #            textOutput(paste0('a',i)))
-        # })
-        
-        # #GO tab
-        # tabPanel(
-        #   "GO",
-        #   h4("Enriched Gene Ontology terms: Select a row to update plots below"),
-        #   fluidRow(#results table
-        #     column(
-        #       width = 12,
-        #       DT::dataTableOutput("table.result")
-        #     )
-        #   ),
-        #   #result plots
-        #   fluidRow(
-        #     #selections and download buttons for plots 
-        #     column(
-        #       width = 6, 
-        #       selectInput(
-        #         "plot1",
-        #         choices = c("one","two")
-        #       ),
-        #       downloadButton("download.plot1.result", "Download")
-        #     ),
-        #     column(
-        #       width = 6, 
-        #       selectInput(
-        #         "plot2",
-        #         choices =c("one","two")
-        #       ),
-        #       downloadButton("download.plot2.result", "Download")
-        #     )
-        #   ),
-        #   fluidRow(
-        #     #result plots 
-        #     column(
-        #       width = 6, 
-        #       plotOutput("plo1.result")
-        #     ),
-        #     column(
-        #       width = 6, 
-        #       plotOutput("plot2.result")
-        #     )
-        #   )
-        # ) #end tabPanel
+        ) #end tabPanel
       )
     )
   )

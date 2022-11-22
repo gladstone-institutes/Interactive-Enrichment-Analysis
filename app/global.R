@@ -1,7 +1,8 @@
 # Load files and variables
+
 library(plyr)
 
-#Dataframe of results in output dir
+# Dataframe of results in output dir
 output.dirs <- list.dirs("../output", full.names = F, recursive = T)
 output.df <- plyr::ldply(output.dirs, function(d){
   d0 <- strsplit(d, "\\/")[[1]]
@@ -14,11 +15,16 @@ if(nrow(output.df) < 1)
 
 names(output.df) <- c("run","dataset","method","sub")
 
+
 # Initialize lists
 run.list <- unique(output.df$run)
 ds.list <- unique(output.df[which(output.df$run==run.list[1]),'dataset'])
 method.list <- unique(output.df[which(output.df$run==run.list[1] & 
                                         output.df$dataset==ds.list[1]),'method'])
+
+db.list <- c("go_20210108", "wp_20210108", "pfocr_20210108")
+
+
 
 # #place the RDS file for the single-cell data in the data folder
 # #update the name of the RDS file in the below line
