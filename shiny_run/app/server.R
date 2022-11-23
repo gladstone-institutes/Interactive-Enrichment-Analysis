@@ -22,7 +22,7 @@ shinyServer(function(input, output, session) {
     output$db.list.title <- NULL
     rv$db.status <- FALSE
     if (!input$rdata == ""){
-      if(startsWith(input$rdata,"Build a new database")){
+      if(input$rdata == "BUILD NEW DATABASE"){
         #TODO list GMT files... 
       } else {
         rdata.fn <- file.path("../databases",input$rdata)
@@ -58,9 +58,12 @@ shinyServer(function(input, output, session) {
     output$gene.check <- NULL
     rv$ds.status <- FALSE
     for (input.ds in input$datasets){
-      if(startsWith(input.ds,"Add a dataset")){
+      if(input.ds =="ADD NEW DATASETS"){
         updateSelectInput(session, "datasets", choices = c(""), selected = c(""))
         uploadDataset()
+        return()
+      } else if (input.ds =="SELECT ALL"){
+        updateSelectInput(session, "datasets", selected = list.files("../datasets", "csv"))
         return()
       }
     }
@@ -109,13 +112,25 @@ shinyServer(function(input, output, session) {
   uploadDataset <- function(){
     output$sample.ds.title <- NULL
     output$ds.upload <- renderUI({
+      column( width = 12,
       fileInput("ds.file", "Upload CSV Files",
                 multiple = TRUE,
                 accept = c("text/csv",
                            "text/comma-separated-values,text/plain",
-                           ".csv"))
+                           ".csv")),
+      actionButton("cancel.upload", "Cancel")
+      )
     })
   }
+  
+  #when upload is cancels
+  observeEvent(input$cancel.upload, {
+    updateSelectInput(session, "datasets", selected = c(input$ds.file$name),
+                      choices = c(list.files("../datasets", "csv"),
+                                  "SELECT ALL", "ADD NEW DATASETS"))
+    output$ds.upload <- NULL
+    getDatasets()
+  })
   
   #when upload is performed
   observeEvent(input$ds.file, { 
@@ -126,7 +141,7 @@ shinyServer(function(input, output, session) {
     file.remove(uploaded.files)
     updateSelectInput(session, "datasets", selected = c(input$ds.file$name),
                       choices = c(list.files("../datasets", "csv"),
-                                  "Add a dataset"))
+                                  "SELECT ALL", "ADD NEW DATASETS"))
     output$ds.upload <- NULL
     getDatasets()
   })

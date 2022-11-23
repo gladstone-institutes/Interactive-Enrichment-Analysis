@@ -18,12 +18,14 @@ supported.idTypes <- c("SYMBOL",  # editable list of supported idTypes (see keyt
 
 # Check databases
 rdata.list <- list.files("../databases", ".RData")
-rdata.list <- c(rdata.list,"Build a new database from GMTs")
+rdata.list <- c(rdata.list,"BUILD NEW DATABASE")
 
 
 # Check datasets
 ds.list <- list.files("../datasets", "csv")
-ds.list <- c(ds.list,"Add a dataset")
+if(length(ds.list) > 1)
+  ds.list <- c(ds.list,"SELECT ALL")
+ds.list <- c(ds.list,"ADD NEW DATASETS")
 
 # # Dataframe of results in output dir
 # output.dirs <- list.dirs("../output", full.names = F, recursive = T)
