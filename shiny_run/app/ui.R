@@ -13,9 +13,9 @@ dashboardPage(
   
   #sidebar content
   dashboardSidebar(
-    h3(' 1. Databases'),
+    h3(HTML('&nbsp;'),'1. Databases'),
     htmlOutput('db.status'),
-    h3(' 2. Datasets'),
+    h3(HTML('&nbsp;'),'2. Datasets'),
     htmlOutput('ds.status'),
     htmlOutput('run.status'),
     uiOutput('run.button')

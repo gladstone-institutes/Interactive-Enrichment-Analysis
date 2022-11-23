@@ -149,21 +149,21 @@ shinyServer(function(input, output, session) {
   #set run status
   observe({
     if(rv$ds.status){
-      output$ds.ready <-  renderText("&#10004; Ready!")
-      output$ds.status <- renderText("&#10004; Ready!")
+      output$ds.ready <-  renderText("&emsp;&#10004; Ready!")
+      output$ds.status <- renderText("&emsp;&#10004; Ready!")
     } else {
       output$ds.ready <- NULL
       output$ds.status <- NULL
     }
     if(rv$db.status){
-      output$db.ready <-  renderText("&#10004; Ready!")
-      output$db.status <- renderText("&#10004; Ready!")
+      output$db.ready <-  renderText("&emsp;&#10004; Ready!")
+      output$db.status <- renderText("&emsp;&#10004; Ready!")
     }else {
       output$db.ready <- NULL
       output$db.status <- NULL
     }
     if(rv$db.status & rv$ds.status){
-      output$run.status <- renderText("<h3> 3. Let's go!</h3>")
+      output$run.status <- renderText("<h3>&nbsp;&nbsp;3. Let's go!</h3>")
       output$run.button <- renderUI({
         actionButton("run", "Run analysis")
       })
