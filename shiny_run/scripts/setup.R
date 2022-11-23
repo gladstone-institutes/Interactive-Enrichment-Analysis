@@ -9,7 +9,7 @@ check_databases <- function(update=FALSE){
   rdata.list <- list.files("databases", ".RData")
   if(length(rdata.list) == 0){
     stop("No RData found in databases folder. Please run prep_database() prior to run.")
-    #TODO: check_gmts() to read and process gmt files in RData and then load_databases()
+    #TODO: check_gmts() to read and process gmt files in RData and then load_database()
   } else if (length(rdata.list) == 1){
     rdata.fn <- file.path("databases",rdata.list[1])
     load_database(rdata.fn)

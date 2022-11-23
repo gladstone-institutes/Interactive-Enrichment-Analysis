@@ -12,7 +12,6 @@ shinyServer(function(input, output, session) {
   ###########
   
   #update selection lists for drop downs
-  inputgenes <- reactiveValues()
   observeEvent(input$run,{
     ds.list <- unique(output.df[which(output.df$run==input$run),'dataset'])
     updateSelectizeInput(

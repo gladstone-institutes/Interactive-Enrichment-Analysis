@@ -8,7 +8,7 @@ dashboardPage(
   #header
   dashboardHeader(
     #application title
-    title = "Enrihcment Analysis Explorer"
+    title = "Enrichment Analysis Explorer"
   ),
   
   #sidebar content
