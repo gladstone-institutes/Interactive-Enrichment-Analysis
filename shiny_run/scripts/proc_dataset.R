@@ -1,11 +1,37 @@
 # Process dataset for enrichment analysis (see Enrichment_Analysis.R)
 
-proc_dataset<-function(ds.name, db.name,output.dir="temp"){
+proc_dataset<-function(ds.name, params, output.name="run"){
+  
+  # Retrieve from params
+  db.name <- params['db.name'][[1]]
+  db.list <- params['db.list'][[1]]
+  org.db.name <- params['org.db.name'][[1]]
+  fromType <- params['fromType'][[1]]
+  ora.fc <- params$fold.change
+  ora.pv <- params$p.value
+  minGSSize <- params$minGSSize
+  maxGSSize <- params$maxGSSize
+  run.ora <- params$run.ora
+  run.gsea <- params$run.gsea
+  
+  par.df <- data.frame(
+    db.name = db.name,
+    db.list = db.list,
+    org.db.name = org.db.name,
+    fromType = fromType,
+    ora.fc = ora.fc,
+    ora.pv = ora.pv,
+    minGSSize = minGSSize,
+    maxGSSize = maxGSSize,
+    run.ora = run.ora,
+    run.gsea = run.gsea)
   
   # Objects from strings
-  ds.fn <- file.path("datasets",ds.name)
+  ds.fn <- file.path("../datasets",ds.name)
   dataset <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
   ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
+  print(ds.noext)
+  output.dir <- file.path("../",output.name, ds.noext)
   
   if(run.ora){ # Prepare subset of genes
     dir.create(file.path(output.dir,"ora","plots"), recursive = T, showWarnings = F)    
@@ -34,23 +60,21 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
     }
     
     # Identifier mapping
-    set.genes.entrez <- map_ids(set.genes, fromType)
+    set.genes.entrez <- map_ids(set.genes, org.db.name, fromType)
     
     # Record unmapped rows
     set.genes.unmapped <- set.genes %>%
       dplyr::filter(!gene %in% set.genes.entrez[[fromType]]) %>%
       {if('p.value' %in% ds.names) dplyr::arrange(.,p.value) else .} %>%
       dplyr::arrange(desc(ora.set))
-    save_genes_params(set.genes.unmapped,"ora", T, ora.fc, ora.pv)
+    save_genes_params(set.genes.unmapped, par.df, ds.noext, "ora", output.dir, T, ora.fc, ora.pv)
     
     # Resolve duplicates (keep ENTREZID in ora.set and with smallest p.value, if available)
     set.genes.entrez.dedup <- set.genes.entrez %>%
       {if('p.value' %in% ds.names) dplyr::arrange(.,p.value) else .} %>%
       dplyr::arrange(desc(ora.set)) %>%
       dplyr::distinct(ENTREZID, .keep_all = T)
-    save_genes_params(set.genes.entrez.dedup, "ora", F, ora.fc, ora.pv)
-    
-    ora.geneList<<-set.genes.entrez.dedup
+    save_genes_params(set.genes.entrez.dedup, par.df, ds.noext, "ora", output.dir, F, ora.fc, ora.pv)
   } 
   
   if (run.gsea){ # Rank list of genes
@@ -78,13 +102,13 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
     }
     
     # Identifier mapping
-    ranked.genes.entrez <- map_ids(ranked.genes, fromType)
+    ranked.genes.entrez <- map_ids(ranked.genes, org.db.name, fromType)
     
     # Record unmapped rows
     ranked.genes.unmapped <- ranked.genes %>%
       dplyr::filter(!gene %in% ranked.genes.entrez[[fromType]]) %>%
       dplyr::arrange(desc(rank))
-    save_genes_params(ranked.genes.unmapped, "gsea", T)
+    save_genes_params(ranked.genes.unmapped, par.df, ds.noext, "gsea", output.dir, T)
     
     # Resolve duplicates (keep ENTREZID with largest abs(rank))
     ranked.genes.entrez.dedup <- ranked.genes.entrez %>%
@@ -93,18 +117,11 @@ proc_dataset<-function(ds.name, db.name,output.dir="temp"){
       dplyr::distinct(ENTREZID, .keep_all = T) %>%
       dplyr::select(-absrank)  %>%
       dplyr::arrange(desc(rank))
-    save_genes_params(ranked.genes.entrez.dedup, "gsea", F)
-    
-    # Sorted named list for clusterProfiler, a.k.a. geneList
-    ranked.genes.entrez.nl<-ranked.genes.entrez.dedup$rank
-    names(ranked.genes.entrez.nl)<-ranked.genes.entrez.dedup$ENTREZID
-    ranked.genes.entrez.nl <- sort(ranked.genes.entrez.nl, decreasing = T)
-    
-    gsea.geneList<<-ranked.genes.entrez.nl
+    save_genes_params(ranked.genes.entrez.dedup, par.df, ds.noext, "gsea", output.dir, F)
   }
 }
 
-save_genes_params <- function(data, method.dir, excluded=F, fc=1, pv=1e-05){
+save_genes_params <- function(data, par.df, ds.noext, method.dir, output.dir, excluded=F, fc=1, pv=1e-05){
   #genes
   suffix <- "input"
   if (excluded)
@@ -112,7 +129,6 @@ save_genes_params <- function(data, method.dir, excluded=F, fc=1, pv=1e-05){
   this.fn <- paste0(ds.noext, "__", method.dir, "_", suffix,".rds")
   saveRDS(data, file.path(output.dir,method.dir,this.fn))  
   #params
-  par.df<-data.frame(fromType = fromType, pv=pv,fc=fc)
   this.fn <- paste0(ds.noext, "__", method.dir, "_params.rds")
   saveRDS(par.df, file.path(output.dir,method.dir,this.fn))  
 
@@ -139,7 +155,7 @@ save_genes_params <- function(data, method.dir, excluded=F, fc=1, pv=1e-05){
   # }
 }
 
-map_ids <- function(input, fromType){
+map_ids <- function(input,org.db.name, fromType){
   output <- bitr(input$gene, fromType = fromType,
        toType = c("ENTREZID"),
        OrgDb = eval(parse(text=org.db.name)))

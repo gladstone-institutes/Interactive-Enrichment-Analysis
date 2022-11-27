@@ -3,18 +3,42 @@
 library(plyr)
 
 #Defaults and Parameters
-minGSSize <- 3 # min database geneset size (see clusterProfiler)
-maxGSSize <- 500 # max database geneset size (see clusterProfiler)
-ora.fc.default <- 1.0 # absolute value threshold for fold.change in ORA
-ora.pv.default <- 0.05 # threshold for p.value in ORA
-output.name <- format(Sys.time(), "%Y%m%d_%H%M%S") # timestamp 
-supported.orgs <- list(human = "org.Hs.eg.db", # editable list of supported orgs
+minGSSize.default <- 3 # min database geneset size (see clusterProfiler)
+maxGSSize.default <- 500 # max database geneset size (see clusterProfiler)
+fc.default <- 1.0 # absolute value threshold for fold.change in ORA
+pv.default <- 0.05 # threshold for p.value in ORA
+analyzed.columns <- c('gene','fold.change','p.value', 'rank')
+
+# editable list of supported orgs
+supported.orgs <- list(human = "org.Hs.eg.db", 
                        mouse = "org.Mm.eg.db",
                        rat = "org.Rn.eg.db")
-supported.idTypes <- c("SYMBOL",  # editable list of supported idTypes (see keytypes per orgDb)
+
+# editable list of supported idTypes (see keytypes per orgDb)
+supported.idTypes <- c("SYMBOL",  
                        "ENSEMBL", 
                        "ENTREZID", 
                        "UNIPROT")
+
+# list of R libraries to load for analysis and visualization
+load.libs <- c(
+  "fs",
+  "writexl",
+  "dplyr",
+  "magrittr",
+  "clusterProfiler",
+  "DOSE",
+  "ggplot2",
+  "ggupset",
+  "enrichplot",
+  "EnhancedVolcano")
+
+# to collapse boxes
+jscode <- "
+shinyjs.collapse = function(boxid) {
+$('#' + boxid).closest('.box').find('[data-widget=collapse]').click();
+}
+"
 
 # Check databases
 rdata.list <- list.files("../databases", ".RData")
