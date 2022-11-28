@@ -24,6 +24,7 @@ shiny_result/app/*.pdf
 /*.Rcheck/
 
 # RStudio files
+.Rproj
 .Rproj.user/
 
 # produced vignettes
