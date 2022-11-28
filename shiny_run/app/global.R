@@ -53,7 +53,6 @@ history.go(0)
 rdata.list <- list.files("../databases", ".RData")
 rdata.list <- c(rdata.list,"BUILD NEW DATABASE")
 
-
 # Check datasets
 ds.list <- list.files("../datasets", "csv")
 if(length(ds.list) > 1)

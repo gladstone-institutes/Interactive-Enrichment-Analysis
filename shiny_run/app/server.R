@@ -491,6 +491,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$results, {
     rstudioapi::jobRunScript(path = "../scripts/view_results.R")
   })
+  
   observeEvent(input$reset, {
     updateSelectInput(session, "datasets", selected = "")
     js$togglebox("db")
