@@ -4,6 +4,7 @@ require(writexl)
 require(clusterProfiler)
 require(ggplot2)
 require(enrichplot)
+require(stringr)
 
 shinyServer(function(input, output, session) {
   
@@ -297,6 +298,8 @@ shinyServer(function(input, output, session) {
   #plot1 result
   makePlot1Result <- function(){
     resObject <- getResultObj()
+    #trim descriptions to 80 characters
+    resObject@result <- dplyr::mutate(resObject@result, Description = str_trunc(Description, 80))
     data.volcano <- as.data.frame(resObject)
     data.emap <- pairwise_termsim(resObject)
     switch (input$plot1,

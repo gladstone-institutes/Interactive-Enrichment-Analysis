@@ -1,30 +1,8 @@
-# Process dataset for enrichment analysis (see Enrichment_Analysis.R)
+# Process dataset for enrichment analysis (see shiny_run)
 
-proc_dataset<-function(ds.name, params, output.name="run"){
-  
-  # Retrieve from params
-  db.name <- params['db.name'][[1]]
-  db.list <- params['db.list'][[1]]
-  org.db.name <- params['org.db.name'][[1]]
-  fromType <- params['fromType'][[1]]
-  ora.fc <- params$fold.change
-  ora.pv <- params$p.value
-  minGSSize <- params$minGSSize
-  maxGSSize <- params$maxGSSize
-  run.ora <- params$run.ora
-  run.gsea <- params$run.gsea
-  
-  par.df <- data.frame(
-    db.name = db.name,
-    db.list = db.list,
-    org.db.name = org.db.name,
-    fromType = fromType,
-    ora.fc = ora.fc,
-    ora.pv = ora.pv,
-    minGSSize = minGSSize,
-    maxGSSize = maxGSSize,
-    run.ora = run.ora,
-    run.gsea = run.gsea)
+proc_dataset<-function(ds.name, org.db.name, fromType, 
+                       ora.fc, ora.pv, run.ora, run.gsea,
+                       output.name="run"){
   
   # Objects from strings
   ds.fn <- file.path("../datasets",ds.name)
@@ -66,14 +44,14 @@ proc_dataset<-function(ds.name, params, output.name="run"){
       dplyr::filter(!gene %in% set.genes.entrez[[fromType]]) %>%
       {if('p.value' %in% ds.names) dplyr::arrange(.,p.value) else .} %>%
       dplyr::arrange(desc(ora.set))
-    save_genes_params(set.genes.unmapped, par.df, ds.noext, "ora", output.dir, T, ora.fc, ora.pv)
+    save_genes_params(set.genes.unmapped, ds.noext, "ora", output.dir, T, ora.fc, ora.pv)
     
     # Resolve duplicates (keep ENTREZID in ora.set and with smallest p.value, if available)
     set.genes.entrez.dedup <- set.genes.entrez %>%
       {if('p.value' %in% ds.names) dplyr::arrange(.,p.value) else .} %>%
       dplyr::arrange(desc(ora.set)) %>%
       dplyr::distinct(ENTREZID, .keep_all = T)
-    save_genes_params(set.genes.entrez.dedup, par.df, ds.noext, "ora", output.dir, F, ora.fc, ora.pv)
+    save_genes_params(set.genes.entrez.dedup, ds.noext, "ora", output.dir, F, ora.fc, ora.pv)
   } 
   
   if (run.gsea){ # Rank list of genes
@@ -107,7 +85,7 @@ proc_dataset<-function(ds.name, params, output.name="run"){
     ranked.genes.unmapped <- ranked.genes %>%
       dplyr::filter(!gene %in% ranked.genes.entrez[[fromType]]) %>%
       dplyr::arrange(desc(rank))
-    save_genes_params(ranked.genes.unmapped, par.df, ds.noext, "gsea", output.dir, T)
+    save_genes_params(ranked.genes.unmapped, ds.noext, "gsea", output.dir, T)
     
     # Resolve duplicates (keep ENTREZID with largest abs(rank))
     ranked.genes.entrez.dedup <- ranked.genes.entrez %>%
@@ -116,42 +94,17 @@ proc_dataset<-function(ds.name, params, output.name="run"){
       dplyr::distinct(ENTREZID, .keep_all = T) %>%
       dplyr::select(-absrank)  %>%
       dplyr::arrange(desc(rank))
-    save_genes_params(ranked.genes.entrez.dedup, par.df, ds.noext, "gsea", output.dir, F)
+    save_genes_params(ranked.genes.entrez.dedup, ds.noext, "gsea", output.dir, F)
   }
 }
 
-save_genes_params <- function(data, par.df, ds.noext, method.dir, output.dir, excluded=F, fc=1, pv=1e-05){
+save_genes_params <- function(data, ds.noext, method.dir, output.dir, excluded=F, fc=1, pv=1e-05){
   #genes
   suffix <- "input"
   if (excluded)
     suffix <- "excluded"
   this.fn <- paste0(ds.noext, "__", method.dir, "_", suffix,".rds")
   saveRDS(data, file.path(output.dir,method.dir,this.fn))  
-  #params
-  this.fn <- paste0(ds.noext, "__", method.dir, "_params.rds")
-  saveRDS(par.df, file.path(output.dir,method.dir,this.fn))  
-
-  # 
-  # # volcano plot if both p.value and fold.change are present
-  # if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
-  #   if(!fromType %in% names(data)) # i.e., unmapped cases
-  #     data[fromType] <- data$gene
-  #   
-  #   p<-EnhancedVolcano(data,
-  #                      lab = data[[fromType]],
-  #                      selectLab = c(head(data[[fromType]]),tail(data[[fromType]])),
-  #                      x = 'fold.change',
-  #                      y = 'p.value',
-  #                      pCutoff = pv,
-  #                      FCcutoff = fc,
-  #                      legendLabels=c('NS','FC','p-value',
-  #                                     'p-value & FC'),
-  #                      pointSize = 2.0,
-  #                      labSize = 5.0)
-  #   vol.fn <- paste0(ds.noext,"__",method.dir,"_volcano_",suffix,".pdf")
-  #   ggsave(p, file = file.path(output.dir,method.dir,"plots",vol.fn), 
-  #          width = 2400, height = 2400, units = "px", device='pdf')
-  # }
 }
 
 map_ids <- function(input,org.db.name, fromType){

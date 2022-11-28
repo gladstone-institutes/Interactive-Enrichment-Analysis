@@ -24,6 +24,7 @@ supported.idTypes <- c("SYMBOL",
 load.libs <- c(
   "fs",
   "writexl",
+  "stringr",
   "dplyr",
   "magrittr",
   "clusterProfiler",

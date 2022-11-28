@@ -1,4 +1,4 @@
-## Function to perform ORA (see Enrichment_Analysis.R)
+## Function to perform ORA (see shiny_run)
 
 run_ora<-function(dataset.name, db.name, output.name="run"){
   
@@ -59,6 +59,6 @@ run_ora<-function(dataset.name, db.name, output.name="run"){
   write_xlsx(enrichResult.df,file.path(output.dir,"ora",xlsx.fn))
   
   ## Plot
-  # plot_results(enrichResult, gene, db.name, "ora")
+  plot_results(enrichResult, gene, file.prefix, output.dir, db.name, "ora")
 
 }

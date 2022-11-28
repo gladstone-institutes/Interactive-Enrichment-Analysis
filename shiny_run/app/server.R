@@ -16,8 +16,8 @@ shinyServer(function(input, output, session) {
     fromType = "SYMBOL",
     minGSSize = minGSSize.default,
     maxGSSize = maxGSSize.default,
-    fold.change = fc.default,
-    p.value = pv.default,
+    ora.fc = fc.default,
+    ora.pv = pv.default,
     run.ora = FALSE,
     run.gsea = FALSE
   )
@@ -196,7 +196,7 @@ shinyServer(function(input, output, session) {
                 numericInput(
                   "foldchange",
                   "Set fold change cutoff",
-                  value = rv$params$fold.change,
+                  value = rv$params$ora.fc,
                   min = 0, max = 5,
                   step = 0.1
                 ),
@@ -209,7 +209,7 @@ shinyServer(function(input, output, session) {
                 numericInput(
                   "pvalue",
                   "Set p.value cutoff",
-                  value = rv$params$p.value,
+                  value = rv$params$ora.pv,
                   min = 0, max = 1,
                   step = 0.01
                 ),
@@ -240,10 +240,10 @@ shinyServer(function(input, output, session) {
     rv$params$maxGSSize <- input$maxGSSize
   })
   observeEvent(input$foldchange, {
-    rv$params$fold.change <- input$foldchange
+    rv$params$ora.fc <- input$foldchange
   })
   observeEvent(input$pvalue, {
-    rv$params$p.value <- input$pvalue
+    rv$params$ora.pv <- input$pvalue
   })
   
   #render table data
@@ -318,7 +318,7 @@ shinyServer(function(input, output, session) {
       output$db.status <- NULL
     }
     if(rv$db.status & rv$ds.status){
-      output$run.header <- renderText("<h3>&nbsp;&nbsp;3. Run Analysis</h3>")
+      output$run.header <- renderText("<h3>&nbsp;&nbsp;3. Run Analyses</h3>")
       output$run.button <- renderUI({
         actionButton("run", "Let's go!")
       })
@@ -401,6 +401,11 @@ shinyServer(function(input, output, session) {
       }
       # Proceed if libs installed successfully
       if(rv$lib.status){
+        #source functions
+        source("../scripts/proc_dataset.R")
+        source("../scripts/run_ora.R")
+        source("../scripts/run_gsea.R")
+        source("../scripts/plot_results.R")
         #make output dirs
         output.name <- format(start.time, "%Y%m%d_%H%M%S") # timestamp
         if (dir.exists(file.path("../../shiny_result/")))
@@ -415,8 +420,19 @@ shinyServer(function(input, output, session) {
             "<br />")
           rv$logfile <- append(rv$logfile, prog)
           shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
-          source("../scripts/proc_dataset.R")
-          proc_dataset(ds.name, rv$params, output.name)
+          proc_dataset(ds.name, rv$params$org.db.name, rv$params$fromType, 
+                       rv$params$ora.fc, rv$params$ora.pv, 
+                       rv$params$run.ora, rv$params$run.gsea, output.name)
+          #also save params
+          ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
+          output.dir <- file.path("../",output.name, ds.noext)
+          this.fn <- paste0(ds.noext, "__ora_params.rds")
+          saveRDS(rv$params, file.path(output.dir,"ora",this.fn)) 
+          if(rv$params$run.gsea){
+            this.fn <- paste0(ds.noext, "__gsea_params.rds")
+            saveRDS(rv$params, file.path(output.dir,"gsea",this.fn)) 
+          }
+
         }
         #run analyses on each dataset
         for (ds.name in run.ds.list){
@@ -429,7 +445,6 @@ shinyServer(function(input, output, session) {
               "<br />")
             rv$logfile <- append(rv$logfile, prog)
             shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
-            source("../scripts/run_ora.R")
             run_ora(ds.name, db.name, output.name)
             if(rv$params$run.gsea){
               i <- i + 1
@@ -440,7 +455,6 @@ shinyServer(function(input, output, session) {
                 "<br />")
               rv$logfile <- append(rv$logfile, prog)
               shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
-              source("../scripts/run_gsea.R")
               run_gsea(ds.name, db.name, output.name)
             }
           }

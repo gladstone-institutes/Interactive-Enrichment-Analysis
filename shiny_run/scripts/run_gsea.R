@@ -1,4 +1,4 @@
-## Function to perform GSEA (see Enrichment_Analysis.R)
+## Function to perform GSEA (see shiny_run)
 
 run_gsea<-function(dataset.name, db.name, output.name="run"){
   
@@ -53,5 +53,5 @@ run_gsea<-function(dataset.name, db.name, output.name="run"){
   write_xlsx(gseaResult.df,file.path(output.dir,"gsea",xlsx.fn))
   
   ## Plot
-  # plot_results(gseaResult, geneList, db.name, "gsea")
+  plot_results(gseaResult, geneList, file.prefix, output.dir, db.name, "gsea")
 }
