@@ -26,7 +26,10 @@ dashboardPage(
   #body content
   dashboardBody(
     useShinyjs(),
-    extendShinyjs(text = jscode, functions = c("collapse")), #see global.R for jscode 
+    extendShinyjs(text = jscode, functions = c("togglebox", #see global.R for jscode 
+                                               "hidebox",
+                                               "showbox",
+                                               "startnew")), 
     fluidRow(
       #debug
       textOutput('debug.text')
@@ -61,9 +64,10 @@ dashboardPage(
         br(),
         uiOutput("run.params"),
         uiOutput("ora.params"),
+        htmlOutput("analysis.plan"),
         htmlOutput("ds.ready")
       ),
-      uiOutput("progress.box")
+      uiOutput("progress")
     )
   )
 )

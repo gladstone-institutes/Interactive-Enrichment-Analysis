@@ -7,8 +7,8 @@ run_ora<-function(dataset.name, db.name, output.name="run"){
   output.dir <- file.path("../",output.name, file.prefix)
   
   # Retrieve params
-  par.fn <- paste0(file.prefix, "__gsea_params.rds")
-  params <- readRDS(file.path(output.dir, "gsea",par.fn))
+  par.fn <- paste0(file.prefix, "__ora_params.rds")
+  params <- readRDS(file.path(output.dir, "ora",par.fn))
   org.db.name <- params$org.db.name
   minGSSize <- params$minGSSize
   maxGSSize <- params$maxGSSize
@@ -41,7 +41,8 @@ run_ora<-function(dataset.name, db.name, output.name="run"){
     # pAdjustMethod="holm", #default is "BH"
     pvalueCutoff = 1 #to limit results
     )
-  enrichResult <- setReadable(enrichResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
+  if(!is.null(enrichResult))
+    enrichResult <- setReadable(enrichResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
   
   # Save objects
   gl.fn <- paste(file.prefix, db.name,"ora","geneList.rds", sep = "_")

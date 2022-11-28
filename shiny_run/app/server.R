@@ -21,13 +21,10 @@ shinyServer(function(input, output, session) {
     run.ora = FALSE,
     run.gsea = FALSE
   )
-  rv <- reactiveValues(params = params)
-  rv$box.status <- FALSE
-  rv$lib.status <- FALSE
-  
-  ########### 
-  # sidebar #
-  ###########
+  rv <- reactiveValues(params = params,
+                       lib.status = FALSE,
+                       logfile = "",
+                       plan = "")
   
   #############
   # databases #
@@ -110,6 +107,8 @@ shinyServer(function(input, output, session) {
         with symbols or identifiers.",
         "</font>")
       })
+      rv$params$run.ora <- FALSE
+      rv$params$run.gsea <- FALSE
     } else {
       output.ds.msg.optional <- ""
       if(length(ds.names.out) > 0)
@@ -121,10 +120,15 @@ shinyServer(function(input, output, session) {
                             "<i>",paste(ds.names.in, collapse =", "),"</i>",
                             "</b>",output.ds.msg.optional,"</p>")
       output$ds.msg <- renderText({ output.ds.msg })
-      #SET METHODS
+      #SET METHODS and PLAN
       rv$params$run.ora <- TRUE
-      if('p.value' %in% ds.names.in | 'rank' %in% ds.names.in )
+      rv$plan <- "Analysis plan: <b>run ORA only</b> (GSEA requires <i>rank</i> or <i>p.value</i> column)"
+      if('p.value' %in% ds.names.in | 'rank' %in% ds.names.in ){
         rv$params$run.gsea <- TRUE
+        rv$plan <- "Analysis plan: <b>run ORA and GSEA</b>"
+      } else {
+        rv$params$run.gsea <- FALSE
+      }
       #SET PARAMS
       #choose id type (fromType for ID mapping)
       output$run.params <- renderUI({
@@ -252,6 +256,9 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  #update analysis plan
+  output$analysis.plan <- renderText(rv$plan)
+
   #upload dataset csv
   uploadDataset <- function(){
     output$sample.ds.title <- NULL
@@ -290,6 +297,10 @@ shinyServer(function(input, output, session) {
     getDatasets()
   })
   
+  ############
+  # analysis #
+  ############
+  
   #set run status
   observe({
     if(rv$ds.status){
@@ -314,30 +325,51 @@ shinyServer(function(input, output, session) {
     } else {
       output$run.header <- NULL
       output$run.button <- NULL
+      js$hidebox('progress')
     }
   })
   
-  ## RUN
-  observeEvent(input$run, {
-    #progress box
-    js$collapse("db")
-    js$collapse("ds")
-    output$progress.box <- renderUI ({
-      box(
-        title = "Progress", status = "primary", solidHeader = TRUE, collapsible = T,
-        htmlOutput("run.progress"),
-        htmlOutput("run.status")
-      )
-    })
-    output$run.progress <- renderText({
-      paste("<p>Starting run...</p>",
-            "<p>Installing required R libraries...</p>")
-    })
-    rv$box.status <- TRUE
+  # Create progress box
+  output$progress <- renderUI({
+    box(
+        title = "Progress", status = "primary", 
+        solidHeader = TRUE, collapsible = T,
+        htmlOutput("run_progress"),
+        htmlOutput("run.status"),
+        uiOutput("view.results")
+    )
   })
-  
-  observe({
-    if(rv$box.status){
+
+  ## Button action: run
+  observeEvent(input$run, {
+    #update UI
+    shinyjs::disable("run")
+    js$togglebox("db")
+    js$togglebox("ds")
+    js$showbox('progress')
+
+    # Track Progress 
+    withProgress(message = 'Running analyses', value = 0, {
+      run.db.list <- strsplit(rv$params$db.list, ",")[[1]]
+      run.ds.list <- input$datasets
+      steps <- 1 + #libs
+        length(run.ds.list) + #proc_datasets
+        length(run.ds.list) * length(run.db.list) #run_ora
+      i <- 0
+      if (rv$params$run.gsea)
+        steps <- steps + length(run.ds.list) * length(run.db.list) #run_gsea
+      
+      # Start time
+      start.time <- Sys.time()
+      
+      # Append progress box html
+      prog <- paste("Analysis start time: ",
+                    format(start.time, "%F %H:%M:%S"),
+                    "<br />",
+                    "Steps: ", steps, "<br />")
+      rv$logfile <- append(rv$logfile, prog)
+      shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
+      
       #load libs
       options(install.packages.check.source = "no")
       options(install.packages.compile.from.source = "never")
@@ -346,48 +378,110 @@ shinyServer(function(input, output, session) {
       p_load(load.libs, update = TRUE, character.only = TRUE)
       status <- sapply(load.libs,require,character.only = TRUE)
       if(all(status)){
-        output$run.progress <- renderText({
-          paste("<p><b>",
-                "SUCCESS: You have successfully installed and loaded all required libraries.",
-                "</b></p>")
-        })
+        i <- i + 1
+        setProgress(i/steps, detail = paste("Step",i,"of",steps))
+        prog <- paste(paste0(i,"."),
+          "All required libraries successfully installed and loaded.",
+          "<br />")
+        rv$logfile <- append(rv$logfile, prog)
+        shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
         rv$lib.status <- TRUE
-      } else{
-        output$run.progress <- renderText({
-          paste("<p><font color=\"#FF0000\"><b>",
-                "ERROR: One or more libraries failed to install correctly.", 
-                "</b></font></p>",
-                "<p>Check the following list for FALSE cases and try again...",
-                "</p><br /><br />", status)
-        })
+      } else{   
+      i <- i + 1
+      setProgress(i/steps, detail = paste("Step",i,"of",steps))
+        prog <- paste(paste0(i,"."),
+          "<p><font color=\"#FF0000\"><b>",
+          "ERROR: One or more libraries failed to install correctly.",
+          "</b></font></p>",
+          "<p>Check the following list for FALSE cases and try again...",
+          "</p><br /><br />", status)
+        rv$logfile <- append(rv$logfile, prog)
+        shinyjs::html(id = 'run_progress', add = TRUE,html = prog)
         rv$lib.status <- FALSE
       }
-    }
-    if(rv$lib.status){
-      output.name <- format(Sys.time(), "%Y%m%d_%H%M%S") # timestamp 
-      if (dir.exists(file.path("../../shiny_result/")))
-        output.name <- file.path("../shiny_result/output/",output.name)
-      #process each dataset: check errors, generate gene lists, create dirs, etc
-      for (ds.name in input$datasets){
-        source("../scripts/proc_dataset.R")
-        proc_dataset(ds.name, rv$params, output.name)
-      }
-      #run analyses on each dataset
-      for (ds.name in input$datasets){
-        for (db.name in strsplit(rv$params$db.list, ",")[[1]]){
-          output$run.progress <- renderText(
-            paste("Running", ds.name, "against", db.name,"...")
-          )
-          source("../scripts/run_ora.R")
-          run_ora(ds.name, db.name, output.name)
-          if(rv$params$run.gsea){
-            source("../scripts/run_gsea.R")
-            run_gsea(ds.name, db.name, output.name)
-          } 
+      # Proceed if libs installed successfully
+      if(rv$lib.status){
+        #make output dirs
+        output.name <- format(start.time, "%Y%m%d_%H%M%S") # timestamp
+        if (dir.exists(file.path("../../shiny_result/")))
+          output.name <- file.path("../shiny_result/output",output.name)
+        #process each dataset: check errors, generate gene lists, create dirs, etc
+        for (ds.name in run.ds.list){
+          i <- i + 1
+          setProgress(i/steps, detail = paste("Step",i,"of",steps))
+          prog <- paste(paste0(i,"."),
+            "Preprocessing:",
+            ds.name,
+            "<br />")
+          rv$logfile <- append(rv$logfile, prog)
+          shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
+          source("../scripts/proc_dataset.R")
+          proc_dataset(ds.name, rv$params, output.name)
         }
-      } 
-      output$run.status <- renderText("&emsp;&#10004; Finished!")
-    }
+        #run analyses on each dataset
+        for (ds.name in run.ds.list){
+          for (db.name in run.db.list){
+            i <- i + 1
+            setProgress(i/steps, detail = paste("Step",i,"of",steps))
+            prog <- paste(paste0(i,"."),
+              "Running ORA on",
+              ds.name, "against", db.name,
+              "<br />")
+            rv$logfile <- append(rv$logfile, prog)
+            shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
+            source("../scripts/run_ora.R")
+            run_ora(ds.name, db.name, output.name)
+            if(rv$params$run.gsea){
+              i <- i + 1
+              setProgress(i/steps, detail = paste("Step",i,"of",steps))
+              prog <- paste(paste0(i,"."),
+                "Running GSEA on",
+                ds.name, "against", db.name,
+                "<br />")
+              rv$logfile <- append(rv$logfile, prog)
+              shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
+              source("../scripts/run_gsea.R")
+              run_gsea(ds.name, db.name, output.name)
+            }
+          }
+        }
+        # when event complete...
+        prog <- paste(
+          "<b>Analysis successfully completed:",
+          format(Sys.time(), "%F %H:%M:%S"),
+          "</b>")
+        rv$logfile <- append(rv$logfile, prog)
+        shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
+        shinyjs::html(id = 'run_progress', add = TRUE, html = paste0(
+          "<br /><br /><p>Results can be found in <b>",
+          output.name,"/.</b></p>"
+        ))
+        output$view.results <- renderUI ({
+          tagList(
+            fluidRow(
+              column(width = 4,
+                     actionButton("results","View Results")
+              ),
+              column(width = 4,
+                     actionButton("reset","Start new analysis")
+              )
+            )
+          )
+        })
+        output$run.status <- renderText("&emsp;&#10004; Finished!")
+        write(rv$logfile, file.path("../",output.name,"logfile.html"))
+      }
+    })
+  })
+  
+  observeEvent(input$results, {
+    rstudioapi::jobRunScript(path = "../scripts/view_results.R")
+  })
+  observeEvent(input$reset, {
+    updateSelectInput(session, "datasets", selected = "")
+    js$togglebox("db")
+    js$togglebox("ds")
+    js$startnew()
   })
   
 })

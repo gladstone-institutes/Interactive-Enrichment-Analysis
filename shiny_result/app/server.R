@@ -14,20 +14,36 @@ shinyServer(function(input, output, session) {
   #update selection lists for drop downs
   observeEvent(input$run,{
     ds.list <- unique(output.df[which(output.df$run==input$run),'dataset'])
+    method.list <- rev(unique(output.df[which(output.df$run==input$run &
+                                            output.df$dataset==input$dataset),'method']))
     updateSelectizeInput(
       session,
-      'dataset', 
-      choices = ds.list, 
+      'dataset',
+      choices = ds.list,
+      server = TRUE
+    )
+    updateSelectizeInput(
+      session,
+      'method',
+      choices = method.list,
       server = TRUE
     )
   })
   
   observeEvent(input$dataset,{
-    method.list <- unique(output.df[which(output.df$dataset==input$dataset),'method'])
+    method.list <- rev(unique(output.df[which(output.df$run==input$run &
+                                            output.df$dataset==input$dataset),'method']))
+    # db.list <- strsplit(getDataParams()$db.list, ",")[[1]]
     updateSelectizeInput(
       session,
-      'method', 
-      choices = method.list, 
+      'method',
+      choices = method.list,
+      server = TRUE
+    )
+    updateSelectizeInput(
+      session,
+      'databse',
+      choices = db.list,
       server = TRUE
     )
   })

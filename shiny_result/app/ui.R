@@ -17,7 +17,8 @@ dashboardPage(
     selectInput(
       "run",
       "Choose a run",
-      choices = c(run.list)
+      choices = c(run.list),
+      selected = run.default
     ),
     selectInput(
       "dataset",

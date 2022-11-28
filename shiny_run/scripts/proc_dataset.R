@@ -30,7 +30,6 @@ proc_dataset<-function(ds.name, params, output.name="run"){
   ds.fn <- file.path("../datasets",ds.name)
   dataset <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
   ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
-  print(ds.noext)
   output.dir <- file.path("../",output.name, ds.noext)
   
   if(run.ora){ # Prepare subset of genes
