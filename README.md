@@ -33,7 +33,7 @@ The main shiny app `shiny_run` will launch an interactive session.
 ## Databases
 
 A collection of public databases is provided and updated monthly as a
-datestamped (YYYYMMDD) RData file, e.g., `20210108.RData`. [Cite](#cite)
+datestamped (YYYYMMDD) RData file, e.g., `20210108.RData`. [Cite](#how-to-cite)
 and provide this file for reproducible research. Download updated
 versions (or perform `git pull`) to access the latest content from
 public databases.
@@ -44,7 +44,7 @@ The app will take a moment to load the databases, check their validity,
 and list them for your review. This step is complete when you see ✔
 **Ready!**
 
-<img src="shiny_run/assets/shiny_run_db.png" style="float:left; margin:10px" width="200" align="left"/>
+<img src="shiny_run/assets/shiny_run_db.png" width="200" />
 
 *Advanced: If you want to construct your own database collection, then
 add one or more GMT files to `shiny_run/databases/gmts/` and choose
@@ -88,9 +88,7 @@ The app will display a preview of the first few rows of the first chosen
 dataset along with the required and optional columns it could detect
 (see table and subsequent message in screenshot).
 
-<span style="float:left">
-<img src="shiny_run/assets/shiny_run_ds.png" width="200" style="margin:10px"/>
-</span>
+<img src="shiny_run/assets/shiny_run_ds.png" width="200" align="left"/>
 
 [**Identifiers**]
 
@@ -131,7 +129,7 @@ step is complete when you see ✔ **Ready!**
 When *Databases* and *Datasets* are loaded and verified, a third step
 will appear in the side panel.
 
-<img src="shiny_run/assets/shiny_run_go.png" width="120" style="margin:10px"/>
+<img src="shiny_run/assets/shiny_run_go.png" width="120"/>
 
 If the analysis plan looks good to you, including all the parameter
 choices, then...
@@ -141,7 +139,7 @@ choices, then...
 The initial set of panels will collapse and a new *Progress* panel will
 open along with a progress bar in the lower-right corner.
 
-<img src="shiny_run/assets/shiny_run_progress.png" width="400" style="margin:10px; float:left"/>
+<img src="shiny_run/assets/shiny_run_progress.png" width="400" align="left"/>
 
 The *Progress* panel will enumerate the steps and report any errors
 along the way. In general, the steps include: installing required R
