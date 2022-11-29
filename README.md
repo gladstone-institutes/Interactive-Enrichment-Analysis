@@ -31,9 +31,8 @@ The main shiny app `shiny_run` will launch an interactive session.
     `Run App` menu *(`Run External` is recommended)*. Or, navigate by
     command line into your local copy of the repo and launch via:**
 
-```{=html}
 <!-- -->
-```
+
     runApp(appDir = "shiny_run/app", launch.browser = TRUE)
 
 ![](shiny_run/assets/shiny_run_launch.png)
@@ -240,13 +239,11 @@ The databases provided here each deserve a citation if you decide to
 publish or share your enrichment analysis results.
 
 > 1.  Martens M, Ammar A, Riutta A, Waagmeester A, Slenter DN, Hanspers
->     K,
->     Miller RA, Digles D, Lopes EN, Ehrhart F, Dupuis LJ, Winckers LA,
->     Coort
->     SL, Willighagen EL, Evelo CT, Pico AR, Kutmon M. **WikiPathways:
->     connecting communities** *Nucleic Acids Research*, (2021), Volume
->     49, Issue D1, 8 January 2021, Pages D613--D621, doi:
->     [10.1093/nar/gkaa1024](https://doi.org/10.1093/nar/gkaa1024)
+>     K, Miller RA, Digles D, Lopes EN, Ehrhart F, Dupuis LJ, Winckers
+>     LA, Coort SL, Willighagen EL, Evelo CT, Pico AR, Kutmon M.
+>     **WikiPathways: connecting communities** *Nucleic Acids Research*,
+>     (2021), Volume 49, Issue D1, 8 January 2021, Pages D613--D621,
+>     doi: [10.1093/nar/gkaa1024](https://doi.org/10.1093/nar/gkaa1024)
 > 2.  Hanspers K, Riutta A, Summer-Kutmon M, Pico AR*.* **Pathway
 >     information extracted from 25 years of pathway figures.** *Genome
 >     Biol* **21**, 273 (2020). doi:
@@ -263,11 +260,9 @@ Yu in the
 R package. Please cite this:
 
 > Wu T, Hu E, Xu S, Chen M, Guo P, Dai Z, Feng T, Zhou L, Tang W, Zhan
-> L, Fu x, Liu S, Bo X, Yu G (2021).
-> **clusterProfiler 4.0: A universal enrichment tool for interpreting
-> omics data.**
-> *The Innovation*, **2**(3), 100141.
-> doi:
+> L, Fu x, Liu S, Bo X, Yu G (2021). **clusterProfiler 4.0: A universal
+> enrichment tool for interpreting omics data.** *The Innovation*,
+> **2**(3), 100141. doi:
 > [10.1016/j.xinn.2021.100141](https://doi.org/10.1016/j.xinn.2021.100141).
 
 #### Interactive Tools
