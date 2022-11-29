@@ -1,10 +1,10 @@
-#load required packages
-require(EnhancedVolcano)
-require(writexl)
-require(clusterProfiler)
-require(ggplot2)
-require(enrichplot)
-require(stringr)
+library(stringr)
+library(writexl)
+library(ggplot2)
+library(enrichplot)
+library(EnhancedVolcano)
+
+
 
 shinyServer(function(input, output, session) {
   
@@ -299,7 +299,7 @@ shinyServer(function(input, output, session) {
   makePlot1Result <- function(){
     resObject <- getResultObj()
     #trim descriptions to 80 characters
-    resObject@result <- dplyr::mutate(resObject@result, Description = str_trunc(Description, 80))
+    resObject@result <- dplyr::mutate(resObject@result, Description = stringr::str_trunc(Description, 80))
     data.volcano <- as.data.frame(resObject)
     data.emap <- pairwise_termsim(resObject)
     switch (input$plot1,
@@ -310,16 +310,16 @@ shinyServer(function(input, output, session) {
                                     showCategory = 20,
                                     x = "count",
                                     label_format=50),
-            "Emap plot" = emapplot(data.emap, 
+            "Emap plot" = enrichplot::emapplot(data.emap, 
                                    showCategory = 20,
                                    cex_label_category=0.7,
                                    layout="nicely"), #alt layouts: "kk","sugiyama","nicely","fr", "gem","lgl","mds",
-            "Concept network" = cnetplot(resObject, 
+            "Concept network" = enrichplot::cnetplot(resObject, 
                                          foldChange=getGeneList(),
                                          categorySize="geneNum", 
                                          cex_label_category = 0.8, 
                                          cex_label_gene = 1.0),
-            "Concept network (circular)" = cnetplot(resObject, 
+            "Concept network (circular)" = enrichplot::cnetplot(resObject, 
                                                     foldChange=getGeneList(), 
                                                     circular = TRUE, 
                                                     colorEdge = TRUE, 
@@ -353,13 +353,13 @@ shinyServer(function(input, output, session) {
                                                    xlab = 'Number of Genes',
                                                    pointSize = 2.0,
                                                    labSize = 5.0),
-            "Heatmap (GSEA)" = heatplot(resObject, foldChange=getGeneList(), 
+            "Heatmap (GSEA)" = enrichplot::heatplot(resObject, foldChange=getGeneList(), 
                                  showCategory=5,
                                  label_format=50) + coord_fixed(ratio=2),
-            "Heatmap (ORA)" = heatplot(resObject, #can't figure out foldChange param
+            "Heatmap (ORA)" = enrichplot::heatplot(resObject, #can't figure out foldChange param
                                        showCategory=5,
                                        label_format=50) + coord_fixed(ratio=2),
-            "Upset plot (ORA)" = upsetplot(resObject, n=10)
+            "Upset plot (ORA)" = enrichplot::upsetplot(resObject, n=10)
     )
   }
   
@@ -367,7 +367,7 @@ shinyServer(function(input, output, session) {
   
   #render and cache plot data
   output$plot1.result <- renderPlot({
-    # ggsave(filename = 'cached1.pdf',
+    # ggplot2::ggsave(filename = 'cached1.pdf',
     #        plot = makePlot1Result(),
     #        device = 'pdf',
     #        width = 2400,
@@ -439,7 +439,7 @@ shinyServer(function(input, output, session) {
     i <- input$table.result_rows_selected #row selection
     res.object.id <<- resObject$ID[i]
     switch (input$plot2,
-            "GSEA score" = gseaplot2(resObject, 
+            "GSEA score" = enrichplot::gseaplot2(resObject, 
                                      geneSetID = i, 
                                      title = resObject$Description[i]) ,
             "STRING network" = NULL,
@@ -463,7 +463,7 @@ shinyServer(function(input, output, session) {
             sep = "_"), ".pdf")
     },
     content = function(file) {
-      pdf(file)
+      grDevices::pdf(file)
       p<-makePlot2Result()
       print(p)
       dev.off()

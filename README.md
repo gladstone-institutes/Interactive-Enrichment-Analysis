@@ -19,14 +19,13 @@ perform `git pull` to update the code and database collections.*
 
 ## Launch
 
-The main shiny app `shiny_run` will launch an interactive session.
+The starter page `index.html` will check your R dependencies and launch an interactive session.
 
--   **Either open `shiny_run/app/global.R` in RStudio and launch via the
-    `Run App` menu *(`Run External` is recommended)*. Or, navigate by
-    command line into your local copy of the repo and launch via:**
-```
-    runApp(appDir = "shiny_run/app", launch.browser = TRUE)
-```
+-   **Double click on `index.html`**
+
+    TODO: Insert screenshot and instructions
+    
+-   **Click `Launch app`**
 
 <img src="shiny_run/assets/shiny_run_launch.png" width="600" />
 

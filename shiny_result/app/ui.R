@@ -1,4 +1,3 @@
-#load required packages
 library(shinydashboard)
 library(shiny)
 library(DT)

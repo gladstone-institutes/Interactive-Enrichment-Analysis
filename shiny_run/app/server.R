@@ -1,9 +1,5 @@
-#load required packages
-require(EnhancedVolcano)
-require(writexl)
-require(clusterProfiler)
-require(ggplot2)
-require(enrichplot)
+library(shinyjs)
+library(rstudioapi)
 
 shinyServer(function(input, output, session) {
   
@@ -140,7 +136,7 @@ shinyServer(function(input, output, session) {
             multiple = F,
             selected = rv$params$fromType
           ),
-          bsTooltip("fromtype", 
+          shinyBS::bsTooltip("fromtype", 
                     "Which type of identifier do you have in the <i>gene</i> column above?", 
                     placement = "bottom", trigger = "hover"),
           #choose org name (org.db.name for ID mapping)
@@ -151,7 +147,7 @@ shinyServer(function(input, output, session) {
             multiple = F,
             selected = rv$params$org.db.name
           ),
-          bsTooltip("orgname", 
+          shinyBS::bsTooltip("orgname", 
                     "Which organism is represented by the gene identifiers above?", 
                     placement = "bottom", trigger = "hover"),
           #set min/maxGSSize
@@ -165,7 +161,7 @@ shinyServer(function(input, output, session) {
                 min = 1, max = 50,
                 step = 1
               ),
-              bsTooltip("minGSSize", 
+              shinyBS::bsTooltip("minGSSize", 
                         "The minimum gene set size to be included in the analysis, i.e., minGSSize", 
                         placement = "bottom", trigger = "hover")
             ),
@@ -178,7 +174,7 @@ shinyServer(function(input, output, session) {
                 min = 100, max = 1000,
                 step = 100
               ),
-              bsTooltip("maxGSSize", 
+              shinyBS::bsTooltip("maxGSSize", 
                         "The maximum gene set size to be included in the analysis, i.e., maxGSSize", 
                         placement = "bottom", trigger = "hover")
             )
@@ -200,7 +196,7 @@ shinyServer(function(input, output, session) {
                   min = 0, max = 5,
                   step = 0.1
                 ),
-                bsTooltip("foldchange", 
+                shinyBS::bsTooltip("foldchange", 
                           "Absolute value threshold for defining subset of genes for ORA analysis", 
                           placement = "bottom", trigger = "hover")
               ),
@@ -213,7 +209,7 @@ shinyServer(function(input, output, session) {
                   min = 0, max = 1,
                   step = 0.01
                 ),
-                bsTooltip("pvalue", 
+                shinyBS::bsTooltip("pvalue", 
                           "Maximum threshold for defining subset of genes for ORA analysis", 
                           placement = "bottom", trigger = "hover")
               )
@@ -325,7 +321,7 @@ shinyServer(function(input, output, session) {
     } else {
       output$run.header <- NULL
       output$run.button <- NULL
-      js$hidebox('progress')
+      shinyjs::js$hidebox('progress')
     }
   })
   
@@ -344,9 +340,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$run, {
     #update UI
     shinyjs::disable("run")
-    js$togglebox("db")
-    js$togglebox("ds")
-    js$showbox('progress')
+    shinyjs::js$togglebox("db")
+    shinyjs::js$togglebox("ds")
+    shinyjs::js$showbox('progress')
 
     # Track Progress 
     withProgress(message = 'Running analyses', value = 0, {
@@ -393,8 +389,8 @@ shinyServer(function(input, output, session) {
           "<p><font color=\"#FF0000\"><b>",
           "ERROR: One or more libraries failed to install correctly.",
           "</b></font></p>",
-          "<p>Check the following list for FALSE cases and try again...",
-          "</p><br /><br />", status)
+          "<p>Check your console for FALSE cases and try again...",
+          "</p><br /><br />")
         rv$logfile <- append(rv$logfile, prog)
         shinyjs::html(id = 'run_progress', add = TRUE,html = prog)
         rv$lib.status <- FALSE
@@ -494,9 +490,9 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$reset, {
     updateSelectInput(session, "datasets", selected = "")
-    js$togglebox("db")
-    js$togglebox("ds")
-    js$startnew()
+    shinyjs::js$togglebox("db")
+    shinyjs::js$togglebox("ds")
+    shinyjs::js$startnew()
   })
   
 })

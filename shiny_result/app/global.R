@@ -1,5 +1,3 @@
-# Load files and variables
-
 library(plyr)
 
 # Dataframe of results in output dir

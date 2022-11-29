@@ -1,8 +1,7 @@
-#load required packages
 library(shinydashboard)
 library(shiny)
 library(shinyjs)
-library(shinyBS)
+library(shinyBS) #see bsTooltip in server.R
 library(DT)
 
 dashboardPage(

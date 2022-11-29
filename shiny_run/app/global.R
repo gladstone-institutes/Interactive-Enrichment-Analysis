@@ -1,7 +1,3 @@
-# Load files and variables
-
-library(plyr)
-
 #Defaults and Parameters
 minGSSize.default <- 3 # min database geneset size (see clusterProfiler)
 maxGSSize.default <- 500 # max database geneset size (see clusterProfiler)
@@ -25,12 +21,14 @@ load.libs <- c(
   "fs",
   "writexl",
   "stringr",
+  "plyr",
   "dplyr",
   "magrittr",
+  "rstudioapi",
+  "BiocManager",
   "clusterProfiler",
   "DOSE",
   "ggplot2",
-  "ggupset",
   "enrichplot",
   "EnhancedVolcano")
 
