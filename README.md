@@ -71,12 +71,13 @@ analyzed in separate runs.
 #### Format
 
 The supported formats include:
-
--   a simple list of genes (for ORA only)
--   a list of genes with a `rank` column (for GSEA only)
--   a list of genes with a `p.value` column (for GSEA and ORA)
--   a list of genes with `p.value` and `fold.change` columns (for GSEA
-    and ORA)
+<ul list-style-type="-">
+  <li> a simple list of genes (for ORA only)</li>
+  <li> a list of genes with a `rank` column (for GSEA only)</li>
+  <li> a list of genes with a `p.value` column (for GSEA and ORA)</li>
+  <li> a list of genes with `p.value` and `fold.change` columns (for GSEA
+    and ORA)</li>
+</ul>
 
 *Caution: For a given run, all datasets are assumed to have the same
 format. If you have different types of dataset files (per the list
