@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
 # Interactive Enrichment Analysis
 
 *tldr; Just perform the **bold, bullet list items** below to get up and
@@ -30,10 +24,9 @@ The main shiny app `shiny_run` will launch an interactive session.
 -   **Either open `shiny_run/app/global.R` in RStudio and launch via the
     `Run App` menu *(`Run External` is recommended)*. Or, navigate by
     command line into your local copy of the repo and launch via:**
-
-<!-- -->
-
+```
     runApp(appDir = "shiny_run/app", launch.browser = TRUE)
+```
 
 ![](shiny_run/assets/shiny_run_launch.png)
 
@@ -51,7 +44,7 @@ The app will take a moment to load the databases, check their validity,
 and list them for your review. This step is complete when you see ✔
 **Ready!**
 
-![](shiny_run/assets/shiny_run_db.png){style="margin:10px" width="200"}
+<img src="shiny_run/assets/shiny_run_db.png" width="200" style="margin:10px"/>
 
 *Advanced: If you want to construct your own database collection, then
 add one or more GMT files to `shiny_run/databases/gmts/` and choose
@@ -95,10 +88,10 @@ The app will display a preview of the first few rows of the first chosen
 dataset along with the required and optional columns it could detect
 (see table and subsequent message in screenshot).
 
-![](shiny_run/assets/shiny_run_ds.png){align="left" style="margin:10px"
-width="200"}
-
-[**Identifiers**]{.smallcaps}
+<span class="left">
+<img src="shiny_run/assets/shiny_run_ds.png" width="200" style="margin:10px"/>
+</span>
+[**Identifiers**]
 
 Supported gene identifiers include SYMBOL, ENSEMBL, ENTREZID, and
 UNIPROT, by default. But it is trivial to add support for [any orgDb
@@ -106,7 +99,7 @@ keytypes](http://yulab-smu.top/biomedical-knowledge-mining-book/useful-utilities
 Simply edit the `supported.idTypes` list in the "Defaults and
 Parameters" section of `shiny_run/app/global.R`.
 
-[**Organisms**]{.smallcaps}
+[**Organisms**]
 
 Supported species include human, mouse and rat, by default. But it is
 trivial to add support for [any orgDb
@@ -114,7 +107,7 @@ species](https://bioconductor.org/packages/release/BiocViews.html#___OrgDb).
 Simply edit the `supported.org` list in the "Defaults and Parameters"
 section of `shiny_run/app/global.R`.
 
-[**Gene set min/max**]{.smallcaps}
+[**Gene set min/max**]
 
 These options are defined by
 [clusterProfiler](http://bioconductor.org/packages/release/bioc/manuals/clusterProfiler/man/clusterProfiler.pdf#Rfn.enricher.1)
@@ -122,7 +115,7 @@ and are used to prune the databases, restricting the gene sets
 considered in the analysis based on their size, e.g., excluding gene
 sets with fewer than 3 genes or more than 500 genes.
 
-[**ORA Cutoffs**]{.smallcaps}
+[**ORA Cutoffs**]
 
 If ORA is to be performed, then `fold.change` and `p.value` cutoffs must
 be supplied. These are used to define the subset of significantly
@@ -137,7 +130,7 @@ step is complete when you see ✔ **Ready!**
 When *Databases* and *Datasets* are loaded and verified, a third step
 will appear in the side panel.
 
-![](shiny_run/assets/shiny_run_go.png){style="margin:10px" width="120"}
+<img src="shiny_run/assets/shiny_run_go.png" width="120" style="margin:10px"/>
 
 If the analysis plan looks good to you, including all the parameter
 choices, then...
@@ -147,8 +140,7 @@ choices, then...
 The initial set of panels will collapse and a new *Progress* panel will
 open along with a progress bar in the lower-right corner.
 
-![](shiny_run/assets/shiny_run_progress.png){align="left"
-style="margin:10px" width="400"}
+<img src="shiny_run/assets/shiny_run_progress.png" width="400" style="margin:10px; float:left"/>
 
 The *Progress* panel will enumerate the steps and report any errors
 along the way. In general, the steps include: installing required R
@@ -231,7 +223,7 @@ URL. ***This is the best way to publish your enrichment results,
 allowing other researchers to browse your full results in spite of the
 limited space in publications.***
 
-## How to Cite {#cite}
+## How to Cite 
 
 #### Databases
 
