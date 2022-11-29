@@ -3,6 +3,7 @@ shiny_run/database/*
 shiny_run/datasets/*
 shiny_result/output/*
 shiny_result/app/*.pdf
+**/archive
 # History files
 .Rhistory
 .Rapp.history
@@ -17,7 +18,7 @@ shiny_result/app/*.pdf
 # Output files from R CMD check
 /*.Rcheck/
 # RStudio files
-.Rproj
+*.Rproj
 .Rproj.user/
 # produced vignettes
 vignettes/*.html
@@ -36,4 +37,3 @@ vignettes/*.pdf
 docs/
 # translation temp files
 po/*~
-Enrichment_Analysis.Rproj
