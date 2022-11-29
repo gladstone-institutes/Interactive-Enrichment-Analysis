@@ -1,7 +1,7 @@
 <html>
 <body>
 
-<p>This is a single cell RNA-seq dataset accompanying <a href="https://www.google.com/">TestUser et al.</a></p>
+<p>These are the enrichment analysis results for a transcriptomics dataset from <a href="https://europepmc.org/article/MED/21614001">Voineagu et al. 2021</a></p>
 
 <h4>Title</h4>
 <p>..</p>
@@ -13,10 +13,10 @@
 <p>..</p>
 
 <h4>Dataset description</h4>
-<p>For this generic app, we used the dataset of Peripheral Blood Mononuclear Cells (PBMC) freely available from 10X Genomics. There are 2,700 single cells that were sequenced on the Illumina NextSeq 500. This dataset was analyzed using the <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html">Seurat - Guided Clustering Tutorial</a>. To illustrate the use of different functionalities available in this app, "disease_label" and "gender" metadata were randomly assigned to the cells.</p>
+<p>..</p>
 <br>
 
-<p><em>This Shiny application was designed by the <a href="https://labs.gladstone.org/bioinformatics/index.html">Gladstone Institutes Bioinformatics Core.</a></em></p>
+<p><em>This Shiny application was designed by the <a href="https://gladstone.org/science/bioinformatics-core/">Gladstone Institutes Bioinformatics Core.</a></em></p>
 
 </body>
 </html>
