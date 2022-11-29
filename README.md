@@ -28,7 +28,7 @@ The main shiny app `shiny_run` will launch an interactive session.
     runApp(appDir = "shiny_run/app", launch.browser = TRUE)
 ```
 
-![](shiny_run/assets/shiny_run_launch.png)
+<img src="shiny_run/assets/shiny_run_launch.png" width="600" />
 
 ## Databases
 
@@ -90,7 +90,7 @@ dataset along with the required and optional columns it could detect
 
 <img src="shiny_run/assets/shiny_run_ds.png" width="200" align="left"/>
 
-[**Identifiers**]
+**Identifiers**
 
 Supported gene identifiers include SYMBOL, ENSEMBL, ENTREZID, and
 UNIPROT, by default. But it is trivial to add support for [any orgDb
@@ -98,7 +98,7 @@ keytypes](http://yulab-smu.top/biomedical-knowledge-mining-book/useful-utilities
 Simply edit the `supported.idTypes` list in the "Defaults and
 Parameters" section of `shiny_run/app/global.R`.
 
-[**Organisms**]
+**Organisms**
 
 Supported species include human, mouse and rat, by default. But it is
 trivial to add support for [any orgDb
@@ -106,7 +106,7 @@ species](https://bioconductor.org/packages/release/BiocViews.html#___OrgDb).
 Simply edit the `supported.org` list in the "Defaults and Parameters"
 section of `shiny_run/app/global.R`.
 
-[**Gene set min/max**]
+**Gene set min/max**
 
 These options are defined by
 [clusterProfiler](http://bioconductor.org/packages/release/bioc/manuals/clusterProfiler/man/clusterProfiler.pdf#Rfn.enricher.1)
@@ -114,7 +114,7 @@ and are used to prune the databases, restricting the gene sets
 considered in the analysis based on their size, e.g., excluding gene
 sets with fewer than 3 genes or more than 500 genes.
 
-[**ORA Cutoffs**]
+**ORA Cutoffs**
 
 If ORA is to be performed, then `fold.change` and `p.value` cutoffs must
 be supplied. These are used to define the subset of significantly
@@ -152,7 +152,9 @@ name to support multiple independent runs.
 
 This step is complete when you see ✔ **Finished!**
 
+<span align="left">
 Two buttons will be presented at the completion of each run:
+</span>
 
 -   **Click `View Results` to launch a shiny app for interactively
     viewing results, or click `Start new analysis` to reset the app for
@@ -171,7 +173,7 @@ A second shiny app is allows you to interactively explore results and
 download individual files. Its side panel is organized in the same way
 as the output folders.
 
-![](shiny_run/assets/shiny_results_data_ora.png)
+<img src="shiny_run/assets/shiny_results_data_ora.png" width="600" />
 
 #### **Data Tab**
 
@@ -188,7 +190,7 @@ failed identifier mapping.
 are resolvable (e.g., fixing identifiers in your dataset CSV) and
 substantial (e.g., a lot of significant genes per the volcano plot).*
 
-![](shiny_run/assets/shiny_results_res_gsea.png)
+<img src="shiny_run/assets/shiny_results_res_gsea.png" width="600" />
 
 #### **Results Tab**
 
