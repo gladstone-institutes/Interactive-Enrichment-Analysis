@@ -14,7 +14,7 @@ databases.
 -   **Find and open the downloaded ZIP file,
     `Enrichment_Analysis-main.zip`.**
 
-*Advanced**:** Alternatively, you can clone the repo and periodically
+*Advanced: Alternatively, you can clone the repo and periodically
 perform `git pull` to update the code and database collections.*
 
 ## Launch
@@ -44,7 +44,7 @@ The app will take a moment to load the databases, check their validity,
 and list them for your review. This step is complete when you see ✔
 **Ready!**
 
-<img src="shiny_run/assets/shiny_run_db.png" width="200" style="margin:10px"/>
+<img src="shiny_run/assets/shiny_run_db.png" style="float:left; margin:10px" width="200" align="left"/>
 
 *Advanced: If you want to construct your own database collection, then
 add one or more GMT files to `shiny_run/databases/gmts/` and choose
@@ -88,9 +88,10 @@ The app will display a preview of the first few rows of the first chosen
 dataset along with the required and optional columns it could detect
 (see table and subsequent message in screenshot).
 
-<span class="left">
+<span style="float:left">
 <img src="shiny_run/assets/shiny_run_ds.png" width="200" style="margin:10px"/>
 </span>
+
 [**Identifiers**]
 
 Supported gene identifiers include SYMBOL, ENSEMBL, ENTREZID, and
