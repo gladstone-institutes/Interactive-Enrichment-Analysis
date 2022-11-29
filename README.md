@@ -40,11 +40,11 @@ public databases.
 
 -   **In the *Databases* panel, choose a database collection.**
 
+<img src="shiny_run/assets/shiny_run_db.png" width="200" align="left" />
+
 The app will take a moment to load the databases, check their validity,
 and list them for your review. This step is complete when you see ✔
 **Ready!**
-
-<img src="shiny_run/assets/shiny_run_db.png" width="200" />
 
 *Advanced: If you want to construct your own database collection, then
 add one or more GMT files to `shiny_run/databases/gmts/` and choose
@@ -52,6 +52,7 @@ BUILD NEW DATABASE in the Databases panel.*
 
 *Pro-tip: Between projects, be sure to update your RData or GMT files as
 new versions are released.*
+<br /><br />
 
 ## Datasets
 
@@ -71,13 +72,12 @@ analyzed in separate runs.
 #### Format
 
 The supported formats include:
-<ul list-style-type="-">
-  <li> a simple list of genes (for ORA only)</li>
-  <li> a list of genes with a `rank` column (for GSEA only)</li>
-  <li> a list of genes with a `p.value` column (for GSEA and ORA)</li>
-  <li> a list of genes with `p.value` and `fold.change` columns (for GSEA
-    and ORA)</li>
-</ul>
+
+   * a simple list of genes (for ORA only)
+   * a list of genes with a `rank` column (for GSEA only)
+   * a list of genes with a `p.value` column (for GSEA and ORA)
+   * a list of genes with `p.value` and `fold.change` columns (for GSEA
+    and ORA)
 
 *Caution: For a given run, all datasets are assumed to have the same
 format. If you have different types of dataset files (per the list
