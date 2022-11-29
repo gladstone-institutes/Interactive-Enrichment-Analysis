@@ -10,9 +10,9 @@ enrichment analysis for multiple datasets across multiple public
 databases.
 
 -   [**Download
-    Repo**](https://github.com/gladstone-institutes/Enrichment_Analysis/archive/refs/heads/main.zip)
+    Repo**](https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis/archive/refs/heads/main.zip)
 -   **Find and open the downloaded ZIP file,
-    `Enrichment_Analysis-main.zip`.**
+    `Interactive-Enrichment-Analysis-main.zip`.**
 
 *Advanced: Alternatively, you can clone the repo and periodically
 perform `git pull` to update the code and database collections.*
@@ -266,7 +266,7 @@ results of enrichment analyses was developed by the Gladstone Institutes
 Bioinformatics Core. Please cite this repo and consider acknowledging
 our group if these tools prove useful.
 
-> <https://github.com/gladstone-institutes/Enrichment_Analysis>
+> <https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis>
 >
 > *We thank the Gladstone Bioinformatics Core for their interactive
 > enrichment analysis tools.*
