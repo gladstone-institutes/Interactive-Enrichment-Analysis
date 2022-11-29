@@ -129,7 +129,7 @@ step is complete when you see ✔ **Ready!**
 When *Databases* and *Datasets* are loaded and verified, a third step
 will appear in the side panel.
 
-<img src="shiny_run/assets/shiny_run_go.png" width="120"/>
+<img src="shiny_run/assets/shiny_run_go.png" width="150"/>
 
 If the analysis plan looks good to you, including all the parameter
 choices, then...
@@ -139,8 +139,9 @@ choices, then...
 The initial set of panels will collapse and a new *Progress* panel will
 open along with a progress bar in the lower-right corner.
 
-<img src="shiny_run/assets/shiny_run_progress.png" width="400" align="left"/>
+<img src="shiny_run/assets/shiny_run_progress.png" width="300" align="left"/>
 
+<br />
 The *Progress* panel will enumerate the steps and report any errors
 along the way. In general, the steps include: installing required R
 libraries, preprocessing of each dataset, and performing ORA and/or GSEA
@@ -152,9 +153,8 @@ name to support multiple independent runs.
 
 This step is complete when you see ✔ **Finished!**
 
-<span align="left">
+<br /><br />
 Two buttons will be presented at the completion of each run:
-</span>
 
 -   **Click `View Results` to launch a shiny app for interactively
     viewing results, or click `Start new analysis` to reset the app for
@@ -215,7 +215,7 @@ and publications. Again, an initial set of plots, tables and RDS files
 is automatically generated in `shiny_result/output/…` and you can also
 download individual tables and plots from the interactive app.
 
-In addition, the project is structured in a way to facilitate sharing
+In addition, the project is structured to facilitate sharing
 your results along with the interactive app! All the necessary files are
 maintained under the `shiny_result` folder. Share this folder (e.g., as
 a zip file, Dropbox or Box), or upload it to a cloud-hosted service
