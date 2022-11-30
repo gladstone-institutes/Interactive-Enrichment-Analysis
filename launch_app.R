@@ -2,12 +2,11 @@
 min.major = 4
 min.minor = 2.0
 R.version$version.string
-if (R.version$major < min.major)
-  stop(sprintf("ERROR: Please install R version %i.%f or higher",min.major, min.minor))
-else 
-  if (R.version$minor < min.minor)
-    stop(sprintf("ERROR: Please install R version %i.%f or higher",min.major, min.minor))
-    
+if (R.version$major < min.major){
+  stop(sprintf("ERROR: Please install R version %i.%.1f or higher",min.major, min.minor))
+} else if (R.version$major == min.major & R.version$minor < min.minor){ 
+  stop(sprintf("ERROR: Please install R version %i.%.1f or higher",min.major, min.minor))
+}    
 # Check initial dependencies
 initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", "DT","BiocManager")
 options(install.packages.check.source = "no")
@@ -17,7 +16,7 @@ p_load(initial.libs, update = TRUE, try.bioconductor=TRUE, character.only = TRUE
 status <- sapply(initial.libs,require,character.only = TRUE)
   if(all(status)){
     print("All initial libraries successfully installed and loaded.")
-  } else{   
+  } else {   
      print(paste("ERROR: One or more libraries failed to install correctly.",
            status))
   }
