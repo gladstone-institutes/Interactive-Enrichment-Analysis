@@ -31,6 +31,9 @@ source_url("https://raw.github.com/gladstone-institutes/Interactive-Enrichment-A
 
 <img src="shiny_run/assets/shiny_run_launch.png" width="600" />
 
+This will install some basic dependencies, download the project to your Working 
+Directory (*Files* tab in RStudio) and launch the tool in your browser.
+
 *Advanced: Alternatively, you can `git clone` this repo and periodically
 perform `git pull` to update the code and database collections. Launch the app
 from RStudio (i.e., `Run App` on `global.R`) instead of `launch_app.R`*

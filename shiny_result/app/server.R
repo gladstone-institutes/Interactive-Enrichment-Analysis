@@ -303,10 +303,10 @@ shinyServer(function(input, output, session) {
     data.volcano <- as.data.frame(resObject)
     data.emap <- pairwise_termsim(resObject)
     switch (input$plot1,
-            "Dot plot (gene ratio)" = dotplot(resObject,
+            "Dot plot (gene ratio)" = enrichplot::dotplot(resObject,
                                          showCategory = 20,
                                          label_format=50),
-            "Dot plot (count)" = dotplot(resObject,
+            "Dot plot (count)" = enrichplot::dotplot(resObject,
                                     showCategory = 20,
                                     x = "count",
                                     label_format=50),

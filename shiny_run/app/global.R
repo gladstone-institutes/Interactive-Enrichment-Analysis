@@ -25,7 +25,8 @@ p.load.libs <- c(
   "dplyr",
   "magrittr",
   "rstudioapi",
-  "ggplot2")
+  "ggplot2",
+  "ggnewscale")
 bioc.load.libs <- c(
   "AnnotationDbi",
   "DOSE",
