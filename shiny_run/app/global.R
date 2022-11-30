@@ -25,7 +25,6 @@ load.libs <- c(
   "dplyr",
   "magrittr",
   "rstudioapi",
-  "BiocManager",
   "clusterProfiler",
   "DOSE",
   "ggplot2",

@@ -371,7 +371,7 @@ shinyServer(function(input, output, session) {
       options(install.packages.compile.from.source = "never")
       if (!require("pacman")) install.packages("pacman"); library(pacman)
       load.libs <- c(load.libs, rv$params$org.db.name)
-      p_load(load.libs, update = TRUE, character.only = TRUE)
+      p_load(load.libs, update = TRUE, try.bioconductor=TRUE, character.only = TRUE)
       status <- sapply(load.libs,require,character.only = TRUE)
       if(all(status)){
         i <- i + 1

@@ -1,33 +1,40 @@
 # Interactive Enrichment Analysis
 
+This project provides user-friendly interactive tools to perform
+enrichment analysis for multiple datasets across multiple public
+databases. The instructions below describe how to run these tools 
+and all of their features.
+
 *tldr; Just perform the **bold, bullet list items** below to get up and
 running fast.*
 
-## Download
+## Installation
 
-Download this repo, unzip the contents, and and run locally to perform
-enrichment analysis for multiple datasets across multiple public
-databases.
+You only have to do this once. Skip this if you've already done this recently.
 
--   [**Download
-    Repo**](https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis/archive/refs/heads/main.zip)
--   **Find and open the downloaded ZIP file,
-    `Interactive-Enrichment-Analysis-main.zip`.**
+-   **[Install the latest versions of R and RStudio](https://posit.co/download/rstudio-desktop/). 
+Follow the steps provided on that page and then return here.
 
-*Advanced: Alternatively, you can clone the repo and periodically
-perform `git pull` to update the code and database collections.*
+*Note: At a minimum you will need the version of R required by [Bioconductor](https://www.bioconductor.org/install/).*
 
 ## Launch
 
-The starter page `index.html` will check your R dependencies and launch an interactive session.
+The `launch_app.R` script will check your R dependencies and launch an interactive session.
 
--   **Double click on `index.html`**
+-   **Open RStudio**
+-   **Copy/paste these lines into the Console and hit return:**
 
-    TODO: Insert screenshot and instructions
-    
--   **Click `Launch app`**
+```
+install.packages("devtools")
+library(devtools)
+source_url("https://raw.github.com/gladstone-institutes/Interactive-Enrichment-Analysis/main/launch_app.R")
+```
 
 <img src="shiny_run/assets/shiny_run_launch.png" width="600" />
+
+*Advanced: Alternatively, you can `git clone` this repo and periodically
+perform `git pull` to update the code and database collections. Launch the app
+from RStudio (i.e., `Run App` on `global.R`) instead of `launch_app.R`*
 
 ## Databases
 
