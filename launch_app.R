@@ -1,12 +1,16 @@
 # Check R version
-min.major = 4
-min.minor = 2.0
-R.version$version.string
-if (R.version$major < min.major){
-  stop(sprintf("ERROR: Please install R version %i.%.1f or higher",min.major, min.minor))
-} else if (R.version$major == min.major & R.version$minor < min.minor){ 
-  stop(sprintf("ERROR: Please install R version %i.%.1f or higher",min.major, min.minor))
-}    
+x = readLines("http://cran.r-project.org/sources.html")
+# the version number is in the next line of 'The latest release'
+relver = gsub("(.*R-|\\.\\d\\.tar\\.gz.*)", "", x[grep("latest release", x) + 1L])
+myver = substr(getRversion(),1,3)
+# new version available?
+# message("Installed major version: ", myver)
+# message("Latest major version: ", relver)
+vcheck <- compareVersion(relver, myver)
+if(vcheck == 1){
+  message(R.version$version.string)
+  stop(sprintf("Please install R version %s or higher",relver))
+}
 # Check initial dependencies
 initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", "DT","BiocManager")
 options(install.packages.check.source = "no")
