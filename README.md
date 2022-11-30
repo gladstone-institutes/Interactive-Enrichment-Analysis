@@ -13,7 +13,7 @@ running fast.*
 You only have to do this once. Skip this if you've already done this recently.
 
 -   **[Install the latest versions of R and RStudio](https://posit.co/download/rstudio-desktop/). 
-Follow the steps provided on that page and then return here.
+Follow the steps provided on that page and then return here.**
 
 *Note: At a minimum you will need the version of R required by [Bioconductor](https://www.bioconductor.org/install/).*
 
