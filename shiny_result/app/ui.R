@@ -3,7 +3,6 @@ library(shiny)
 library(DT)
 
 dashboardPage(
-  
   #header
   dashboardHeader(
     #application title
@@ -33,6 +32,12 @@ dashboardPage(
   
   #body content
   dashboardBody(
+    #js head injection
+    tags$link(
+      rel="stylesheet",
+      type = "text/css",
+      href="https://cdn.drugst.one/libs/drugstone-buttons/0.0.1/drugstone-buttons.min.css"
+    ),
     fluidRow(
       #collapsible summary box with html 
       box(

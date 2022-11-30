@@ -206,7 +206,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$database, {
     #plot2
     plot2.gsea.choices = c("GSEA score","STRING network")
-    plot2.ora.choices = c("STRING network")
+    plot2.ora.choices = c("Linkouts","STRING network")
     if(input$method == "gsea"){
       plot2.gsea.choices <- appendPerDatabase(plot2.gsea.choices)
       updateSelectInput(session, "plot2", choices = plot2.gsea.choices )
@@ -247,7 +247,7 @@ shinyServer(function(input, output, session) {
  
    #plot2
     plot2.gsea.choices = c("GSEA score","STRING network")
-    plot2.ora.choices = c("STRING network")
+    plot2.ora.choices = c("Linkouts","STRING network")
     if(input$method == "gsea"){
       plot2.gsea.choices <- appendPerDatabase(plot2.gsea.choices)
       updateSelectInput(session, "plot2", choices = plot2.gsea.choices )
@@ -404,26 +404,86 @@ shinyServer(function(input, output, session) {
     resObject <- getResultObj()
     req(input$table.result_rows_selected) #wait for table to load
     i <- input$table.result_rows_selected #row selection
+    res.object.geneID <- resObject$geneID[i]
+    res.object.geneID <- gsub("\\/",",",res.object.geneID) #for drugstone param
     res.object.id <- resObject$ID[i]
     res.object.id <- gsub("\\.jpg$","",res.object.id) #pfocr ids
+    custom.linkout.button <- ""
+    #construct custom linkout buttons
+    if (grepl("^WP\\d+$", res.object.id)) { #WikiPathways
+      custom.linkout.button <- paste0(
+        '<a class="btn btn-primary" ',
+        'title="View the selected pathway at WikiPathways." ',
+        'style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/3/34/Wplogo_500.png);',
+        'background-repeat: no-repeat;',
+        'background-position: left;',
+        'background-position-x: left;',
+        'background-size: 20px 20px;',
+        'background-position-x: 6px;',
+        'background-origin: padding-box;',
+        'padding-left: 32px !important;" ',
+        'margin: 10px;" ',
+        'href="https://new.wikipathways.org/pathways/',
+        res.object.id,
+        '" target="_blank">WikiPathways</a>')
+    } else if (grepl("^PMC\\d+__", res.object.id)) { #PFOCR
+      custom.linkout.button <- paste0(
+        '<a class="btn btn-primary" ',
+        'title="View the selected pathway figure at PFOCR" ',
+        'style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/3/34/Wplogo_500.png);',
+        'background-repeat: no-repeat;',
+        'background-position: left;',
+        'background-position-x: left;',
+        'background-size: 20px 20px;',
+        'background-position-x: 6px;',
+        'background-origin: padding-box;',
+        'padding-left: 32px !important;" ',
+        'margin: 10px;" ',
+        'href="https://pfocr.wikipathways.org/figures/',
+        res.object.id,
+        '" target="_blank">Pathway Figures</a>')
+    } else if (grepl("^GO:\\d+", res.object.id)) { #GO
+      custom.linkout.button <- paste0(
+        '<a class="btn btn-primary" ',
+        'title="View the selected GO term at AmiGO" ',
+        'style="background-image: url(https://avatars1.githubusercontent.com/u/7750835?s=200&v=4);',
+        'background-repeat: no-repeat;',
+        'background-position: left;',
+        'background-position-x: left;',
+        'background-size: 20px 20px;',
+        'background-position-x: 6px;',
+        'background-origin: padding-box;',
+        'padding-left: 32px !important;" ',
+        'margin: 10px;" ',
+        'href="http://amigo.geneontology.org/amigo/term/',
+        res.object.id,
+        '" target="_blank">Gene Ontology</a>')
+    }
     switch (input$plot2,
             "GSEA score" = NULL,
             "STRING network" = NULL,
-            "WikiPathways" = paste0('View <a href="https://new.wikipathways.org/pathways/',
-                                           res.object.id,
-                                           '" target="_blank">',
-                                           res.object.id,
-                                           ' at WikiPathways</a><br/><br/>'),
-            "Pathway Figure" = paste0('View <a href="https://pfocr.wikipathways.org/figures/',
-                                             res.object.id,
-                                             '" target="_blank">',
-                                             res.object.id,
-                                             ' at PFOCR</a><br/><br/>'),
-            "Gene Ontology" = paste0('View <a href="http://amigo.geneontology.org/amigo/term/',
-                                            res.object.id,
-                                            '" target="_blank">',
-                                            res.object.id,
-                                            ' at Gene Ontology</a><br/><br/>')
+            "WikiPathways" = custom.linkout.button,
+            "Linkouts" = paste0(
+              '<h3>Linkouts</h3>',
+              custom.linkout.button,
+              # '<li><a class="drugstone-button drugstone-green" ',
+              '<a class="btn btn-primary" ',
+              'title="Query Drugst.One with the genes from selected pathway." ',
+              'style="background-image: url(https://cdn.drugst.one/libs/drugstone-buttons/0.0.1/android-chrome-192x192.png);',
+              'background-repeat: no-repeat;',
+              'background-position: left;',
+              'background-position-x: left;',
+              'background-size: 20px 20px;',
+              'background-position-x: 6px;',
+              'background-origin: padding-box;',
+              'padding-left: 32px !important;" ',
+              'href="https://drugst.one/standalone?nodes=',
+              res.object.geneID,
+              '&autofillEdges=true&activateNetworkMenuButtonAdjacentDrugs=true&interactionDrugProtein=NeDRex&licensedDatasets=true" ',
+              'target="_blank">Drugst.One</a><br /><br />',
+              '</ul>'),
+            "Pathway Figure" = custom.linkout.button,
+            "Gene Ontology" = custom.linkout.button
     )
   }
   
