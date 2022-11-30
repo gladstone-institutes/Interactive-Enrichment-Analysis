@@ -1,4 +1,14 @@
-# Verify initial dependencies
+# Check R version
+min.major = 4
+min.minor = 2.0
+R.version$version.string
+if (R.version$major < min.major)
+  stop(sprintf("ERROR: Please install R version %i.%f or higher",min.major, min.minor))
+else 
+  if (R.version$minor < min.minor)
+    stop(sprintf("ERROR: Please install R version %i.%f or higher",min.major, min.minor))
+    
+# Check initial dependencies
 initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", "DT","BiocManager")
 options(install.packages.check.source = "no")
 options(install.packages.compile.from.source = "never")
