@@ -25,8 +25,7 @@ The `launch_app.R` script will check your R dependencies and launch an interacti
 -   **Copy/paste these lines into the Console and hit return:**
 
 ```
-install.packages("devtools")
-library(devtools)
+if(!require(devtools)) install.packages("devtools"); library(devtools)
 source_url("https://raw.github.com/gladstone-institutes/Interactive-Enrichment-Analysis/main/launch_app.R")
 ```
 
