@@ -370,9 +370,13 @@ shinyServer(function(input, output, session) {
       options(install.packages.check.source = "no")
       options(install.packages.compile.from.source = "never")
       if (!require("pacman")) install.packages("pacman"); library(pacman)
-      load.libs <- c(load.libs, rv$params$org.db.name)
-      p_load(load.libs, update = TRUE, try.bioconductor=TRUE, character.only = TRUE)
-      status <- sapply(load.libs,require,character.only = TRUE)
+      #cran 
+      p_load(p.load.libs, update = TRUE, try.bioconductor=TRUE, character.only = TRUE)
+      status <- sapply(p.load.libs,require,character.only = TRUE)
+      #bioc 
+      bioc.load.libs <- c(bioc.load.libs,  rv$params$org.db.name)
+      BiocManager::install(bioc.load.libs, update = FALSE)
+      invisible(lapply(bioc.load.libs, function(x) library(x, character.only=TRUE)))
       if(all(status)){
         i <- i + 1
         setProgress(i/steps, detail = paste("Step",i,"of",steps))

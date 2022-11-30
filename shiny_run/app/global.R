@@ -17,7 +17,7 @@ supported.idTypes <- c("SYMBOL",
                        "UNIPROT")
 
 # list of R libraries to load for analysis and visualization
-load.libs <- c(
+p.load.libs <- c(
   "fs",
   "writexl",
   "stringr",
@@ -25,10 +25,12 @@ load.libs <- c(
   "dplyr",
   "magrittr",
   "rstudioapi",
-  "clusterProfiler",
+  "ggplot2")
+bioc.load.libs <- c(
+  "AnnotationDbi",
   "DOSE",
-  "ggplot2",
   "enrichplot",
+  "clusterProfiler",
   "EnhancedVolcano")
 
 jscode <- "
