@@ -169,7 +169,7 @@ Two buttons will be presented at the completion of each run:
     viewing results, or click `Start new analysis` to reset the app for
     another run.**
 
-*Advanced: Results are organized under a run-specific folder named by
+*Advanced: Results are organized under `shiny_results/output/` in a run-specific folder named by
 timestamp with subfolders for `gsea` and `ora` results, each of which
 includes a folder of `plots`. Results include TSV and XLSX tables of
 enriched terms and pathway, as well as RDS versions of the complete
