@@ -74,8 +74,20 @@ dashboardPage(
             ),
             #data plot
             column(
-              width = 6,
-              downloadButton("download.plot.data", "Download"),
+              width = 6,              
+              fluidRow(
+                column(width=5,
+                  selectInput(
+                    "plot0",
+                    "Choose a plot type for data:",
+                    choices = c("Volcano plot",
+                                "Heatmap",
+                                "Bar plot")
+                  )
+                ),
+                column(width = 3, style = "margin-top: 25px;",
+                       downloadButton("download.plot.data", "Download")
+                )),
               plotOutput("plot.data")
             )
           )
@@ -101,31 +113,41 @@ dashboardPage(
             #selections and download buttons for plots
             column(
               width = 7,
-              selectInput(
-                "plot1",
-                "Choose a plot type for top results:",
-                choices = c("Dot plot (gene ratio)",
-                            "Dot plot (count)",
-                            "Emap plot",
-                            "Concept network",
-                            "Concept network (circular)",
-                            "Volcano plot (GSEA)",
-                            "Volcano plot (ORA)",
-                            "Heatmap (GSEA)",
-                            "Heatmap (ORA)",
-                            "Upset (ORA)")
-              ),
-              downloadButton("download.plot1.result", "Download")
+              fluidRow(
+                column(width=5,
+                       selectInput(
+                         "plot1",
+                         "Choose a plot type for top results:",
+                         choices = c("Dot plot (gene ratio)",
+                                     "Dot plot (count)",
+                                     "Emap plot",
+                                     "Concept network",
+                                     "Concept network (circular)",
+                                     "Volcano plot (GSEA)",
+                                     "Volcano plot (ORA)",
+                                     "Heatmap (GSEA)",
+                                     "Heatmap (ORA)",
+                                     "Upset (ORA)")
+                       )
+                ),
+                column(width = 3, style = "margin-top: 25px;",
+                       downloadButton("download.plot1.result", "Download")
+                ))
             ),
             column(
               width = 5,
-              selectInput(
-                "plot2",
-                "Choose a plot type for a selected result:",
-                choices =c("GSEA score","STRING network")
-              )
-            ),
-            downloadButton("download.plot2.result", "Download")
+              fluidRow(
+                column(width=5,
+                       selectInput(
+                         "plot2",
+                         "Choose a plot type for a selected result:",
+                         choices =c("GSEA score","STRING network")
+                       )
+                ),
+                column(width = 3, style = "margin-top: 25px;",
+                       downloadButton("download.plot2.result", "Download")
+                ))
+            )
           ),
           fluidRow(
             #result plots
