@@ -84,6 +84,7 @@ shinyServer(function(input, output, session) {
     DT::datatable({ getTableData() },
                   rownames=FALSE,
                   extensions = 'Buttons',
+                  selection = "none",
                   options = list(
                     dom = 'Bfrtip',
                     pageLength = 20,

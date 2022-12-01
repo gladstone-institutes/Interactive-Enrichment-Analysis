@@ -246,6 +246,7 @@ shinyServer(function(input, output, session) {
   output$table.sample.ds <- DT::renderDataTable(server = TRUE,{
     DT::datatable({ head(getDatasets()) },
                   rownames=FALSE,
+                  selection = "none",
                   options = list(
                     dom = 'Brt'
                   )
