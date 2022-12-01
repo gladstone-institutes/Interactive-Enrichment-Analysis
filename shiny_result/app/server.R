@@ -205,7 +205,7 @@ shinyServer(function(input, output, session) {
   #update database-dependent plot options
   observeEvent(input$database, {
     #plot2
-    plot2.gsea.choices = c("GSEA score","STRING network")
+    plot2.gsea.choices = c("GSEA score","Linkouts","STRING network")
     plot2.ora.choices = c("Linkouts","STRING network")
     if(input$method == "gsea"){
       plot2.gsea.choices <- appendPerDatabase(plot2.gsea.choices)
@@ -246,7 +246,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "plot1", choices = plot1.other.choices )
  
    #plot2
-    plot2.gsea.choices = c("GSEA score","STRING network")
+    plot2.gsea.choices = c("GSEA score","Linkouts","STRING network")
     plot2.ora.choices = c("Linkouts","STRING network")
     if(input$method == "gsea"){
       plot2.gsea.choices <- appendPerDatabase(plot2.gsea.choices)
@@ -404,8 +404,17 @@ shinyServer(function(input, output, session) {
     resObject <- getResultObj()
     req(input$table.result_rows_selected) #wait for table to load
     i <- input$table.result_rows_selected #row selection
-    res.object.geneID <- resObject$geneID[i]
-    res.object.geneID <- gsub("\\/",",",res.object.geneID) #for drugstone param
+    res.object.geneList <- ""
+    if(input$method == "ora"){
+      res.object.geneList <- resObject$geneID[i]
+    } else if (input$method == "gsea"){
+      res.object.geneList <- resObject$core_enrichment[i]
+    }
+    res.object.geneList <- strsplit(res.object.geneList, "\\/")[[1]]
+    res.object.geneList
+    if(length(res.object.geneList) > 100) #arbitrary cutoff for gene list queries
+      res.object.geneList <- res.object.geneList[1:100]
+    res.object.geneList <- paste(res.object.geneList, collapse = ",") #csv
     res.object.id <- resObject$ID[i]
     res.object.id <- gsub("\\.jpg$","",res.object.id) #pfocr ids
     custom.linkout.button <- ""
@@ -425,7 +434,7 @@ shinyServer(function(input, output, session) {
         'margin: 10px;" ',
         'href="https://new.wikipathways.org/pathways/',
         res.object.id,
-        '" target="_blank">WikiPathways</a>')
+        '" target="_blank">WikiPathways</a><br />')
     } else if (grepl("^PMC\\d+__", res.object.id)) { #PFOCR
       custom.linkout.button <- paste0(
         '<a class="btn btn-primary" ',
@@ -441,7 +450,7 @@ shinyServer(function(input, output, session) {
         'margin: 10px;" ',
         'href="https://pfocr.wikipathways.org/figures/',
         res.object.id,
-        '" target="_blank">Pathway Figures</a>')
+        '" target="_blank">Pathway Figures</a><br />')
     } else if (grepl("^GO:\\d+", res.object.id)) { #GO
       custom.linkout.button <- paste0(
         '<a class="btn btn-primary" ',
@@ -457,7 +466,7 @@ shinyServer(function(input, output, session) {
         'margin: 10px;" ',
         'href="http://amigo.geneontology.org/amigo/term/',
         res.object.id,
-        '" target="_blank">Gene Ontology</a>')
+        '" target="_blank">Gene Ontology</a><br />')
     }
     switch (input$plot2,
             "GSEA score" = NULL,
@@ -477,8 +486,9 @@ shinyServer(function(input, output, session) {
               'background-position-x: 6px;',
               'background-origin: padding-box;',
               'padding-left: 32px !important;" ',
+              'margin: 10px;" ',
               'href="https://drugst.one/standalone?nodes=',
-              res.object.geneID,
+              res.object.geneList,
               '&autofillEdges=true&activateNetworkMenuButtonAdjacentDrugs=true&interactionDrugProtein=NeDRex&licensedDatasets=true" ',
               'target="_blank">Drugst.One</a><br /><br />',
               '</ul>'),
