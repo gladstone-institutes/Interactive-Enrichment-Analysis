@@ -420,53 +420,29 @@ shinyServer(function(input, output, session) {
     custom.linkout.button <- ""
     #construct custom linkout buttons
     if (grepl("^WP\\d+$", res.object.id)) { #WikiPathways
-      custom.linkout.button <- paste0(
-        '<a class="btn btn-primary" ',
-        'title="View the selected pathway at WikiPathways." ',
-        'style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/3/34/Wplogo_500.png);',
-        'background-repeat: no-repeat;',
-        'background-position: left;',
-        'background-position-x: left;',
-        'background-size: 20px 20px;',
-        'background-position-x: 6px;',
-        'background-origin: padding-box;',
-        'padding-left: 32px !important;" ',
-        'margin: 10px;" ',
-        'href="https://new.wikipathways.org/pathways/',
-        res.object.id,
-        '" target="_blank">WikiPathways</a><br />')
+      custom.linkout.button <- makeLinkoutButton(
+        "btn-primary",
+        "https://upload.wikimedia.org/wikipedia/commons/3/34/Wplogo_500.png",
+        "View the selected pathway at WikiPathways",
+        paste0('https://new.wikipathways.org/pathways/',
+               res.object.id),
+        "WikiPathways")
     } else if (grepl("^PMC\\d+__", res.object.id)) { #PFOCR
-      custom.linkout.button <- paste0(
-        '<a class="btn btn-primary" ',
-        'title="View the selected pathway figure at PFOCR" ',
-        'style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/3/34/Wplogo_500.png);',
-        'background-repeat: no-repeat;',
-        'background-position: left;',
-        'background-position-x: left;',
-        'background-size: 20px 20px;',
-        'background-position-x: 6px;',
-        'background-origin: padding-box;',
-        'padding-left: 32px !important;" ',
-        'margin: 10px;" ',
-        'href="https://pfocr.wikipathways.org/figures/',
-        res.object.id,
-        '" target="_blank">Pathway Figures</a><br />')
+      custom.linkout.button <- makeLinkoutButton(
+        "btn-primary",
+        "https://upload.wikimedia.org/wikipedia/commons/3/34/Wplogo_500.png",
+        "View the selected pathway figure at PFOCR",
+        paste0('https://pfocr.wikipathways.org/figures/',
+               res.object.id),
+        "Pathway Figures")
     } else if (grepl("^GO:\\d+", res.object.id)) { #GO
-      custom.linkout.button <- paste0(
-        '<a class="btn btn-primary" ',
-        'title="View the selected GO term at AmiGO" ',
-        'style="background-image: url(https://avatars1.githubusercontent.com/u/7750835?s=200&v=4);',
-        'background-repeat: no-repeat;',
-        'background-position: left;',
-        'background-position-x: left;',
-        'background-size: 20px 20px;',
-        'background-position-x: 6px;',
-        'background-origin: padding-box;',
-        'padding-left: 32px !important;" ',
-        'margin: 10px;" ',
-        'href="http://amigo.geneontology.org/amigo/term/',
-        res.object.id,
-        '" target="_blank">Gene Ontology</a><br />')
+      custom.linkout.button <- makeLinkoutButton(
+        "btn-primary",
+        "https://avatars1.githubusercontent.com/u/7750835?s=200&v=4",
+        "View the selected GO term at AmiGO",
+        paste0('http://amigo.geneontology.org/amigo/term/',
+               res.object.id),
+        "Gene Ontology")
     }
     switch (input$plot2,
             "GSEA score" = NULL,
@@ -476,25 +452,39 @@ shinyServer(function(input, output, session) {
               '<h3>Linkouts</h3>',
               custom.linkout.button,
               # '<li><a class="drugstone-button drugstone-green" ',
-              '<a class="btn btn-primary" ',
-              'title="Query Drugst.One with the genes from selected pathway." ',
-              'style="background-image: url(https://cdn.drugst.one/libs/drugstone-buttons/0.0.1/android-chrome-192x192.png);',
-              'background-repeat: no-repeat;',
-              'background-position: left;',
-              'background-position-x: left;',
-              'background-size: 20px 20px;',
-              'background-position-x: 6px;',
-              'background-origin: padding-box;',
-              'padding-left: 32px !important;" ',
-              'margin: 10px;" ',
-              'href="https://drugst.one/standalone?nodes=',
-              res.object.geneList,
-              '&autofillEdges=true&activateNetworkMenuButtonAdjacentDrugs=true&interactionDrugProtein=NeDRex&licensedDatasets=true" ',
-              'target="_blank">Drugst.One</a><br /><br />',
-              '</ul>'),
+              makeLinkoutButton(
+                "btn-primary",
+                "https://cdn.drugst.one/libs/drugstone-buttons/0.0.1/android-chrome-192x192.png",
+                "Query Drugst.One with the genes from selected pathway",
+                paste0('https://drugst.one/standalone?nodes=',
+                       res.object.geneList,
+                       '&autofillEdges=true&activateNetworkMenuButtonAdjacentDrugs=true&interactionDrugProtein=NeDRex&licensedDatasets=true'),
+                "Drugst.One")),
             "Pathway Figure" = custom.linkout.button,
             "Gene Ontology" = custom.linkout.button
     )
+  }
+  
+  #custom linkout button
+  makeLinkoutButton <- function(btn.class,
+                                btn.img.url,
+                                btn.tooltip,
+                                btn.href,
+                                btn.label){
+    paste0(
+      '<a class="btn ',btn.class,'" ',
+      'title="',btn.tooltip,'" ',
+      'style="background-image: url(',btn.img.url,');',
+      'background-repeat: no-repeat;',
+      'background-position: left;',
+      'background-position-x: left;',
+      'background-size: 20px 20px;',
+      'background-position-x: 6px;',
+      'background-origin: padding-box;',
+      'padding-left: 32px !important; ',
+      'margin: 10px;" ',
+      'href="',btn.href,
+      '" target="_blank">',btn.label,'</a><br />')
   }
   
   #render html
