@@ -532,7 +532,15 @@ shinyServer(function(input, output, session) {
               strsplit(res.object.id, "__")[[1]][2],
               '.jpg" style="max-width:450px;">'
             ),
-            "Gene Ontology" = custom.linkout.button
+            "Gene Ontology" = paste0(
+              custom.linkout.button,
+              '<img src="http://amigo.geneontology.org/visualize?term_data_type=string&mode=amigo&inline=false&term_data=',
+              res.object.id,
+              '&format=png" style="max-width:450px;">',
+              '<br /><a href="http://amigo.geneontology.org/visualize?term_data_type=string&mode=amigo&inline=false&term_data=',
+              res.object.id,
+              '&format=svg" target="_blank" >open in new window</a>'
+            )
     )
   }
   
