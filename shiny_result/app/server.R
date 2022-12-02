@@ -435,11 +435,16 @@ shinyServer(function(input, output, session) {
       res.object.geneList <- resObject$core_enrichment[i]
     }
     res.object.geneList <- strsplit(res.object.geneList, "\\/")[[1]]
-    #get up/down regulated if available
-    entrez.up <- NULL
-    entrez.dn <- NULL
+    #arbitrary cutoff for GET-based gene list queries
+    res.object.geneList.GET <- res.object.geneList
+    if(length(res.object.geneList.GET) > 100) 
+      res.object.geneList.GET <- res.object.geneList.GET[1:100]
+    res.object.geneList.GET.csv <- paste(res.object.geneList, collapse = ",") 
+    #define gene lists and color mapping
+    data.mapping <- NULL
     params <- getDataParams()
     data <- getTableData()
+    #get up/down regulated if available
     if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
       entrez.up <- data %>%
         dplyr::filter(!!as.name(params$fromType) %in% res.object.geneList) %>%
@@ -455,14 +460,19 @@ shinyServer(function(input, output, session) {
         dplyr::pull(new.entrez) #always available in data
       entrez.up <- paste(entrez.up, collapse = ",")
       entrez.dn <- paste(entrez.dn, collapse = ",")
+      data.mapping <- paste0('&EF8A62=', entrez.up,
+                             '&67A9CF=', entrez.dn)
+    } else {
+      entrez.all <- data %>%
+        dplyr::filter(!!as.name(params$fromType) %in% res.object.geneList.GET) %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(new.entrez = paste("Entrez","Gene",ENTREZID, sep = "_")) %>% 
+        dplyr::pull(new.entrez) #always available in data
+      entrez.all <- paste(entrez.all, collapse = ",")
+      data.mapping <- paste0('&lightgreen=', entrez.all)
     }
-    #arbitrary cutoff for gene list queries
-    if(length(res.object.geneList) > 100) 
-      res.object.geneList <- res.object.geneList[1:100]
-    res.object.geneList <- paste(res.object.geneList, collapse = ",") #csv
-
-    custom.linkout.button <- ""
     #construct custom linkout buttons
+    custom.linkout.button <- ""
     if (grepl("^WP\\d+$", res.object.id)) { #WikiPathways
       custom.linkout.button <- makeLinkoutButton(
         "btn-primary",
@@ -495,17 +505,11 @@ shinyServer(function(input, output, session) {
               custom.linkout.button,
               '<iframe src ="https://pathway-viewer.toolforge.org/?id=',
               res.object.id,
-              '&EF8A62=',
-              entrez.up, # 'Entrez_Gene_10400,Entrez_Gene_1119',
-              '&67A9CF=',
-              entrez.dn,
+              data.mapping,
               '" height="350px" width="450px" style="overflow:hidden;"></iframe> ',
               '<br /><a href="https://pathway-viewer.toolforge.org/?id=',
               res.object.id,
-              '&EF8A62=',
-              entrez.up, # 'Entrez_Gene_10400,Entrez_Gene_1119',
-              '&67A9CF=',
-              entrez.dn,
+              data.mapping,
               '" target="_blank" >open in new window</a>'
             ),
             "Linkouts" = paste0(
@@ -517,7 +521,7 @@ shinyServer(function(input, output, session) {
                 "https://cdn.drugst.one/libs/drugstone-buttons/0.0.1/android-chrome-192x192.png",
                 "Query Drugst.One with the genes from selected pathway",
                 paste0('https://drugst.one/standalone?nodes=',
-                       res.object.geneList,
+                       res.object.geneList.GET.csv,
                        '&autofillEdges=true&activateNetworkMenuButtonAdjacentDrugs=true&interactionDrugProtein=NeDRex&licensedDatasets=true'),
                 "Drugst.One")),
             "Pathway Figure" = custom.linkout.button,
