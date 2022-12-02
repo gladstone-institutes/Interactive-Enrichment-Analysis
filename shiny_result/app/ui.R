@@ -27,6 +27,33 @@ dashboardPage(
       "method",
       "Choose a method",
       choices = c(method.list)
+    ),
+    HTML(
+      '<div id="footer">
+      <p>For more information:
+      <ul>
+      <li><a href="https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis/blob/main/README.md"
+      target="_blank">User guide</a></li>
+      <li><a href="https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis"
+      target="_blank">Code repo</a></li>
+      <li><a href="https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis/blob/main/README.md#how-to-cite"
+      target="_blank">How to cite</a></li>
+      </ul></p>
+      <p>Built by <a href="https://gladstone.org/science/bioinformatics-core"
+      target="_blank">Gladstone Bioinformatics Core</a></p>
+      <p>Powered by <a href="http://bioconductor.org/packages/release/bioc/html/clusterProfiler.html"
+      target="_blank">clusterProfiler</a>, 
+      <a href="https://bioconductor.org/packages/release/bioc/html/enrichplot.html"
+      target="_blank">enrichPlot</a>,
+      <a href="https://CRAN.R-project.org/package=shiny"
+      target="_blank">R Shiny</a>,
+      <a href="https://new.wikipathways.org"
+      target="_blank">WikiPathways</a>,
+      <a href="https://pfocrwikipathways.org"
+      target="_blank">Pathway Figures OCR</a>,
+      <a href="https://geneontology.org/"
+      target="_blank">Gene Ontology</a>
+      </p></div'
     )
   ),
   
@@ -38,6 +65,17 @@ dashboardPage(
       type = "text/css",
       href="https://cdn.drugst.one/libs/drugstone-buttons/0.0.1/drugstone-buttons.min.css"
     ),
+    # sidebar footer
+    tags$head(
+      tags$style(HTML("
+      #sidebarItemExpanded > :last-child {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: #555555;
+      }
+
+    "))),
     fluidRow(
       #collapsible summary box with html 
       box(
@@ -59,6 +97,9 @@ dashboardPage(
         #DATA TAB
         tabPanel(
           "Data",
+          HTML('<a style="float:right;font-size:1.8em;margin-top:-20px;color:darkcyan;"
+        href="https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis#data-tab"
+        title="Learn more about this tab" target="_blank">&emsp;&#9432;</a>'),
           #checkbox to select data view
           checkboxInput("excluded.data", 
                         "View excluded data rows:",
@@ -95,6 +136,9 @@ dashboardPage(
         #RESULT TAB
         tabPanel(
           "Results",
+          HTML('<a style="float:right;font-size:1.8em;margin-top:-20px;color:darkcyan;"
+        href="https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis#results-tab"
+        title="Learn more about this tab" target="_blank">&emsp;&#9432;</a>'),
           selectInput(
             "database",
             "Choose a database",

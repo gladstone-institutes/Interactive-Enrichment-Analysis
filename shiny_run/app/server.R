@@ -331,6 +331,9 @@ shinyServer(function(input, output, session) {
     box(
         title = "Progress", status = "primary", 
         solidHeader = TRUE, collapsible = T,
+        HTML('<a style="float:right;font-size:1.8em;margin-top:-10px;color:darkcyan;"
+        href="https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis#run-analyses"
+        title="Learn more about this panel" target="_blank">&emsp;&#9432;</a>'),
         htmlOutput("run_progress"),
         htmlOutput("run.status"),
         uiOutput("view.results")

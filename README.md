@@ -254,18 +254,23 @@ publish or share your enrichment analysis results.
 >     a GOld mine.** *Nucleic Acids Res*. 2021;49(D1):D325-D334. doi:
 >     [10.1093/nar/gkaa1113](https//doi.org/10.1093/nar/gkaa1113)
 
-#### Analysis Methods
+#### Analysis and Visualization Methods
 
 The enrichment analysis implementations were implemented by Guangchuang
 Yu in the
 [clusterProfiler](http://bioconductor.org/packages/release/bioc/html/clusterProfiler.html)
-R package. Please cite this:
+R package. Please cite:
 
 > Wu T, Hu E, Xu S, Chen M, Guo P, Dai Z, Feng T, Zhou L, Tang W, Zhan
 > L, Fu x, Liu S, Bo X, Yu G (2021). **clusterProfiler 4.0: A universal
 > enrichment tool for interpreting omics data.** *The Innovation*,
 > **2**(3), 100141. doi:
 > [10.1016/j.xinn.2021.100141](https://doi.org/10.1016/j.xinn.2021.100141).
+
+The visualization of enrichment results were also implemented by Guangchuang Yu
+in the [enrichPlot](https://bioconductor.org/packages/release/bioc/html/enrichplot.html)
+R package. Please cite:
+>Yu G (2022). enrichplot: Visualization of Functional Enrichment Result. R package version 1.18.1, >[online book](https://yulab-smu.top/biomedical-knowledge-mining-book/). 
 
 #### Interactive Tools
 
