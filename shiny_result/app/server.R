@@ -524,7 +524,14 @@ shinyServer(function(input, output, session) {
                        res.object.geneList.GET.csv,
                        '&autofillEdges=true&activateNetworkMenuButtonAdjacentDrugs=true&interactionDrugProtein=NeDRex&licensedDatasets=true'),
                 "Drugst.One")),
-            "Pathway Figure" = custom.linkout.button,
+            "Pathway Figure" = paste0(
+              custom.linkout.button,
+              '<img src="https://www.ncbi.nlm.nih.gov/pmc/articles/',
+              strsplit(res.object.id, "__")[[1]][1],
+              '/bin/',
+              strsplit(res.object.id, "__")[[1]][2],
+              '.jpg" style="max-width:450px;">'
+            ),
             "Gene Ontology" = custom.linkout.button
     )
   }
