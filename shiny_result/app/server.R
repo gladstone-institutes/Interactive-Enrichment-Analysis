@@ -424,6 +424,10 @@ shinyServer(function(input, output, session) {
     resObject <- getResultObj()
     req(input$table.result_rows_selected) #wait for table to load
     i <- input$table.result_rows_selected #row selection
+    #get result ID for selected row
+    res.object.id <- resObject$ID[i]
+    res.object.id <- gsub("\\.jpg$","",res.object.id) #pfocr ids
+    #get gene list for selected row
     res.object.geneList <- ""
     if(input$method == "ora"){
       res.object.geneList <- resObject$geneID[i]
@@ -431,12 +435,32 @@ shinyServer(function(input, output, session) {
       res.object.geneList <- resObject$core_enrichment[i]
     }
     res.object.geneList <- strsplit(res.object.geneList, "\\/")[[1]]
-    res.object.geneList
-    if(length(res.object.geneList) > 100) #arbitrary cutoff for gene list queries
+    #get up/down regulated if available
+    entrez.up <- NULL
+    entrez.dn <- NULL
+    params <- getDataParams()
+    data <- getTableData()
+    if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
+      entrez.up <- data %>%
+        dplyr::filter(!!as.name(params$fromType) %in% res.object.geneList) %>%
+        dplyr::filter(fold.change > params$ora.fc & p.value < params$ora.pv) %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(new.entrez = paste("Entrez","Gene",ENTREZID, sep = "_")) %>% 
+        dplyr::pull(new.entrez) #always available in data
+      entrez.dn <- data %>%
+        dplyr::filter(!!as.name(params$fromType) %in% res.object.geneList) %>%
+        dplyr::filter(fold.change < -params$ora.fc & p.value < params$ora.pv) %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(new.entrez = paste("Entrez","Gene",ENTREZID, sep = "_")) %>%
+        dplyr::pull(new.entrez) #always available in data
+      entrez.up <- paste(entrez.up, collapse = ",")
+      entrez.dn <- paste(entrez.dn, collapse = ",")
+    }
+    #arbitrary cutoff for gene list queries
+    if(length(res.object.geneList) > 100) 
       res.object.geneList <- res.object.geneList[1:100]
     res.object.geneList <- paste(res.object.geneList, collapse = ",") #csv
-    res.object.id <- resObject$ID[i]
-    res.object.id <- gsub("\\.jpg$","",res.object.id) #pfocr ids
+
     custom.linkout.button <- ""
     #construct custom linkout buttons
     if (grepl("^WP\\d+$", res.object.id)) { #WikiPathways
@@ -467,7 +491,23 @@ shinyServer(function(input, output, session) {
     switch (input$plot2,
             "GSEA score" = NULL,
             "STRING network" = NULL,
-            "WikiPathways" = custom.linkout.button,
+            "WikiPathways" = paste0(
+              custom.linkout.button,
+              '<iframe src ="https://pathway-viewer.toolforge.org/?id=',
+              res.object.id,
+              '&EF8A62=',
+              entrez.up, # 'Entrez_Gene_10400,Entrez_Gene_1119',
+              '&67A9CF=',
+              entrez.dn,
+              '" height="350px" width="450px" style="overflow:hidden;"></iframe> ',
+              '<br /><a href="https://pathway-viewer.toolforge.org/?id=',
+              res.object.id,
+              '&EF8A62=',
+              entrez.up, # 'Entrez_Gene_10400,Entrez_Gene_1119',
+              '&67A9CF=',
+              entrez.dn,
+              '" target="_blank" >open in new window</a>'
+            ),
             "Linkouts" = paste0(
               '<h3>Linkouts</h3>',
               custom.linkout.button,
