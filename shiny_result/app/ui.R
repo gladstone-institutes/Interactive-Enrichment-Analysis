@@ -1,5 +1,6 @@
 library(shinydashboard)
 library(shiny)
+library(shinyBS)
 library(DT)
 
 dashboardPage(
@@ -59,6 +60,7 @@ dashboardPage(
   
   #body content
   dashboardBody(
+    useShinyjs(),
     #js head injection
     tags$link(
       rel="stylesheet",
@@ -153,41 +155,26 @@ dashboardPage(
             )
           ) ,
           #result plots
+          br(),
           fluidRow(
             #selections and download buttons for plots
-            column(
-              width = 7,
-              fluidRow(
-                column(width=5,
-                       selectInput(
-                         "plot1",
-                         "Choose a plot type for top results:",
-                         choices = c("Dot plot (gene ratio)",
-                                     "Dot plot (count)",
-                                     "Emap plot",
-                                     "Concept network",
-                                     "Heatmap (GSEA)",
-                                     "Heatmap (ORA)",
-                                     "Upset (ORA)")
-                       )
-                ),
-                column(width = 3, style = "margin-top: 25px;",
-                       downloadButton("download.plot1.result", "Download")
-                ))
+            column(width=5,
+                   selectInput(
+                     "plot1",
+                     "Choose a plot type for top results:",
+                     choices = c("Dot plot",
+                                 "Emap plot",
+                                 "Concept network",
+                                 "Heatmap",
+                                 "Upset (ORA)")
+                   )
             ),
-            column(
-              width = 5,
-              fluidRow(
-                column(width=5,
-                       selectInput(
-                         "plot2",
-                         "Choose a plot type for a selected result:",
-                         choices =c("GSEA score","STRING network")
-                       )
-                ),
-                column(width = 3, style = "margin-top: 25px;",
-                       downloadButton("download.plot2.result", "Download")
-                ))
+            column(width=5, offset=2,
+                   selectInput(
+                     "plot2",
+                     "Choose a plot type for a selected result:",
+                     choices =c("GSEA score","STRING network")
+                   )
             )
           ),
           fluidRow(
@@ -195,12 +182,64 @@ dashboardPage(
             column(
               width = 7,
               plotOutput("plot1.result"),
-              wellPanel("Plot options",
+              wellPanel("Plot options", 
+                        flowLayout(cellArgs = list(
+                          style = "margin: 0px;width:auto"),
                         numericInput("showCategory","Top n results",
-                                     20,min=2, max=40,step=1, width = 60),
-                        numericInput("geneNumber","Top n genes",
-                                     30,min=2, max=60,step=1, width = 60)
-              )
+                                     20, min=2, max=40, step=1, width = 80),
+                        numericInput("showGene","Top n genes",
+                                     30, min=2, max=60, step=1, width = 80),
+                        selectInput("dotplot_x","X-axis by",
+                                    choices = c("Count","GeneRatio"), 
+                                    selected = "Count", width=110),
+                        shinyBS::bsTooltip("dotplot_x", 
+                                           paste('<ul class="plainUl">',
+                                                 "<li>Count = dataset genes overlapping a given term</li>",
+                                                 "<li>GeneRatio = dataset genes overlapping a given term vs all possible terms</li>",
+                                                 "</ul>"), 
+                                           placement = "right", trigger = "hover"),
+                        selectInput("dotplot_size","Size by",
+                                    choices = c("Count","GeneRatio","Percentage"), 
+                                    selected = "Percentage", width=110),
+                        shinyBS::bsTooltip("dotplot_size", 
+                                           paste('<ul class="plainUl">',
+                                                 "<li>Count = dataset genes overlapping a given term</li>",
+                                                 "<li>GeneRatio = dataset genes overlapping a given term vs all possible terms</li>",
+                                                 "<li>Percentage = dataset genes overlapping a given term vs all genes in term</li>",
+                                                 "</ul>"), 
+                                           placement = "right", trigger = "hover"),
+                        numericInput("label_format","Wrap labels",
+                                     50, min=10, max=80, step=1, width = 80),
+                        numericInput("cex_label_category","Label font size",
+                                     12,min=8, max=24,step=1, width = 90),
+                        numericInput("cex_label_gene","Gene font size",
+                                     12,min=8, max=24,step=1, width = 90),
+                        numericInput("cex_category","Data point scale",
+                                     1,min=0.5, max=4,step=0.5, width = 110),
+                        selectInput("color","Color by",
+                                    choices = c("p.adjust","pvalue","qvalue"),
+                                    selected = "p.adjust", width = 90),
+                        selectInput("layout","Layout",
+                                    choices = c("nicely","kk","sugiyama","fr", "gem","lgl","mds"),
+                                    selected = "nicely", width = 105)
+                        ),
+                        tags$head(tags$style(".plainUl{padding:0px;margin:0px}"))
+              ),
+              wellPanel("PDF options",
+                        fluidRow(
+                          column(width = 3, style = "margin-top: 5px;",
+                                 downloadButton("download.plot1.result", "Download", class = "wellbtn"),
+                                 tags$head(tags$style(".wellbtn{background:#FFFFFF;}"))
+                          ),
+                          column(width = 2,style = "margin-top: -20px;",
+                                 numericInput("plot1.width", "width (px)", 1200, 
+                                              min = 200, max=1200, step = 100)
+                          ),
+                          column(width = 2,style = "margin-top: -20px;",
+                                 numericInput("plot1.height", "height (px)", 1200, 
+                                              min = 200, max=1200, step = 100)
+                          )
+                        ))
             ),
             column(
               width = 5,

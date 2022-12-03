@@ -44,6 +44,9 @@ run_ora<-function(dataset.name, db.name, output.name="run"){
   if(!is.null(enrichResult))
     enrichResult <- setReadable(enrichResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
   
+  #Prune for size
+  enrichResult@geneSets <- NULL
+  
   # Save objects
   gl.fn <- paste(file.prefix, db.name,"ora","geneList.rds", sep = "_")
   saveRDS(gene, file.path(output.dir,"ora",gl.fn))

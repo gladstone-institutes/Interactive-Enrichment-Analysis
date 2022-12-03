@@ -1,9 +1,10 @@
+library(shinyjs)
 library(stringr)
 library(writexl)
 library(ggplot2)
 library(enrichplot)
 library(EnhancedVolcano)
-
+source("../scripts/plots.R", local = TRUE)
 
 
 shinyServer(function(input, output, session) {
@@ -238,19 +239,16 @@ shinyServer(function(input, output, session) {
   #update method-dependent plot options
   observeEvent(input$method, {
     #plot1
-    plot1.ora.choices = c("Dot plot (gene ratio)",
-                "Dot plot (count)",
+    plot1.ora.choices = c("Dot plot",
                 "Emap plot",
                 "Concept network",
-                "Heatmap (ORA)",
+                "Heatmap",
                 "Upset (ORA)")
-    plot1.gsea.choices = c("Dot plot (gene ratio)",
-                          "Dot plot (count)",
+    plot1.gsea.choices = c("Dot plot",
                           "Emap plot",
                           "Concept network",
-                          "Heatmap (GSEA)")
-    plot1.other.choices = c("Dot plot (gene ratio)",
-                           "Dot plot (count)",
+                          "Heatmap")
+    plot1.other.choices = c("Dot plot",
                            "Emap plot",
                            "Concept network")
     if(input$method == "gsea")
@@ -315,19 +313,12 @@ shinyServer(function(input, output, session) {
     resObject <- getResultObj()
     #trim descriptions to 80 characters
     resObject@result <- dplyr::mutate(resObject@result, Description = stringr::str_trunc(Description, 80))
-    data.emap <- pairwise_termsim(resObject)
     switch (input$plot1,
-            "Dot plot (gene ratio)" = enrichplot::dotplot(resObject,
-                                         showCategory = input$showCategory,
-                                         label_format=50),
-            "Dot plot (count)" = enrichplot::dotplot(resObject,
-                                    showCategory = input$showCategory,
-                                    x = "count",
-                                    label_format=50),
-            "Emap plot" = enrichplot::emapplot(data.emap, 
-                                   showCategory = input$showCategory,
-                                   cex_label_category=0.7,
-                                   layout="nicely"), #alt layouts: "kk","sugiyama","nicely","fr", "gem","lgl","mds",
+            "Dot plot" = shinyDotplot(resObject,input, output),
+            "Emap plot" = {
+              data.emap <- pairwise_termsim(resObject)
+              shinyEmapplot(data.emap,input,output)
+              },
             "Concept network" = enrichplot::cnetplot(resObject, 
                                          showCategory = input$showCategory,
                                          foldChange=getGeneList(),
@@ -341,50 +332,17 @@ shinyServer(function(input, output, session) {
                                                     colorEdge = TRUE, 
                                                     cex_label_category = 0.8, 
                                                     cex_label_gene = 1.0) ,
-            "Heatmap (GSEA)" = {
-              #make compatible with ORA
-              resObject@result$geneID <- resObject@result$core_enrichment 
-              makeHeatmap(resObject)
+            "Heatmap" = {
+              data <- getTableData()
+              params <- getDataParams()
+              if (input$method == "gsea")
+                resObject@result$geneID <- resObject@result$core_enrichment 
+              shinyHeatmap(resObject, data, params, input, output)
               },
-            "Heatmap (ORA)" = makeHeatmap(resObject),
             "Upset plot (ORA)" = enrichplot::upsetplot(resObject, 
                                                        n=input$showCategory)
     )
   }
-  
-  makeHeatmap<-function(resObject){
-    res <- resObject@result[1:input$showCategory, c('Description','geneID')]
-    res <- tidyr::separate_rows(res, geneID, sep="\\/")
-    #define secondary order and color mapping if available
-    params <- getDataParams()
-    data <- getTableData()
-    if('fold.change' %in% names(data)) {
-      res <- dplyr::left_join(res,data, by=c("geneID"="SYMBOL"))
-    } else {
-      res$fold.change = 0
-    }
-    res <- dplyr::add_count(res, geneID)
-    res <- dplyr::arrange(res, desc(n),desc(abs(fold.change)))
-    freq.gene <- unique(res$geneID)
-    res <- dplyr::filter(res, geneID %in% freq.gene[1:input$geneNumber]) 
-    res <- dplyr::mutate(res, Description = stringr::str_trunc(Description, 50))
-    res <- dplyr::mutate(res, geneID = factor(geneID, levels = unique(geneID))) #fix two-factor sorting
-    p <- ggplot(res, aes(x=geneID, 
-                         y=Description, fill = fold.change)) + 
-      geom_tile(color = 'white') +
-      xlab(NULL) + ylab(NULL) + theme_minimal() +
-      theme(panel.grid.major = element_blank(),
-            legend.position = "none",
-            axis.text.x=element_text(angle = 60, hjust = 1))
-    if('fold.change' %in% names(data)){
-      max.scale <- max(abs(res$fold.change))
-      p <- p + scale_fill_distiller(type = "div",palette = "RdBu",
-                                    direction = -1, limits = c(-max.scale, max.scale)) +
-        theme(legend.position = "right")
-    }
-    p
-  }
-  
   
   #render and cache plot data
   output$plot1.result <- renderPlot({
@@ -405,7 +363,7 @@ shinyServer(function(input, output, session) {
             sep = "_"), ".pdf")
     },
     content = function(file) {
-      pdf(file)
+      pdf(file, width = input$plot1.width/72, height = input$plot1.height/72) #pixels to inches
       p<-makePlot1Result()
       print(p)
       dev.off()
