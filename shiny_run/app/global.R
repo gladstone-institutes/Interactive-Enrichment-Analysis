@@ -22,6 +22,7 @@ p.load.libs <- c(
   "writexl",
   "stringr",
   "plyr",
+  "tidyr",
   "dplyr",
   "magrittr",
   "rstudioapi",

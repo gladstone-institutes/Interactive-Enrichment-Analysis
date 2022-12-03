@@ -199,7 +199,7 @@ shinyServer(function(input, output, session) {
   getGeneList <- function(){
     fn <- paste0(makeResultPrefix(), "_geneList.rds")
     fp <- file.path("../output",input$run, input$dataset, input$method, fn)
-    readRDS(fp)
+    gl <- readRDS(fp)
   }
   
   output$debug.text<-renderText({
@@ -242,22 +242,17 @@ shinyServer(function(input, output, session) {
                 "Dot plot (count)",
                 "Emap plot",
                 "Concept network",
-                "Concept network (circular)",
-                "Volcano plot (ORA)",
                 "Heatmap (ORA)",
                 "Upset (ORA)")
     plot1.gsea.choices = c("Dot plot (gene ratio)",
                           "Dot plot (count)",
                           "Emap plot",
                           "Concept network",
-                          "Concept network (circular)",
-                          "Volcano plot (GSEA)",
                           "Heatmap (GSEA)")
     plot1.other.choices = c("Dot plot (gene ratio)",
                            "Dot plot (count)",
                            "Emap plot",
-                           "Concept network",
-                           "Concept network (circular)")
+                           "Concept network")
     if(input$method == "gsea")
       updateSelectInput(session, "plot1", choices = plot1.gsea.choices )
     else if(input$method == "ora")
@@ -320,69 +315,75 @@ shinyServer(function(input, output, session) {
     resObject <- getResultObj()
     #trim descriptions to 80 characters
     resObject@result <- dplyr::mutate(resObject@result, Description = stringr::str_trunc(Description, 80))
-    data.volcano <- as.data.frame(resObject)
     data.emap <- pairwise_termsim(resObject)
     switch (input$plot1,
             "Dot plot (gene ratio)" = enrichplot::dotplot(resObject,
-                                         showCategory = 20,
+                                         showCategory = input$showCategory,
                                          label_format=50),
             "Dot plot (count)" = enrichplot::dotplot(resObject,
-                                    showCategory = 20,
+                                    showCategory = input$showCategory,
                                     x = "count",
                                     label_format=50),
             "Emap plot" = enrichplot::emapplot(data.emap, 
-                                   showCategory = 20,
+                                   showCategory = input$showCategory,
                                    cex_label_category=0.7,
                                    layout="nicely"), #alt layouts: "kk","sugiyama","nicely","fr", "gem","lgl","mds",
             "Concept network" = enrichplot::cnetplot(resObject, 
+                                         showCategory = input$showCategory,
                                          foldChange=getGeneList(),
                                          categorySize="geneNum", 
                                          cex_label_category = 0.8, 
                                          cex_label_gene = 1.0),
             "Concept network (circular)" = enrichplot::cnetplot(resObject, 
+                                                    showCategory = input$showCategory,
                                                     foldChange=getGeneList(), 
                                                     circular = TRUE, 
                                                     colorEdge = TRUE, 
                                                     cex_label_category = 0.8, 
                                                     cex_label_gene = 1.0) ,
-            "Volcano plot (GSEA)" = EnhancedVolcano(data.volcano,
-                                             lab = data.volcano$Description,
-                                             selectLab = head(data.volcano$Description,3),
-                                             drawConnectors = TRUE,
-                                             widthConnectors = 0.2,
-                                             x = 'NES',
-                                             y = 'pvalue',
-                                             pCutoff = 0.05,
-                                             FCcutoff = 1,
-                                             legendLabels=c('NS','NES','p-value',
-                                                            'p-value & NES'),
-                                             xlab = 'Normalized Enrichment Score',
-                                             pointSize = 2.0,
-                                             labSize = 5.0),
-            "Volcano plot (ORA)" = EnhancedVolcano(data.volcano,
-                                                   lab = data.volcano$Description,
-                                                   selectLab = head(data.volcano$Description,3),
-                                                   drawConnectors = TRUE,
-                                                   widthConnectors = 0.2,
-                                                   x = 'Count',
-                                                   y = 'pvalue',
-                                                   pCutoff = 0.05,
-                                                   FCcutoff = 5,
-                                                   legendLabels=c('NS','Count','p-value',
-                                                                  'p-value & Count'),
-                                                   xlab = 'Number of Genes',
-                                                   pointSize = 2.0,
-                                                   labSize = 5.0),
-            "Heatmap (GSEA)" = enrichplot::heatplot(resObject, foldChange=getGeneList(), 
-                                 showCategory=5,
-                                 label_format=50) + coord_fixed(ratio=2),
-            "Heatmap (ORA)" = enrichplot::heatplot(resObject, #can't figure out foldChange param
-                                       showCategory=5,
-                                       label_format=50) + coord_fixed(ratio=2),
-            "Upset plot (ORA)" = enrichplot::upsetplot(resObject, n=10)
+            "Heatmap (GSEA)" = {
+              #make compatible with ORA
+              resObject@result$geneID <- resObject@result$core_enrichment 
+              makeHeatmap(resObject)
+              },
+            "Heatmap (ORA)" = makeHeatmap(resObject),
+            "Upset plot (ORA)" = enrichplot::upsetplot(resObject, 
+                                                       n=input$showCategory)
     )
   }
   
+  makeHeatmap<-function(resObject){
+    res <- resObject@result[1:input$showCategory, c('Description','geneID')]
+    res <- tidyr::separate_rows(res, geneID, sep="\\/")
+    #define secondary order and color mapping if available
+    params <- getDataParams()
+    data <- getTableData()
+    if('fold.change' %in% names(data)) {
+      res <- dplyr::left_join(res,data, by=c("geneID"="SYMBOL"))
+    } else {
+      res$fold.change = 0
+    }
+    res <- dplyr::add_count(res, geneID)
+    res <- dplyr::arrange(res, desc(n),desc(abs(fold.change)))
+    freq.gene <- unique(res$geneID)
+    res <- dplyr::filter(res, geneID %in% freq.gene[1:input$geneNumber]) 
+    res <- dplyr::mutate(res, Description = stringr::str_trunc(Description, 50))
+    res <- dplyr::mutate(res, geneID = factor(geneID, levels = unique(geneID))) #fix two-factor sorting
+    p <- ggplot(res, aes(x=geneID, 
+                         y=Description, fill = fold.change)) + 
+      geom_tile(color = 'white') +
+      xlab(NULL) + ylab(NULL) + theme_minimal() +
+      theme(panel.grid.major = element_blank(),
+            legend.position = "none",
+            axis.text.x=element_text(angle = 60, hjust = 1))
+    if('fold.change' %in% names(data)){
+      max.scale <- max(abs(res$fold.change))
+      p <- p + scale_fill_distiller(type = "div",palette = "RdBu",
+                                    direction = -1, limits = c(-max.scale, max.scale)) +
+        theme(legend.position = "right")
+    }
+    p
+  }
   
   
   #render and cache plot data

@@ -166,9 +166,6 @@ dashboardPage(
                                      "Dot plot (count)",
                                      "Emap plot",
                                      "Concept network",
-                                     "Concept network (circular)",
-                                     "Volcano plot (GSEA)",
-                                     "Volcano plot (ORA)",
                                      "Heatmap (GSEA)",
                                      "Heatmap (ORA)",
                                      "Upset (ORA)")
@@ -197,7 +194,13 @@ dashboardPage(
             #result plots
             column(
               width = 7,
-              plotOutput("plot1.result")
+              plotOutput("plot1.result"),
+              wellPanel("Plot options",
+                        numericInput("showCategory","Top n results",
+                                     20,min=2, max=40,step=1, width = 60),
+                        numericInput("geneNumber","Top n genes",
+                                     30,min=2, max=60,step=1, width = 60)
+              )
             ),
             column(
               width = 5,
