@@ -380,7 +380,7 @@ R package. Please cite:
 > **2**(3), 100141. doi:
 > [10.1016/j.xinn.2021.100141](https://doi.org/10.1016/j.xinn.2021.100141).
 
-The visualization of enrichment results were also implemented by Guangchuang Yu
+Many of the visualizations of enrichment results were also implemented by Guangchuang Yu
 in the [enrichPlot](https://bioconductor.org/packages/release/bioc/html/enrichplot.html)
 R package. Please cite:
 >Yu G (2022). enrichplot: Visualization of Functional Enrichment Result. R package version 1.18.1, >[online book](https://yulab-smu.top/biomedical-knowledge-mining-book/). 
