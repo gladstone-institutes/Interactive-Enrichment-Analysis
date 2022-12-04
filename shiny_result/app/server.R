@@ -238,26 +238,6 @@ shinyServer(function(input, output, session) {
   
   #update method-dependent plot options
   observeEvent(input$method, {
-    #plot1
-    plot1.ora.choices = c("Dot plot",
-                "Emap plot",
-                "Concept network",
-                "Heatmap",
-                "Upset (ORA)")
-    plot1.gsea.choices = c("Dot plot",
-                          "Emap plot",
-                          "Concept network",
-                          "Heatmap")
-    plot1.other.choices = c("Dot plot",
-                           "Emap plot",
-                           "Concept network")
-    if(input$method == "gsea")
-      updateSelectInput(session, "plot1", choices = plot1.gsea.choices )
-    else if(input$method == "ora")
-      updateSelectInput(session, "plot1", choices = plot1.ora.choices )
-    else
-      updateSelectInput(session, "plot1", choices = plot1.other.choices )
- 
    #plot2
     plot2.gsea.choices = c("GSEA score","Linkouts","STRING network")
     plot2.ora.choices = c("Linkouts","STRING network")
@@ -319,39 +299,19 @@ shinyServer(function(input, output, session) {
               data.emap <- pairwise_termsim(resObject)
               shinyEmapplot(data.emap,input,output)
               },
-            "Concept network" = enrichplot::cnetplot(resObject, 
-                                         showCategory = input$showCategory,
-                                         foldChange=getGeneList(),
-                                         categorySize="geneNum", 
-                                         cex_label_category = 0.8, 
-                                         cex_label_gene = 1.0),
-            "Concept network (circular)" = enrichplot::cnetplot(resObject, 
-                                                    showCategory = input$showCategory,
-                                                    foldChange=getGeneList(), 
-                                                    circular = TRUE, 
-                                                    colorEdge = TRUE, 
-                                                    cex_label_category = 0.8, 
-                                                    cex_label_gene = 1.0) ,
+            "Concept network" = shinyCnetplot(resObject, getGeneList(), input, output) ,
             "Heatmap" = {
               data <- getTableData()
               params <- getDataParams()
               if (input$method == "gsea")
                 resObject@result$geneID <- resObject@result$core_enrichment 
               shinyHeatmap(resObject, data, params, input, output)
-              },
-            "Upset plot (ORA)" = enrichplot::upsetplot(resObject, 
-                                                       n=input$showCategory)
+              }
     )
   }
   
   #render and cache plot data
   output$plot1.result <- renderPlot({
-    # ggplot2::ggsave(filename = 'cached1.pdf',
-    #        plot = makePlot1Result(),
-    #        device = 'pdf',
-    #        width = 2400,
-    #        height = 2400,
-    #        units = "px")
     makePlot1Result()
   })
   
@@ -363,7 +323,7 @@ shinyServer(function(input, output, session) {
             sep = "_"), ".pdf")
     },
     content = function(file) {
-      pdf(file, width = input$plot1.width/72, height = input$plot1.height/72) #pixels to inches
+      grDevices::pdf(file, width = input$plot1.width/72, height = input$plot1.height/72) #pixels to inches
       p<-makePlot1Result()
       print(p)
       dev.off()
@@ -536,15 +496,11 @@ shinyServer(function(input, output, session) {
     req(input$table.result_rows_selected) #wait for table to load
     i <- input$table.result_rows_selected #row selection
     res.object.id <<- resObject$ID[i]
-    switch (input$plot2,
-            "GSEA score" = enrichplot::gseaplot2(resObject, 
-                                     geneSetID = i, 
-                                     title = resObject$Description[i]) ,
-            "STRING network" = NULL,
-            "WikiPathways" = NULL,
-            "Pathway Figure" = NULL,
-            "Gene Ontology" = NULL
-    )
+    if (input$plot2 == "GSEA score"){
+      enrichplot::gseaplot2(resObject, 
+                            geneSetID = i, 
+                            title = resObject$Description[i]) 
+    }
   }
   
   #render and plot 
@@ -561,7 +517,7 @@ shinyServer(function(input, output, session) {
             sep = "_"), ".pdf")
     },
     content = function(file) {
-      grDevices::pdf(file)
+      grDevices::pdf(file, width = input$plot2.width/72, height = input$plot2.height/72) #pixels to inches)
       p<-makePlot2Result()
       print(p)
       dev.off()

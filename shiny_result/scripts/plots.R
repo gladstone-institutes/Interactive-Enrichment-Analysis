@@ -11,13 +11,15 @@ library(enrichplot)
 ################################################################################
 # OPTION INPUTS #
 #################
-# Reusable option inputs are defined here as functions to be called from 
-# one or more plot&options functions, where option panels are composed.
+# Reusable option inputs are all named here (all.options) and the filterOptions
+# function is called from each PLOTS & OPTIONS function to specify the subset
+# to be shown.
 
 filterOptions <- function(options.list){
   all.options <- c("showCategory","showGene","label_format","dotplot_x",
-                   "dotplot_size","cex_label_category","cex_category",
-                   "cex_label_gene","color","layout")
+                   "dotplot_size","category_label","category_node",
+                   "gene_label","gene_node","color","layout", "cnet_layout",
+                   "cnet_circular", "cnet_colorEdge")
   sapply(all.options, shinyjs::show)
   sapply(setdiff(all.options,options.list), shinyjs::hide)
 }
@@ -36,19 +38,40 @@ filterOptions <- function(options.list){
 shinyDotplot <- function(resObject, input, output){
   
   #filter inputs options panel
-  filterOptions(c("showCategory","label_format","dotplot_x","dotplot_size","cex_label_category","color"))
+  filterOptions(c("showCategory","label_format","dotplot_x","dotplot_size",
+                  "category_label","color"))
+  #initalize
+  size = input$dotplot_size
+  
+  #GSEA special case (no GeneRatio or BgRatio)
+  # if(input$method == "gsea"){
+  #   # shinyjs::hide("dotplot_x")
+  #   shinyjs::hide("dotplot_size")
+  #   size = "setSize"
+  # # } else {
+  # #   shinyjs::show("dotplot_x")
+  # #   shinyjs::show("dotplot_size")
+  # }
+  
+  #Apparently not implemented by enrichplot...
+  if(size == "Percentage"){
+    if(input$method == "ora"){
+      resObject@result <- resObject@result %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(Percentage = Count/as.integer(
+          str_split(BgRatio, "\\/")[[1]][1]))
+    } else if (input$method == "gsea"){
+      resObject@result <- resObject@result %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(Percentage = stringr::str_count(core_enrichment, "\\/")/setSize)
+    }
+  }
   
   #plot
-  size = input$dotplot_size
-  if(size == "Percentage"){
-    resObject@result <- resObject@result %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(Percentage = Count/as.integer(str_split(BgRatio, "\\/")[[1]][1]))
-  }
   enrichplot::dotplot(resObject,
                       showCategory = input$showCategory,
                       label_format=input$label_format,
-                      font.size = input$cex_label_category,
+                      font.size = input$category_label,
                       size = size,
                       color = input$color,
                       x = input$dotplot_x)
@@ -59,15 +82,42 @@ shinyDotplot <- function(resObject, input, output){
 shinyEmapplot <- function(data.emap, input, output){
   
   #filter inputs options panel
-  filterOptions(c("showCategory","label_format","cex_label_category","cex_category","color","layout"))
+  filterOptions(c("showCategory","label_format","category_label",
+                  "category_node","color","layout"))
   
   #plot
   enrichplot::emapplot(data.emap, 
-                     showCategory = input$showCategory,
-                     cex_label_category=input$cex_label_category/12, #pt to rem
-                     cex_category = input$cex_category,
-                     color = input$color,
-                     layout.params=list(layout=input$layout) 
+                       showCategory = input$showCategory,
+                       color = input$color,
+                       layout.params=list(layout=input$layout),
+                       cex.params = list(
+                         category_label=input$category_label/12, #pt to rem
+                         category_node = input$category_node
+                       )
+  )
+}
+
+# Cnetplot #
+# - standard enrichplot function with circular option
+shinyCnetplot <- function(resObject, geneList, input, output){
+  
+  #filter inputs options panel
+  filterOptions(c("showCategory","category_label","gene_label","category_node",
+                  "gene_node","cnet_layout", "cnet_circular", "cnet_colorEdge"))
+  
+  #plot
+  enrichplot::cnetplot(resObject, 
+                       showCategory = input$showCategory,
+                       circular = input$cnet_circular, 
+                       colorEdge = input$cnet_colorEdge, 
+                       layout = input$cnet_layout,
+                       cex.params = list(
+                         foldChange=geneList,
+                         category_label=input$category_label/12, #pt to rem
+                         category_node = input$category_node,
+                         gene_label = input$gene_label/12,
+                         gene_node = input$gene_node
+                       )
   )
 }
 
@@ -78,7 +128,7 @@ shinyEmapplot <- function(data.emap, input, output){
 shinyHeatmap <- function(resObject, data, params, input, output){
   
   #filter inputs options panel
-  filterOptions(c("showCategory","showGene","cex_label_category","cex_label_gene"))
+  filterOptions(c("showCategory","showGene","category_label","gene_label"))
   
   #plot  
   res <- resObject@result[1:input$showCategory, c('Description','geneID')]
@@ -94,20 +144,25 @@ shinyHeatmap <- function(resObject, data, params, input, output){
   freq.gene <- unique(res$geneID)
   res <- dplyr::filter(res, geneID %in% freq.gene[1:input$showGene]) 
   res <- dplyr::mutate(res, Description = stringr::str_trunc(Description, 50))
-  res <- dplyr::mutate(res, geneID = factor(geneID, levels = unique(geneID))) #fix two-factor sorting
-  res <- dplyr::mutate(res, Description = factor(Description, levels=unique(Description)))
+  res <- dplyr::mutate(res, geneID = factor(
+    geneID, levels = unique(geneID))) #fix two-factor sorting
+  res <- dplyr::mutate(res, Description = factor(
+    Description, levels=unique(Description)))
   p <- ggplot(res, aes(x=geneID, 
                        y=Description, fill = fold.change)) + 
     geom_tile(color = 'white') +
     xlab(NULL) + ylab(NULL) + theme_minimal() +
     theme(panel.grid.major = element_blank(),
           legend.position = "none",
-          axis.text.x=element_text(angle = 60, hjust = 1, size=input$cex_label_gene),
-          axis.text.y=element_text(size=input$cex_label_category))
+          axis.text.x=element_text(angle = 60, hjust = 1, 
+                                   size=input$gene_label),
+          axis.text.y=element_text(size=input$category_label))
   if('fold.change' %in% names(data)){
     max.scale <- max(abs(res$fold.change))
-    p <- p + scale_fill_distiller(type = "div",palette = "RdBu",
-                                  direction = -1, limits = c(-max.scale, max.scale)) +
+    p <- p + scale_fill_distiller(type = "div",
+                                  palette = "RdBu",
+                                  direction = -1, 
+                                  limits = c(-max.scale, max.scale)) +
       theme(legend.position = "right")
   }
   return(p)

@@ -76,7 +76,12 @@ dashboardPage(
         width: 100%;
         background-color: #555555;
       }
-
+      .wellbtn {
+        background:#FFFFFF;
+      }
+      .plainUl {
+        padding:0px;margin:0px
+      }
     "))),
     fluidRow(
       #collapsible summary box with html 
@@ -165,8 +170,7 @@ dashboardPage(
                      choices = c("Dot plot",
                                  "Emap plot",
                                  "Concept network",
-                                 "Heatmap",
-                                 "Upset (ORA)")
+                                 "Heatmap")
                    )
             ),
             column(width=5, offset=2,
@@ -210,32 +214,40 @@ dashboardPage(
                                            placement = "right", trigger = "hover"),
                         numericInput("label_format","Wrap labels",
                                      50, min=10, max=80, step=1, width = 80),
-                        numericInput("cex_label_category","Label font size",
+                        numericInput("category_label","Label font size",
                                      12,min=8, max=24,step=1, width = 90),
-                        numericInput("cex_label_gene","Gene font size",
+                        numericInput("gene_label","Gene font size",
                                      12,min=8, max=24,step=1, width = 90),
-                        numericInput("cex_category","Data point scale",
+                        numericInput("category_node","Result node scale",
                                      1,min=0.5, max=4,step=0.5, width = 110),
+                        numericInput("gene_node","Gene node scale",
+                                     1,min=1, max=12,step=2, width = 110),
                         selectInput("color","Color by",
                                     choices = c("p.adjust","pvalue","qvalue"),
                                     selected = "p.adjust", width = 90),
                         selectInput("layout","Layout",
                                     choices = c("nicely","kk","sugiyama","fr", "gem","lgl","mds"),
-                                    selected = "nicely", width = 105)
-                        ),
-                        tags$head(tags$style(".plainUl{padding:0px;margin:0px}"))
+                                    selected = "nicely", width = 105),
+                        selectInput("cnet_layout","Layout",
+                                    choices = c('star', 'circle', 'gem', 'dh', 'graphopt',  
+                                                'mds', 'fr', 'kk', 'drl', 'lgl'),
+                                    selected = "kk", width = 105),
+                        checkboxInput("cnet_circular","Circular",
+                                    value = FALSE, width = 80),
+                        checkboxInput("cnet_colorEdge","colorEdge",
+                                    value =  TRUE, width = 80)
+                        )
               ),
               wellPanel("PDF options",
                         fluidRow(
                           column(width = 3, style = "margin-top: 5px;",
-                                 downloadButton("download.plot1.result", "Download", class = "wellbtn"),
-                                 tags$head(tags$style(".wellbtn{background:#FFFFFF;}"))
+                                 downloadButton("download.plot1.result", "Download", class = "wellbtn")
                           ),
-                          column(width = 2,style = "margin-top: -20px;",
+                          column(width = 2,style = "margin-top: -20px;padding: 0 5px 0 5px;",
                                  numericInput("plot1.width", "width (px)", 1200, 
                                               min = 200, max=1200, step = 100)
                           ),
-                          column(width = 2,style = "margin-top: -20px;",
+                          column(width = 2,style = "margin-top: -20px;padding: 0 5px 0 5px;",
                                  numericInput("plot1.height", "height (px)", 1200, 
                                               min = 200, max=1200, step = 100)
                           )
@@ -244,7 +256,24 @@ dashboardPage(
             column(
               width = 5,
               htmlOutput("html.result"),
-              plotOutput("plot2.result")
+              plotOutput("plot2.result"),
+              conditionalPanel(
+                condition = "input.plot2 == 'GSEA score'",
+                wellPanel("PDF options",
+                          fluidRow(
+                            column(width = 4, style = "margin-top: 5px;",
+                                   downloadButton("download.plot2.result", "Download", class = "wellbtn")
+                            ),
+                            column(width = 3,style = "margin-top: -20px;padding: 0 5px 0 5px;",
+                                   numericInput("plot2.width", "width (px)", 400, 
+                                                min = 100, max=600, step = 100)
+                            ),
+                            column(width = 3,style = "margin-top: -20px;padding: 0 5px 0 5px;",
+                                   numericInput("plot2.height", "height (px)", 300, 
+                                                min = 100, max=600, step = 100)
+                            )
+                          ))
+              )
             )
           )
         ) #end tabPanel
