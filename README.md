@@ -199,6 +199,30 @@ failed identifier mapping.
 are resolvable (e.g., fixing identifiers in your dataset CSV) and
 substantial (e.g., a lot of significant genes per the volcano plot).*
 
+<img src="shiny_run/assets/shiny_results_data_volcano.png" width="200" align="left"/>
+
+**Volcano plot**
+
+Using [EnhancedVolcano](https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html),
+a volcano plot of your input data highlights subsets of genes based on the p.value
+and fold-change cutoffs indicated during the run. Plot options includes:
+ * `Top n genes` - How many genes to label in the plot (ignored if genes names are entered)
+ * `Enter genes by name` - A list of gene names with auto-populated choices from the top 20 (overrides `Top n genes`)
+ * `Label font size` - Font size for gene labels
+ * `Legend position` - Placement of the legend
+
+<img src="shiny_run/assets/shiny_results_data_bar.png" width="200" align="left"/>
+
+**Bar plot (Data)**
+
+Using ggplot2::geom_bar,
+a bar plot of your input data highlights positive and negative fold-change values for a subset of genes. Plot options includes:
+ * `Top n genes` - How many genes to include in the plot (ignored if genes names are entered)
+ * `Enter genes by name` - A list of gene names with auto-populated choices from the top 20 (overrides `Top n genes`)
+ * `Label font size` - Font size for all text
+ * `Legend position` - Placement of the legend
+
+
 #### **Results Tab**
 
 <img src="shiny_run/assets/shiny_results_res_gsea.png" width="600" />
@@ -216,6 +240,7 @@ more, and can also be downloaded.
 *Pro-tip: Navigate between GSEA and ORA methods (side panel) while
 viewing the results for a particular database to explore hits in common
 (and unique) to the different methods.*
+
 
 ## Publishing
 
