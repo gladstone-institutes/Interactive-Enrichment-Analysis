@@ -210,7 +210,8 @@ and fold-change cutoffs indicated during the run. Plot options includes:
  * `Enter genes by name` - A list of gene names with auto-populated choices from the top 20 (overrides `Top n genes`)
  * `Label font size` - Font size for gene labels
  * `Legend position` - Placement of the legend
-
+ <br/><br/><br/><br/>
+ 
 <img src="shiny_run/assets/shiny_results_data_bar.png" width="400" align="left"/>
 
 **Bar plot (Data)**
@@ -221,7 +222,7 @@ a bar plot of your input data highlights positive and negative fold-change value
  * `Enter genes by name` - A list of gene names with auto-populated choices from the top 20 (overrides `Top n genes`)
  * `Label font size` - Font size for all text
  * `Legend position` - Placement of the legend
-
+ <br/><br/><br/><br/><br/>
 
 #### **Results Tab**
 
@@ -253,8 +254,9 @@ a dot plot of results highlight multiple statistics for the most enriched result
  * `Wrap labels` - Wrap long labels to mulitple lines after a specified number of characters
  * `Label font size` - Font size for all text
  * `Color by` - Set the color of dots by pvalue, p.adjust, or qvalue (see [clusterProfiler](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html) docs)
- 
-<img src="shiny_run/assets/shiny_results_res_dot.png" width="400" align="left"/>
+  <br/><br/><br/><br/><br/>
+  
+<img src="shiny_run/assets/shiny_results_res_bar.png" width="400" align="left"/>
 
 **Bar plot (Results)**
 
@@ -264,7 +266,8 @@ a bar plot of results highlight various statistics for the most enriched results
  * `X-axis by` - Set the x-axis by Fold change (*average fold change of overlapping genes*), Count (*number of dataset genes overlapping a given term*) or Percentage (*dataset genes overlapping a given term vs all genes in term*)
  * `Wrap labels` - Wrap long labels to mulitple lines after a specified number of characters
  * `Label font size` - Font size for all text
-
+ <br/><br/><br/><br/>
+ 
 <img src="shiny_run/assets/shiny_results_res_heatmap.png" width="400" align="left"/>
 
 **Heatmap**
@@ -279,7 +282,8 @@ Plot options includes:
  * `Wrap labels` - Wrap long labels to mulitple lines after a specified number of characters
  * `Label font size` - Font size for result labels (y-axis)
  * `Gene font size` - Font size for gene labels (x-axis)
-
+ <br/><br/><br/>
+ 
 <img src="shiny_run/assets/shiny_results_res_emap.png" width="400" align="left"/>
 
 **Enrichment map (emap)**
@@ -295,7 +299,8 @@ Plot options includes:
  * `Color by` - Set the color of dots by pvalue, p.adjust, or qvalue (see [clusterProfiler](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html) docs)
  * `Layout` - Layout algorithm to apply to network. Layout names are rarely
  descriptive, so just try them out!
-
+ <br/><br/><br/><br/><br/>
+ 
 <img src="shiny_run/assets/shiny_results_res_cnet.png" width="400" align="left"/>
 
 **Concept network (cnet)**
@@ -313,8 +318,10 @@ Plot options includes:
  descriptive, so just try them out!
  * `Circular` - Force a circular layout *(pretty useless)*
  * `colorEdge` - Color the connections by result
-
+ <br/><br/><br/><br/>
+ 
 **PDF export**
+
 All plots offer `PDF options` to control the aspect ratio and initial dimensions
 (in pixels) of the saved PDF image. PDF images, of course, are vector graphics, 
 so you can zoom in to the final image as much as you want. These are 
