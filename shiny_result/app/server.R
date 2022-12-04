@@ -306,7 +306,15 @@ shinyServer(function(input, output, session) {
               if (input$method == "gsea")
                 resObject@result$geneID <- resObject@result$core_enrichment 
               shinyHeatmap(resObject, data, params, input, output)
-              }
+              },
+            "Bar plot" = {
+              data <- getTableData()
+              params <- getDataParams()
+              if (input$method == "gsea")
+                resObject@result$geneID <- resObject@result$core_enrichment 
+              shinyBarplotResult(resObject, data, params, input, output)
+            }
+            
     )
   }
   

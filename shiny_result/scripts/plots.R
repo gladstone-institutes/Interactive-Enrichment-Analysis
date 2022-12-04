@@ -19,7 +19,7 @@ filterOptions <- function(options.list){
   all.options <- c("showCategory","showGene","label_format","dotplot_x",
                    "dotplot_size","category_label","category_node",
                    "gene_label","gene_node","color","layout", "cnet_layout",
-                   "cnet_circular", "cnet_colorEdge")
+                   "cnet_circular", "cnet_colorEdge","bar_by")
   sapply(all.options, shinyjs::show)
   sapply(setdiff(all.options,options.list), shinyjs::hide)
 }
@@ -42,16 +42,6 @@ shinyDotplot <- function(resObject, input, output){
                   "category_label","color"))
   #initalize
   size = input$dotplot_size
-  
-  #GSEA special case (no GeneRatio or BgRatio)
-  # if(input$method == "gsea"){
-  #   # shinyjs::hide("dotplot_x")
-  #   shinyjs::hide("dotplot_size")
-  #   size = "setSize"
-  # # } else {
-  # #   shinyjs::show("dotplot_x")
-  # #   shinyjs::show("dotplot_size")
-  # }
   
   #Apparently not implemented by enrichplot...
   if(size == "Percentage"){
@@ -130,7 +120,7 @@ shinyHeatmap <- function(resObject, data, params, input, output){
   #filter inputs options panel
   filterOptions(c("showCategory","showGene","category_label","gene_label"))
   
-  #plot  
+  #prep data
   res <- resObject@result[1:input$showCategory, c('Description','geneID')]
   res <- tidyr::separate_rows(res, geneID, sep="\\/")
   #define secondary order and color mapping if available
@@ -148,6 +138,8 @@ shinyHeatmap <- function(resObject, data, params, input, output){
     geneID, levels = unique(geneID))) #fix two-factor sorting
   res <- dplyr::mutate(res, Description = factor(
     Description, levels=unique(Description)))
+  
+  #plot
   p <- ggplot(res, aes(x=geneID, 
                        y=Description, fill = fold.change)) + 
     geom_tile(color = 'white') +
@@ -167,6 +159,98 @@ shinyHeatmap <- function(resObject, data, params, input, output){
   }
   return(p)
 }
+
+# BarplotResult #
+# - ...
+shinyBarplotResult <- function(resObject, data, params, input, output){
+  
+  #filter inputs options panel
+  filterOptions(c("showCategory","category_label","bar_by"))
+  
+  #prep data 
+  res <- resObject@result[1:input$showCategory, ]
+  res <- tidyr::separate_rows(res, geneID, sep="\\/")
+  #define secondary order and color mapping if available
+  if('fold.change' %in% names(data)) {
+    res <- dplyr::left_join(res,data, by=c("geneID"=params$fromType))
+  } else {
+    res$fold.change = 0
+  }
+  if(input$method == "ora"){
+    res <- res %>%
+      dplyr::group_by(Description, BgRatio, Count) %>%
+      dplyr::summarise("Fold change" = mean(fold.change)) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(Percentage = Count/as.integer(
+        str_split(BgRatio, "\\/")[[1]][1]))
+  } else if (input$method == "gsea"){
+    res <- res %>%
+      dplyr::add_count(Description, name = "Count") %>%
+      dplyr::group_by(Description, Count, setSize) %>%
+      dplyr::summarise("Fold change" = mean(fold.change)) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(Percentage = Count/setSize)
+  }
+  res<- res %>%
+    dplyr::arrange( !!as.name(input$bar_by)) %>%
+    dplyr::mutate(Description = factor(
+      Description, levels=unique(Description)))
+  
+  #create a column with positive/negative expressed genes
+  res$DEG <- NA
+  if(input$bar_by == 'Fold change'){
+    res$DEG[res$`Fold change` > 0] <- "upregulated"
+    res$DEG[res$`Fold change` < 0] <- "downregulated"
+  }
+  
+  #plot
+  ggplot(res, 
+         aes(!!as.name(input$bar_by), Description, fill=DEG)) +
+    geom_bar(stat="identity") +
+    # ggbreak::scale_y_break(c( -3, -5.9), scale=3)+ 
+    scale_fill_manual(values=c("#67A9CF","#EF8A62"),
+                      name = element_blank()) +
+    guides(fill = guide_legend(reverse = TRUE)) +
+    xlab(input$bar_by) + ylab("") +
+    theme_bw() +
+    theme(text = element_text(size = input$category_label),
+          axis.title.y = element_blank(),
+          legend.position = "right")
+  
+  # res <- dplyr::add_count(res, geneID)
+  # res <- dplyr::arrange(res, desc(n),desc(abs(fold.change)))
+  # res <- dplyr::mutate(res, Description = stringr::str_trunc(Description, 50))
+  # res <- dplyr::mutate(res, geneID = factor(
+  #   geneID, levels = unique(geneID))) #fix two-factor sorting
+  # res <- dplyr::mutate(res, Description = factor(
+  #   Description, levels=unique(Description)))
+  # 
+ 
+  
+  #plot
+  # p <- ggplot(res, aes(x=geneID, 
+  #                      y=Description, fill = fold.change)) + 
+  #   geom_tile(color = 'white') +
+  #   xlab(NULL) + ylab(NULL) + theme_minimal() +
+  #   theme(panel.grid.major = element_blank(),
+  #         legend.position = "none",
+  #         axis.text.x=element_text(angle = 60, hjust = 1, 
+  #                                  size=input$gene_label),
+  #         axis.text.y=element_text(size=input$category_label))
+  # if('fold.change' %in% names(data)){
+  #   max.scale <- max(abs(res$fold.change))
+  #   p <- p + scale_fill_distiller(type = "div",
+  #                                 palette = "RdBu",
+  #                                 direction = -1, 
+  #                                 limits = c(-max.scale, max.scale)) +
+  #     theme(legend.position = "right")
+  # }
+  # return(p)
+}
+
+##############
+# DATA PLOTS #
+##############
 
 # Volcano #
 # - an EnhancedVolcano plot of pv and fc, exposing options
@@ -202,7 +286,7 @@ shinyVolcano <- function(data, params, input, output){
 }
 
 
-# Bar plot #
+# Barplot #
 # - standard bar plot distinguishing up/down regulated genes, exposing options
 # for top n genes (or gene list), font size and legend position.
 shinyBarplot <- function(data, params, input, output){
@@ -217,7 +301,7 @@ shinyBarplot <- function(data, params, input, output){
   } 
   #subset data accordingly
   data <- dplyr::filter(data, !!as.name(params$fromType) %in% selectLab.list)
-
+  
   #create a column with positive/negative expressed genes
   data$DEG <- NA
   data$DEG[data$fold.change>0] <- "upregulated"
@@ -237,3 +321,4 @@ shinyBarplot <- function(data, params, input, output){
           axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
           legend.position = input$legend_pos)
 }
+
