@@ -44,7 +44,7 @@ shinyServer(function(input, output, session) {
     )
     updateSelectizeInput(
       session,
-      'databse',
+      'database',
       choices = db.list,
       server = TRUE
     )
@@ -108,44 +108,30 @@ shinyServer(function(input, output, session) {
     if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
       if(!params$fromType %in% names(data)) # i.e., excluded cases
         data[params$fromType] <- data$gene
-      selectLab.list <- head(data[[params$fromType]],10)
-      if(input$method=='gsea')
-        selectLab.list <- c(head(data[[params$fromType]],5),
-                            tail(data[[params$fromType]]),5)
-      #create a column with positive/negative expressed genes
-      data$DEG <- NA
-      data$DEG[data$fold.change>0] <- "upregulated"
-      data$DEG[data$fold.change<0] <- "downregulated"
       switch (input$plot0,
-              "Volcano plot" = EnhancedVolcano(data,
-                      lab = data[[params$fromType]],
-                      selectLab = selectLab.list,
-                      drawConnectors = TRUE,
-                      widthConnectors = 0.2,
-                      x = 'fold.change',
-                      y = 'p.value',
-                      pCutoff = params$ora.pv,
-                      FCcutoff = params$ora.fc,
-                      legendLabels=c('NS','FC','p-value',
-                                     'p-value & FC'),
-                      pointSize = 2.0,
-                      labSize = 5.0),
-              "Heatmap" = NULL,
-              "Bar plot" = ggplot(head(data,10), 
-                                  aes(head(data[[params$fromType]],10), fold.change, fill=DEG)) +
-                geom_bar(stat="identity") +
-                # ggbreak::scale_y_break(c( -3, -5.9), scale=3)+ 
-                scale_fill_manual(values=c("#67A9CF","#EF8A62"),
-                                  name = element_blank()) +
-                guides(fill = guide_legend(reverse = TRUE)) +
-                xlab("Genes") + ylab(expression(Log[2]~fold~change)) +
-                theme_bw() +
-                theme(text = element_text(size = 16),
-                      axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+              "Volcano plot" = shinyVolcano(data, params, input, output),
+              "Bar plot" = shinyBarplot(data, params, input, output)
       )
     }
   }
   
+  #update choices for plot0
+  observeEvent(input$plot0, {
+    params <- getDataParams()
+    data <- getTableData()
+    sel.choices <- head(data[[params$fromType]],40)
+    if(input$method == "gsea")
+      sel.choices <- c(head(data[[params$fromType]],20),
+                       tail(data[[params$fromType]],20))
+    #populate choices
+    updateSelectizeInput(
+      session, 
+      "selectLab",
+      choices = sel.choices,
+      selected = input$selectLab,
+      server = TRUE
+    )
+  })
 
   #render and cache plot data
   output$plot.data <- renderPlot({
@@ -238,7 +224,21 @@ shinyServer(function(input, output, session) {
   
   #update method-dependent plot options
   observeEvent(input$method, {
-   #plot2
+    #plot0
+    params <- getDataParams()
+    data <- getTableData()
+    sel.choices <- head(data[[params$fromType]],40)
+    if(input$method == "gsea")
+      sel.choices <- c(head(data[[params$fromType]],20),
+                       tail(data[[params$fromType]],20))
+    #populate choices
+    updateSelectizeInput(
+      session, 
+      "selectLab",
+      choices = sel.choices,
+      server = TRUE
+    )
+    #plot2
     plot2.gsea.choices = c("GSEA score","Linkouts","STRING network")
     plot2.ora.choices = c("Linkouts","STRING network")
     if(input$method == "gsea"){

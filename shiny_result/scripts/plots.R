@@ -167,3 +167,73 @@ shinyHeatmap <- function(resObject, data, params, input, output){
   }
   return(p)
 }
+
+# Volcano #
+# - an EnhancedVolcano plot of pv and fc, exposing options
+# for top n genes (or gene list), font size and legend position.
+shinyVolcano <- function(data, params, input, output){
+  
+  #handle selection
+  selectLab.list <- input$selectLab
+  if(length(selectLab.list) == 0){
+    selectLab.list <- head(data[[params$fromType]], input$topLab)
+    if(input$method=='gsea')
+      selectLab.list <- c(head(data[[params$fromType]],as.integer(input$topLab/2)),
+                          tail(data[[params$fromType]],as.integer(input$topLab/2)))
+  } 
+  
+  #plot 
+  EnhancedVolcano(data,
+                  lab = data[[params$fromType]],
+                  selectLab = selectLab.list,
+                  drawConnectors = TRUE,
+                  widthConnectors = 0.2,
+                  x = 'fold.change',
+                  y = 'p.value',
+                  title = "",
+                  subtitle = "",
+                  legendPosition = input$legend_pos,
+                  pCutoff = params$ora.pv,
+                  FCcutoff = params$ora.fc,
+                  legendLabels=c('NS','FC','p-value',
+                                 'p-value & FC'),
+                  pointSize = 2.0,
+                  labSize = input$category_label_0/3)
+}
+
+
+# Bar plot #
+# - standard bar plot distinguishing up/down regulated genes, exposing options
+# for top n genes (or gene list), font size and legend position.
+shinyBarplot <- function(data, params, input, output){
+  
+  #handle selection
+  selectLab.list <- input$selectLab
+  if(length(selectLab.list) == 0){
+    selectLab.list <- head(data[[params$fromType]], input$topLab)
+    if(input$method=='gsea')
+      selectLab.list <- c(head(data[[params$fromType]],as.integer(input$topLab/2)),
+                          tail(data[[params$fromType]],as.integer(input$topLab/2)))
+  } 
+  #subset data accordingly
+  data <- dplyr::filter(data, !!as.name(params$fromType) %in% selectLab.list)
+
+  #create a column with positive/negative expressed genes
+  data$DEG <- NA
+  data$DEG[data$fold.change>0] <- "upregulated"
+  data$DEG[data$fold.change<0] <- "downregulated"
+  
+  #plot 
+  ggplot(data, 
+         aes(selectLab.list, fold.change, fill=DEG)) +
+    geom_bar(stat="identity") +
+    # ggbreak::scale_y_break(c( -3, -5.9), scale=3)+ 
+    scale_fill_manual(values=c("#67A9CF","#EF8A62"),
+                      name = element_blank()) +
+    guides(fill = guide_legend(reverse = TRUE)) +
+    xlab("Genes") + ylab(expression(Log[2]~fold~change)) +
+    theme_bw() +
+    theme(text = element_text(size = input$category_label_0),
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
+          legend.position = input$legend_pos)
+}

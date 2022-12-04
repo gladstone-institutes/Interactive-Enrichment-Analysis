@@ -182,9 +182,9 @@ A second shiny app is allows you to interactively explore results and
 download individual files. Its side panel is organized in the same way
 as the output folders.
 
-<img src="shiny_run/assets/shiny_results_data_ora.png" width="600" />
-
 #### **Data Tab**
+
+<img src="shiny_run/assets/shiny_results_data_ora.png" width="600" />
 
 For a given run, dataset and method (see side panel), the *Data* tab
 displays the processed input data as a table (left) and volcano plot
@@ -199,9 +199,9 @@ failed identifier mapping.
 are resolvable (e.g., fixing identifiers in your dataset CSV) and
 substantial (e.g., a lot of significant genes per the volcano plot).*
 
-<img src="shiny_run/assets/shiny_results_res_gsea.png" width="600" />
-
 #### **Results Tab**
+
+<img src="shiny_run/assets/shiny_results_res_gsea.png" width="600" />
 
 Per selected database (see the top drop-down menu), the *Results* tab
 displays a table of enriched terms and pathways, a plot of top results

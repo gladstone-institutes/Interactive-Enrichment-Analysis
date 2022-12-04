@@ -118,7 +118,6 @@ dashboardPage(
             column(
               width = 6,
               div(DT::dataTableOutput("table.data"), style = "font-size:80%; line-height:30%")
-              # DT::dataTableOutput("table.data")
             ),
             #data plot
             column(
@@ -129,14 +128,49 @@ dashboardPage(
                     "plot0",
                     "Choose a plot type for data:",
                     choices = c("Volcano plot",
-                                "Heatmap",
                                 "Bar plot")
                   )
-                ),
-                column(width = 3, style = "margin-top: 25px;",
-                       downloadButton("download.plot.data", "Download")
                 )),
-              plotOutput("plot.data")
+              plotOutput("plot.data"),
+              wellPanel("Plot options", 
+                        flowLayout(cellArgs = list(
+                          style = "margin: 0px;width:auto"),
+                          numericInput("topLab","Top n genes",
+                                       10, min=0, max=20, step=1, width = 80),
+                          p("or"),
+                          selectizeInput(
+                            inputId = "selectLab",
+                            label = "Enter genes by name",
+                            choices = NULL,
+                            multiple = TRUE,
+                            width = "100%",
+                            options = list(
+                              'plugins' = list('remove_button'),
+                              'create' = TRUE
+                            )
+                          ),
+                          br(),
+                          numericInput("category_label_0","Label font size",
+                                       12,min=9, max=24,step=1, width = 90),
+                          selectInput("legend_pos","Legend position",
+                                      choices = c("top", "right", "bottom", "left"),
+                                      selected = "right", width = 110)
+                        )
+              ),
+              wellPanel("PDF options",
+                        fluidRow(
+                          column(width = 3, style = "margin-top: 5px;",
+                                 downloadButton("download.plot.data", "Download", class = "wellbtn")
+                          ),
+                          column(width = 3,style = "margin-top: -20px;padding: 0 5px 0 5px;",
+                                 numericInput("plot.width", "width (px)", 1200, 
+                                              min = 200, max=1200, step = 100)
+                          ),
+                          column(width = 3,style = "margin-top: -20px;padding: 0 5px 0 5px;",
+                                 numericInput("plot.height", "height (px)", 1200, 
+                                              min = 200, max=1200, step = 100)
+                          )
+                        ))
             )
           )
         ),
