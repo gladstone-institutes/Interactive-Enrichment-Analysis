@@ -199,7 +199,7 @@ failed identifier mapping.
 are resolvable (e.g., fixing identifiers in your dataset CSV) and
 substantial (e.g., a lot of significant genes per the volcano plot).*
 
-<img src="shiny_run/assets/shiny_results_data_volcano.png" width="200" align="left"/>
+<img src="shiny_run/assets/shiny_results_data_volcano.png" width="400" align="left"/>
 
 **Volcano plot**
 
@@ -211,7 +211,7 @@ and fold-change cutoffs indicated during the run. Plot options includes:
  * `Label font size` - Font size for gene labels
  * `Legend position` - Placement of the legend
 
-<img src="shiny_run/assets/shiny_results_data_bar.png" width="200" align="left"/>
+<img src="shiny_run/assets/shiny_results_data_bar.png" width="400" align="left"/>
 
 **Bar plot (Data)**
 
@@ -240,6 +240,87 @@ more, and can also be downloaded.
 *Pro-tip: Navigate between GSEA and ORA methods (side panel) while
 viewing the results for a particular database to explore hits in common
 (and unique) to the different methods.*
+
+<img src="shiny_run/assets/shiny_results_res_dot.png" width="400" align="left"/>
+
+**Dot plot **
+
+Using [enrichplot](https://bioconductor.org/packages/release/bioc/html/enrichplot.html),
+a dot plot of results highlight multiple statistics for the most enriched results. Plot options includes:
+ * `Top n results` - How many results to include in the plot
+ * `X-axis by` - Set the x-axis by Count (*number of dataset genes overlapping a given term*) or GeneRatio (*dataset genes overlapping a given term vs all possible terms*)
+ * `Size by` - Set the size of dots by Count, GeneRatio, or Percentage (*dataset genes overlapping a given term vs all genes in term*)
+ * `Wrap labels` - Wrap long labels to mulitple lines after a specified number of characters
+ * `Label font size` - Font size for all text
+ * `Color by` - Set the color of dots by pvalue, p.adjust, or qvalue (see [clusterProfiler](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html) docs)
+ 
+<img src="shiny_run/assets/shiny_results_res_dot.png" width="400" align="left"/>
+
+**Bar plot (Results)**
+
+Using ggplot2::geom_bar,
+a bar plot of results highlight various statistics for the most enriched results. Plot options includes:
+ * `Top n results` - How many results to include in the plot
+ * `X-axis by` - Set the x-axis by Fold change (*average fold change of overlapping genes*), Count (*number of dataset genes overlapping a given term*) or Percentage (*dataset genes overlapping a given term vs all genes in term*)
+ * `Wrap labels` - Wrap long labels to mulitple lines after a specified number of characters
+ * `Label font size` - Font size for all text
+
+<img src="shiny_run/assets/shiny_results_res_heatmap.png" width="400" align="left"/>
+
+**Heatmap**
+
+Using ggplot2::geom_tile,
+a heatmap of results highlights overlapping genes among the most enriched results. 
+Plot options includes:
+ * `Top n results` - How many results to include in the heatmap analysis (will 
+ exclude results without shared genes)
+  * `Top n genes` - How many genes to include in the heatmap, ordered by number
+  of shared results and secondarily by fold.change.
+ * `Wrap labels` - Wrap long labels to mulitple lines after a specified number of characters
+ * `Label font size` - Font size for result labels (y-axis)
+ * `Gene font size` - Font size for gene labels (x-axis)
+
+<img src="shiny_run/assets/shiny_results_res_emap.png" width="400" align="left"/>
+
+**Enrichment map (emap)**
+
+Using [enrichplot](https://bioconductor.org/packages/release/bioc/html/enrichplot.html),
+an enrichment map connects results with overlapping genes. 
+Plot options includes:
+ * `Top n results` - How many results to include in the heatmap analysis (will 
+ exclude results without shared genes)
+ * `Wrap labels` - Wrap long labels to mulitple lines after a specified number of characters
+ * `Label font size` - Font size for node labels
+ * `Result node scale` - Relative scale factor for the size of nodes
+ * `Color by` - Set the color of dots by pvalue, p.adjust, or qvalue (see [clusterProfiler](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html) docs)
+ * `Layout` - Layout algorithm to apply to network. Layout names are rarely
+ descriptive, so just try them out!
+
+<img src="shiny_run/assets/shiny_results_res_cnet.png" width="400" align="left"/>
+
+**Concept network (cnet)**
+
+Using [enrichplot](https://bioconductor.org/packages/release/bioc/html/enrichplot.html),
+a concept network connects results via their overlapping genes. 
+Plot options includes:
+ * `Top n results` - How many results to include in the heatmap analysis (will 
+ exclude results without shared genes)
+ * `Label font size` - Font size for category labels
+ * `Gene font size` - Font size for gene nodes
+ * `Result node scale` - Relative scale factor for the size of result nodes
+ * `Gene node scale` - Relative scale factor for the size of gene nodes
+ * `Layout` - Layout algorithm to apply to network. Layout names are rarely
+ descriptive, so just try them out!
+ * `Circular` - Force a circular layout *(pretty useless)*
+ * `colorEdge` - Color the connections by result
+
+**PDF export**
+All plots offer `PDF options` to control the aspect ratio and initial dimensions
+(in pixels) of the saved PDF image. PDF images, of course, are vector graphics, 
+so you can zoom in to the final image as much as you want. These are 
+publication-ready images.
+
+<img src="shiny_run/assets/shiny_results_pdf.png" width="300"/>
 
 
 ## Publishing
