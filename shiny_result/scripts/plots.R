@@ -30,8 +30,8 @@ filterOptions <- function(options.list){
 # Each function returns a plot object for rendering or printing/saving and 
 # defines an option panel with corresponding inputs.
 
-## Pro-tip: 
-
+## Pro-tip: Start each function with filterOptions() to specify which inputs
+##  to display.
 
 # Dotplot #
 # - standard enrichplot function with "GeneRatio" or "Count" x-axis option
@@ -108,7 +108,8 @@ shinyCnetplot <- function(resObject, geneList, input, output){
                          gene_label = input$gene_label/12,
                          gene_node = input$gene_node
                        )
-  )
+  ) +
+    theme(text = element_text(size = input$category_label))
 }
 
 # Heatmap #
@@ -118,7 +119,8 @@ shinyCnetplot <- function(resObject, geneList, input, output){
 shinyHeatmap <- function(resObject, data, params, input, output){
   
   #filter inputs options panel
-  filterOptions(c("showCategory","showGene","category_label","gene_label"))
+  filterOptions(c("showCategory","showGene","category_label","label_format",
+                  "gene_label"))
   
   #prep data
   res <- resObject@result[1:input$showCategory, c('Description','geneID')]
@@ -133,7 +135,6 @@ shinyHeatmap <- function(resObject, data, params, input, output){
   res <- dplyr::arrange(res, desc(n),desc(abs(fold.change)))
   freq.gene <- unique(res$geneID)
   res <- dplyr::filter(res, geneID %in% freq.gene[1:input$showGene]) 
-  res <- dplyr::mutate(res, Description = stringr::str_trunc(Description, 50))
   res <- dplyr::mutate(res, geneID = factor(
     geneID, levels = unique(geneID))) #fix two-factor sorting
   res <- dplyr::mutate(res, Description = factor(
@@ -143,6 +144,7 @@ shinyHeatmap <- function(resObject, data, params, input, output){
   p <- ggplot(res, aes(x=geneID, 
                        y=Description, fill = fold.change)) + 
     geom_tile(color = 'white') +
+    scale_y_discrete(labels = label_wrapper(input$label_format)) +
     xlab(NULL) + ylab(NULL) + theme_minimal() +
     theme(panel.grid.major = element_blank(),
           legend.position = "none",
@@ -165,7 +167,7 @@ shinyHeatmap <- function(resObject, data, params, input, output){
 shinyBarplotResult <- function(resObject, data, params, input, output){
   
   #filter inputs options panel
-  filterOptions(c("showCategory","category_label","bar_by"))
+  filterOptions(c("showCategory","category_label","label_format","bar_by"))
   
   #prep data 
   res <- resObject@result[1:input$showCategory, ]
@@ -211,41 +213,12 @@ shinyBarplotResult <- function(resObject, data, params, input, output){
     scale_fill_manual(values=c("#67A9CF","#EF8A62"),
                       name = element_blank()) +
     guides(fill = guide_legend(reverse = TRUE)) +
+    scale_y_discrete(labels = label_wrapper(input$label_format)) +
     xlab(input$bar_by) + ylab("") +
     theme_bw() +
     theme(text = element_text(size = input$category_label),
           axis.title.y = element_blank(),
           legend.position = "right")
-  
-  # res <- dplyr::add_count(res, geneID)
-  # res <- dplyr::arrange(res, desc(n),desc(abs(fold.change)))
-  # res <- dplyr::mutate(res, Description = stringr::str_trunc(Description, 50))
-  # res <- dplyr::mutate(res, geneID = factor(
-  #   geneID, levels = unique(geneID))) #fix two-factor sorting
-  # res <- dplyr::mutate(res, Description = factor(
-  #   Description, levels=unique(Description)))
-  # 
- 
-  
-  #plot
-  # p <- ggplot(res, aes(x=geneID, 
-  #                      y=Description, fill = fold.change)) + 
-  #   geom_tile(color = 'white') +
-  #   xlab(NULL) + ylab(NULL) + theme_minimal() +
-  #   theme(panel.grid.major = element_blank(),
-  #         legend.position = "none",
-  #         axis.text.x=element_text(angle = 60, hjust = 1, 
-  #                                  size=input$gene_label),
-  #         axis.text.y=element_text(size=input$category_label))
-  # if('fold.change' %in% names(data)){
-  #   max.scale <- max(abs(res$fold.change))
-  #   p <- p + scale_fill_distiller(type = "div",
-  #                                 palette = "RdBu",
-  #                                 direction = -1, 
-  #                                 limits = c(-max.scale, max.scale)) +
-  #     theme(legend.position = "right")
-  # }
-  # return(p)
 }
 
 ##############
@@ -322,3 +295,43 @@ shinyBarplot <- function(data, params, input, output){
           legend.position = input$legend_pos)
 }
 
+################################################################################
+# INTERNAL FUNCTIONS #
+######################
+
+# label_wrapper #
+#  - internal string wrapping function
+# Adapted from enrichplot by Guangchuang Yu
+# https://bioconductor.org/packages/release/bioc/html/enrichplot.html
+# Yu G (2022). enrichplot: Visualization of Functional Enrichment Result. R package version 1.18.1, https://yulab-smu.top/biomedical-knowledge-mining-book/. 
+#' @param length the maximum number of characters before wrapping to a new line
+label_wrapper <- function(length) {
+  function(string){
+    string <- gsub("_", " ", string)
+    result <- vapply(string,
+                     FUN = function(st) {
+                       words <- list()
+                       i <- 1
+                       while(nchar(st) > length) {
+                         if (length(grep(" ", st)) == 0) break
+                         y <- gregexpr(' ', st)[[1]]                  
+                         n <- nchar(st)
+                         y <- c(y,n)
+                         idx <- which(y < length)
+                         # When the length of first word > length
+                         if (length(idx) == 0) idx <- 1
+                         # Split the string into two pieces
+                         # The length of first piece is small than length
+                         words[[i]] <- substring(st, 1, y[idx[length(idx)]] - 1)
+                         st <- substring(st, y[idx[length(idx)]] + 1, n)  
+                         i <- i + 1
+                       }
+                       words[[i]] <- st
+                       paste0(unlist(words), collapse="\n")
+                     },
+                     FUN.VALUE = character(1)
+    )
+    names(result) <- NULL
+    result
+  }
+}
