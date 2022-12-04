@@ -243,7 +243,7 @@ viewing the results for a particular database to explore hits in common
 
 <img src="shiny_run/assets/shiny_results_res_dot.png" width="400" align="left"/>
 
-**Dot plot **
+**Dot plot**
 
 Using [enrichplot](https://bioconductor.org/packages/release/bioc/html/enrichplot.html),
 a dot plot of results highlight multiple statistics for the most enriched results. Plot options includes:
