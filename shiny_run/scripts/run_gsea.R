@@ -37,9 +37,6 @@ run_gsea<-function(dataset.name, db.name, output.name="run"){
     verbose=FALSE)
   if(!is.null(gseaResult))
     gseaResult <- setReadable(gseaResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
-
-  #Prune for size
-  gseaResult@geneSets <- list()
   
   # Save objects
   gl.fn <- paste(file.prefix, db.name,"gsea","geneList.rds", sep = "_")
