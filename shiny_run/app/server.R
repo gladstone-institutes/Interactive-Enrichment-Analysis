@@ -127,6 +127,14 @@ shinyServer(function(input, output, session) {
       } else {
         rv$params$run.gsea <- FALSE
       }
+      #SET FROMTYPE
+      sample.type <- data.df$gene[1]
+      for (i in seq_along(supported.idTypes.patterns)) {
+        if (grepl(supported.idTypes.patterns[i], sample.type)){
+          rv$params$fromType <- names(supported.idTypes.patterns[i])
+          break #at most specific match
+        } 
+      }
       #SET PARAMS
       #choose id type (fromType for ID mapping)
       output$run.params <- renderUI({

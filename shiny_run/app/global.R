@@ -16,6 +16,15 @@ supported.idTypes <- c("SYMBOL",
                        "ENTREZID", 
                        "UNIPROT")
 
+# editable list of named patterns for idTypes to support auto-detection,
+# in order of specificity, more to less
+supported.idTypes.patterns <- c(
+  ENTREZID = "^\\d+$",
+  ENSEMBL = "^ENS[A-Z]*[FPTG]\\d{11}$",
+  UNIPROT = "^([A-N,R-Z][0-9][A-Z][A-Z, 0-9][A-Z, 0-9][0-9])|([O,P,Q][0-9][A-Z, 0-9][A-Z, 0-9][A-Z, 0-9][0-9])(\\.\\d+)?|([A-N,R-Z][0-9][A-Z][A-Z, 0-9][A-Z, 0-9][0-9][A-Z][A-Z, 0-9][A-Z, 0-9][0-9])$",
+  SYMBOL = "[A-Za-z0-9]+"
+)
+
 # list of R libraries to load for analysis and visualization
 p.load.libs <- c(
   "fs",
