@@ -7,13 +7,14 @@ proc_dataset<-function(ds.name, org.db.name, fromType,
   # Objects from strings
   ds.fn <- file.path("../datasets",ds.name)
   dataset <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
+  names(dataset) <- tolower(names(dataset)) #insist on lower
   ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
   output.dir <- file.path("../",output.name, ds.noext)
   
   if(run.ora){ # Prepare subset of genes
     dir.create(file.path(output.dir,"ora","plots"), recursive = T, showWarnings = F)    
     set.genes <- NULL
-    ds.names <- tolower(names(dataset))
+    ds.names <- names(dataset)
     # TODO
     if(!'fold.change' %in% ds.names){
       if(!'p.value' %in% ds.names){ # plain list
@@ -57,7 +58,7 @@ proc_dataset<-function(ds.name, org.db.name, fromType,
   if (run.gsea){ # Rank list of genes
     dir.create(file.path(output.dir,"gsea","plots"), recursive = T, showWarnings = F)
     ranked.genes <- NULL
-    ds.names <- tolower(names(dataset))
+    ds.names <- names(dataset)
     if(!'fold.change' %in% ds.names){
       if(!'p.value' %in% ds.names){
         if(!'rank' %in% ds.names){

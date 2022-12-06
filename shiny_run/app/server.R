@@ -83,6 +83,7 @@ shinyServer(function(input, output, session) {
       # output$debug.text<-renderText(paste(input$datasets,collapse = ","))
       ds.fn <- file.path("../datasets",input$datasets[1])
       data.df <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
+      names(data.df) <- tolower(names(data.df)) #insist on lowercase
       checkTableData(data.df)
       return(data.df)
     }
@@ -91,7 +92,7 @@ shinyServer(function(input, output, session) {
   #check table data
   checkTableData <- function(data.df) {
     output$sample.ds.title <- renderText("Let's examine as sample of your dataset...")
-    ds.names <- tolower(names(data.df))
+    ds.names <- names(data.df)
     ds.names.in <- intersect(analyzed.columns, ds.names)
     ds.names.out <- setdiff(analyzed.columns, ds.names)
     #GENE COLUMN CHECK
