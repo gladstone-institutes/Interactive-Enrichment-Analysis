@@ -371,6 +371,13 @@ shinyServer(function(input, output, session) {
       shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
       
       #load libs
+      i <- i + 1
+      setProgress(i/steps, detail = paste("Step",i,"of",steps))
+      prog <- paste(paste0(i,"."),
+                    "Loading required R libraries (this may take a while the first time)",
+                    "<br />")
+      rv$logfile <- append(rv$logfile, prog)
+      shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
       options(install.packages.check.source = "no")
       options(install.packages.compile.from.source = "never")
       if (!require("pacman")) install.packages("pacman"); library(pacman)
@@ -382,17 +389,8 @@ shinyServer(function(input, output, session) {
       BiocManager::install(bioc.load.libs, update = FALSE)
       invisible(lapply(bioc.load.libs, function(x) library(x, character.only=TRUE)))
       if(all(status)){
-        i <- i + 1
-        setProgress(i/steps, detail = paste("Step",i,"of",steps))
-        prog <- paste(paste0(i,"."),
-          "All required libraries successfully installed and loaded.",
-          "<br />")
-        rv$logfile <- append(rv$logfile, prog)
-        shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
         rv$lib.status <- TRUE
       } else{   
-      i <- i + 1
-      setProgress(i/steps, detail = paste("Step",i,"of",steps))
         prog <- paste(paste0(i,"."),
           "<p><font color=\"#FF0000\"><b>",
           "ERROR: One or more libraries failed to install correctly.",

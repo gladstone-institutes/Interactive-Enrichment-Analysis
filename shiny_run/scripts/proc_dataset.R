@@ -108,11 +108,16 @@ save_genes_params <- function(data, ds.noext, method.dir, output.dir, excluded=F
 }
 
 map_ids <- function(input,org.db.name, fromType){
-  output <- bitr(input$gene, fromType = fromType,
-       toType = c("ENTREZID"),
-       OrgDb = eval(parse(text=org.db.name)))
-  join_cols = c("gene")
-  names(join_cols) <- fromType
-  output <- dplyr::left_join(output, input, by=join_cols)  
+  if (fromType != "ENTREZID") {
+    output <- bitr(input$gene, fromType = fromType,
+                   toType = c("ENTREZID"),
+                   OrgDb = eval(parse(text=org.db.name)))
+    join_cols = c("gene")
+    names(join_cols) <- fromType
+    output <- dplyr::left_join(output, input, by=join_cols)  
+  } else {
+    output <- input %>%
+      dplyr::mutate(ENTREZID = gene)
+  }
   return(output)
 }

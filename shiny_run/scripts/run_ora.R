@@ -24,6 +24,7 @@ run_ora<-function(dataset.name, db.name, output.name="run"){
     dplyr::filter(ora.set == 1) %>%
     dplyr::pull(ENTREZID)
   universe <- pull(geneList, ENTREZID)
+  universe <- as.character(universe) #not integers
   
   # Use entire genome if not a susbset (i.e., by size or by missing p.value) 
   if(!'p.value' %in% names(geneList) | !length(universe) > length(gene)){
@@ -45,7 +46,7 @@ run_ora<-function(dataset.name, db.name, output.name="run"){
     enrichResult <- setReadable(enrichResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
   
   #Prune for size
-  enrichResult@geneSets <- NULL
+  enrichResult@geneSets <- list()
   
   # Save objects
   gl.fn <- paste(file.prefix, db.name,"ora","geneList.rds", sep = "_")
