@@ -107,10 +107,10 @@ shinyServer(function(input, output, session) {
     data <- getTableData()
     if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
       if(!params$fromType %in% names(data)) # i.e., excluded cases
-        data[params$fromType] <- data$gene
+        data$SYMBOL <- data$gene
       switch (input$plot0,
               "Volcano plot" = shinyVolcano(data, params, input, output),
-              "Bar plot" = shinyBarplot(data, params, input, output)
+              "Bar plot" = shinyBarplot(data, input, output)
       )
     }
   }

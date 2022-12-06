@@ -233,15 +233,15 @@ shinyVolcano <- function(data, params, input, output){
   #handle selection
   selectLab.list <- input$selectLab
   if(length(selectLab.list) == 0){
-    selectLab.list <- head(data[[params$fromType]], input$topLab)
+    selectLab.list <- head(data$SYMBOL, input$topLab)
     if(input$method=='gsea')
-      selectLab.list <- c(head(data[[params$fromType]],as.integer(input$topLab/2)),
-                          tail(data[[params$fromType]],as.integer(input$topLab/2)))
+      selectLab.list <- c(head(data$SYMBOL,as.integer(input$topLab/2)),
+                          tail(data$SYMBOL,as.integer(input$topLab/2)))
   } 
   
   #plot 
   EnhancedVolcano(data,
-                  lab = data[[params$fromType]],
+                  lab = data$SYMBOL,
                   selectLab = selectLab.list,
                   drawConnectors = TRUE,
                   widthConnectors = 0.2,
@@ -262,18 +262,18 @@ shinyVolcano <- function(data, params, input, output){
 # Barplot #
 # - standard bar plot distinguishing up/down regulated genes, exposing options
 # for top n genes (or gene list), font size and legend position.
-shinyBarplot <- function(data, params, input, output){
+shinyBarplot <- function(data, input, output){
   
   #handle selection
   selectLab.list <- input$selectLab
   if(length(selectLab.list) == 0){
-    selectLab.list <- head(data[[params$fromType]], input$topLab)
+    selectLab.list <- head(data$SYMBOL, input$topLab)
     if(input$method=='gsea')
-      selectLab.list <- c(head(data[[params$fromType]],as.integer(input$topLab/2)),
-                          tail(data[[params$fromType]],as.integer(input$topLab/2)))
+      selectLab.list <- c(head(data$SYMBOL,as.integer(input$topLab/2)),
+                          tail(data$SYMBOL,as.integer(input$topLab/2)))
   } 
   #subset data accordingly
-  data <- dplyr::filter(data, !!as.name(params$fromType) %in% selectLab.list)
+  data <- dplyr::filter(data, SYMBOL %in% selectLab.list)
   
   #create a column with positive/negative expressed genes
   data$DEG <- NA
