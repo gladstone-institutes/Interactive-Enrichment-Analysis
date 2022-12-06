@@ -83,7 +83,8 @@ shinyServer(function(input, output, session) {
       # output$debug.text<-renderText(paste(input$datasets,collapse = ","))
       ds.fn <- file.path("../datasets",input$datasets[1])
       data.df <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
-      names(data.df) <- tolower(names(data.df)) #insist on lowercase
+      names(data.df) <- tolower(names(data.df)) #force lowercase
+      data.df$gene <- as.character(data.df$gene) #force characters
       checkTableData(data.df)
       return(data.df)
     }
@@ -367,7 +368,7 @@ shinyServer(function(input, output, session) {
       prog <- paste("Analysis start time: ",
                     format(start.time, "%F %H:%M:%S"),
                     "<br />",
-                    "Steps: ", steps, "<br />")
+                    "Number of steps = ", steps, "<br />")
       rv$logfile <- append(rv$logfile, prog)
       shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
       

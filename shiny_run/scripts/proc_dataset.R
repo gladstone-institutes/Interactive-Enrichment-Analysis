@@ -7,7 +7,8 @@ proc_dataset<-function(ds.name, org.db.name, fromType,
   # Objects from strings
   ds.fn <- file.path("../datasets",ds.name)
   dataset <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
-  names(dataset) <- tolower(names(dataset)) #insist on lower
+  names(dataset) <- tolower(names(dataset)) #force lowercase
+  dataset$gene <- as.character(dataset$gene) #force characters
   ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
   output.dir <- file.path("../",output.name, ds.noext)
   
@@ -109,16 +110,17 @@ save_genes_params <- function(data, ds.noext, method.dir, output.dir, excluded=F
 }
 
 map_ids <- function(input,org.db.name, fromType){
-  if (fromType != "ENTREZID") {
-    output <- bitr(input$gene, fromType = fromType,
-                   toType = c("ENTREZID"),
-                   OrgDb = eval(parse(text=org.db.name)))
-    join_cols = c("gene")
-    names(join_cols) <- fromType
-    output <- dplyr::left_join(output, input, by=join_cols)  
-  } else {
-    output <- input %>%
-      dplyr::mutate(ENTREZID = gene)
-  }
+  toType.list <- c("ENTREZID","SYMBOL")
+  if (fromType == "ENTREZID") 
+    toType.list <- c("SYMBOL")
+  
+  #perform ID mapping
+  output <- bitr(input$gene, fromType = fromType,
+                 toType = toType.list, 
+                 OrgDb = eval(parse(text=org.db.name)))
+  
+  join_cols = c("gene")
+  names(join_cols) <- fromType
+  output <- dplyr::left_join(output, input, by=join_cols)  
   return(output)
 }

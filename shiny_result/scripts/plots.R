@@ -116,7 +116,7 @@ shinyCnetplot <- function(resObject, geneList, input, output){
 # - starts with top n results, identifies the top n genes by frequency within
 # those results (secondary sort on fold.change) and then makes a tile plot with 
 # fold.change fill color using a balanced Brewer RdBu pallette
-shinyHeatmap <- function(resObject, data, params, input, output){
+shinyHeatmap <- function(resObject, data, input, output){
   
   #filter inputs options panel
   filterOptions(c("showCategory","showGene","category_label","label_format",
@@ -127,7 +127,7 @@ shinyHeatmap <- function(resObject, data, params, input, output){
   res <- tidyr::separate_rows(res, geneID, sep="\\/")
   #define secondary order and color mapping if available
   if('fold.change' %in% names(data)) {
-    res <- dplyr::left_join(res,data, by=c("geneID"=params$fromType))
+    res <- dplyr::left_join(res,data, by=c("geneID"="SYMBOL"))
   } else {
     res$fold.change = 0
   }
@@ -164,7 +164,7 @@ shinyHeatmap <- function(resObject, data, params, input, output){
 
 # BarplotResult #
 # - ...
-shinyBarplotResult <- function(resObject, data, params, input, output){
+shinyBarplotResult <- function(resObject, data, input, output){
   
   #filter inputs options panel
   filterOptions(c("showCategory","category_label","label_format","bar_by"))
@@ -174,7 +174,7 @@ shinyBarplotResult <- function(resObject, data, params, input, output){
   res <- tidyr::separate_rows(res, geneID, sep="\\/")
   #define secondary order and color mapping if available
   if('fold.change' %in% names(data)) {
-    res <- dplyr::left_join(res,data, by=c("geneID"=params$fromType))
+    res <- dplyr::left_join(res,data, by=c("geneID"="SYMBOL"))
   } else {
     res$fold.change = 0
   }

@@ -302,17 +302,15 @@ shinyServer(function(input, output, session) {
             "Concept network" = shinyCnetplot(resObject, getGeneList(), input, output) ,
             "Heatmap" = {
               data <- getTableData()
-              params <- getDataParams()
               if (input$method == "gsea")
                 resObject@result$geneID <- resObject@result$core_enrichment 
-              shinyHeatmap(resObject, data, params, input, output)
+              shinyHeatmap(resObject, data, input, output)
               },
             "Bar plot" = {
               data <- getTableData()
-              params <- getDataParams()
               if (input$method == "gsea")
                 resObject@result$geneID <- resObject@result$core_enrichment 
-              shinyBarplotResult(resObject, data, params, input, output)
+              shinyBarplotResult(resObject, data, input, output)
             }
             
     )
@@ -354,7 +352,7 @@ shinyServer(function(input, output, session) {
     #get result ID for selected row
     res.object.id <- resObject$ID[i]
     res.object.id <- gsub("\\.jpg$","",res.object.id) #pfocr ids
-    #get gene list for selected row
+    #get gene list for selected row. NOTE: always gene symbols!
     res.object.geneList <- ""
     if(input$method == "ora"){
       res.object.geneList <- resObject$geneID[i]
@@ -374,13 +372,13 @@ shinyServer(function(input, output, session) {
     #get up/down regulated if available
     if('p.value' %in% names(data) & 'fold.change' %in% names(data)) {
       entrez.up <- data %>%
-        dplyr::filter(!!as.name(params$fromType) %in% res.object.geneList) %>%
+        dplyr::filter(SYMBOL %in% res.object.geneList) %>%
         dplyr::filter(fold.change > params$ora.fc & p.value < params$ora.pv) %>%
         dplyr::rowwise() %>%
         dplyr::mutate(new.entrez = paste("Entrez","Gene",ENTREZID, sep = "_")) %>% 
         dplyr::pull(new.entrez) #always available in data
       entrez.dn <- data %>%
-        dplyr::filter(!!as.name(params$fromType) %in% res.object.geneList) %>%
+        dplyr::filter(SYMBOL %in% res.object.geneList) %>%
         dplyr::filter(fold.change < -params$ora.fc & p.value < params$ora.pv) %>%
         dplyr::rowwise() %>%
         dplyr::mutate(new.entrez = paste("Entrez","Gene",ENTREZID, sep = "_")) %>%
@@ -391,7 +389,7 @@ shinyServer(function(input, output, session) {
                              '&67A9CF=', entrez.dn)
     } else {
       entrez.all <- data %>%
-        dplyr::filter(!!as.name(params$fromType) %in% res.object.geneList.GET) %>%
+        dplyr::filter(SYMBOL %in% res.object.geneList.GET) %>%
         dplyr::rowwise() %>%
         dplyr::mutate(new.entrez = paste("Entrez","Gene",ENTREZID, sep = "_")) %>% 
         dplyr::pull(new.entrez) #always available in data
