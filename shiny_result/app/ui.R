@@ -1,5 +1,6 @@
 library(shinydashboard)
 library(shiny)
+library(shinyjs)
 library(shinyBS)
 library(DT)
 

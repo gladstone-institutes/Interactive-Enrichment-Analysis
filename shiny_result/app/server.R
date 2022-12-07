@@ -206,6 +206,8 @@ shinyServer(function(input, output, session) {
       unique(c("Pathway Figure",choices))
     else if (grepl("^GO:\\d+", sample.result.id))  #GO
       unique(c("Gene Ontology",choices))
+    else #GO without GOIDs
+      unique(c("Gene Ontology",choices))
   }
   
   #update database-dependent plot options
