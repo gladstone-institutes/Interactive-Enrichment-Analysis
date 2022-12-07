@@ -55,8 +55,9 @@ and list them for your review. This step is complete when you see ✔
 **Ready!**
 
 *Advanced: If you want to construct your own database collection, then
-add one or more GMT files to `shiny_run/databases/gmts/` and choose
-BUILD NEW DATABASE in the Databases panel.*
+add one or more GMT files with NCBI gene identifiers to 
+`shiny_run/databases/gmts/` and choose BUILD NEW DATABASE in the Databases 
+panel.*
 
 *Pro-tip: Between projects, be sure to update your RData or GMT files as
 new versions are released.*
@@ -109,11 +110,12 @@ Parameters" section of `shiny_run/app/global.R`.
 
 **Organisms**
 
-Supported species include human, mouse and rat, by default. But it is
-trivial to add support for [any orgDb
-species](https://bioconductor.org/packages/release/BiocViews.html#___OrgDb).
-Simply edit the `supported.org` list in the "Defaults and Parameters"
-section of `shiny_run/app/global.R`.
+Supported species include human and mouse, by default. In order 
+to add support for [any orgDb
+species](https://bioconductor.org/packages/release/BiocViews.html#___OrgDb), 
+edit the `supported.org` list in the "Defaults and Parameters"
+section of `shiny_run/app/global.R` and generate a collection of databases from
+GMTs with NCBI Gene identifiers.
 
 **Gene set min/max**
 
