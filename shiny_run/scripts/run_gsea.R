@@ -33,7 +33,7 @@ run_gsea<-function(dataset.name, db.name, output.name="run"){
     minGSSize = minGSSize,
     maxGSSize = maxGSSize,
     # pAdjustMethod="holm", #default is "BH"
-    pvalueCutoff = 1, #to limit results
+    pvalueCutoff = 0.1, #to limit results
     verbose=FALSE)
   if(!is.null(gseaResult))
     gseaResult <- setReadable(gseaResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
