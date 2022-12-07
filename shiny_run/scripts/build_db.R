@@ -7,10 +7,11 @@ library(magrittr)
 build_db <- function(gmt.list, db.name){
   
   #read gmt files and format gmt df objects
-  lapply(gmt.list, function(g){
+  for(g in gmt.list) {
     g.name <- gsub(".gmt","", g)
     g.fn <- file.path("shiny_run","databases","gmts",g)
     g.tg <- rWikiPathways::readGMT(g.fn)
+    g.df <- g.tg
     # special handling
     if(startsWith(g.tg$term[1], "GOBP_")){ #GO GMT
       g.df <- g.tg %>%
@@ -30,7 +31,7 @@ build_db <- function(gmt.list, db.name){
     }
     
     assign(g.name, g.df)
-  })
+  }
   
   db.name.list <- gsub(".gmt","", gmt.list)
   db.fn <- file.path("shiny_run","databases",paste(db.name,"RData", sep = "."))
