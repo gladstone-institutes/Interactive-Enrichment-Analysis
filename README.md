@@ -35,8 +35,9 @@ This will install some basic dependencies, download the project to your Working
 Directory (*Files* tab in RStudio) and launch the tool in your browser.
 
 *Advanced: Alternatively, you can `git clone` this repo and periodically
-perform `git pull` to update the code and database collections. Launch the app
-from RStudio (i.e., `Run App` on `global.R`) instead of `launch_app.R`*
+perform `git pull` to update the code and database collections. Install the 
+minimal dependencies listed in `launch_app.R` and launch from RStudio (i.e., 
+open any of the `shiny_run/app/` files and choose `Run App > Run in Window`*
 
 ## Databases
 
