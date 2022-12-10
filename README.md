@@ -26,6 +26,7 @@ The `launch_app.R` script will check your R dependencies and launch an interacti
 
 ```
 if(!require(devtools)) install.packages("devtools"); library(devtools)
+options(shiny.launch.browser = .rs.invokeShinyWindowExternal)
 source_url("https://raw.github.com/gladstone-institutes/Interactive-Enrichment-Analysis/main/launch_app.R")
 ```
 
