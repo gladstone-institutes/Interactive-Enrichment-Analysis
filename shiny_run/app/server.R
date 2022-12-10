@@ -32,8 +32,38 @@ shinyServer(function(input, output, session) {
     rv$db.status <- FALSE
     if (!input$rdata == ""){
       if(input$rdata == "BUILD NEW DATABASE"){
-        #TODO list GMT files... 
+        #handle GMT files... 
+        output$db.build <- renderUI({
+          selectInput(
+            "gmts",
+            "Choose one or more gmt files",
+            choices = c(list.files("../databases/gmts", ".gmt"),
+                        "SELECT ALL", "ADD NEW GMT FILES"),
+            selected = input$gmts,
+            multiple = T
+          )
+        })
+        for (input.gmt in input$gmts){
+          if(input.gmt =="ADD NEW GMT FILES"){
+            uploadGMTs()
+            return()
+          } else if (input.gmt =="SELECT ALL"){
+            updateSelectInput(session, "gmts", selected = list.files("../databases/gmts", ".gmt"))
+            return()
+          }
+        }
+        if (length(input$gmts) > 0){
+          # output$debug.text<-renderText(paste(input$gmts,collapse = ","))
+          output$gmt.upload <- renderUI({
+            tagList(
+              textInput("new.db.name", "New Database Name", "My_Database"),
+              actionButton("build.new.db", "Build Database"),
+              htmlOutput("db_progress")
+            )
+          })
+        }
       } else {
+        output$db.build <- NULL
         rdata.fn <- file.path("../databases",input$rdata)
         db.list <- load(rdata.fn, globalenv())
         for (db in db.list){
@@ -52,6 +82,58 @@ shinyServer(function(input, output, session) {
     }
     return(db.list)
   }
+  
+  uploadGMTs <- function(){
+    output$db.list.title <- NULL
+    output$gmt.upload <- renderUI({
+      column( width = 12,
+              fileInput("gmt.file", "Upload GMT Files",
+                        multiple = TRUE,
+                        accept = c("text/tab-separated-values",
+                                   ".gmt")),
+              actionButton("cancel.gmt.upload", "Cancel")
+      )
+    })
+  }
+  
+  #when upload is cancels
+  observeEvent(input$cancel.gmt.upload, {
+    updateSelectInput(session, "gmts", selected = setdiff(input$gmts, "ADD NEW GMT FILES"),
+                      choices = c(list.files("../databases/gmts", ".gmt"),
+                                  "SELECT ALL", "ADD NEW GMT FILES"))
+    getDatabaseSet()
+    output$gmt.upload <- NULL
+  })
+  
+  #when gmt upload is performed
+  observeEvent(input$gmt.file, { 
+    # output$debug.text<-renderText(paste(input$gmt.file$name,collapse = ","))
+    uploaded.gmt.files = file.rename(input$gmt.file$datapath, paste0(input$gmt.file$name))
+    uploaded.gmt.files = paste0(input$gmt.file$name)
+    file.copy(uploaded.gmt.files, "../databases/gmts/.")
+    file.remove(uploaded.gmt.files)
+    updateSelectInput(session, "gmts", selected = c(input$gmt,input$gmt.file$name),
+                      choices = c(list.files("../databases/gmts", ".gmt"),
+                                  "SELECT ALL", "ADD NEW GMT FILES"))
+    getDatabaseSet()
+    output$gmt.upload <- NULL
+  })
+  
+  #when build button is clicked
+  observeEvent(input$build.new.db, {
+    # output$debug.text<-renderText(paste(input$gmts,collapse = ","))
+    shinyjs::html(id = 'db_progress', add = TRUE, 
+                  html = "Building new database...")
+    source("../scripts/build_db.R")
+    build_db(input$gmts, input$new.db.name)
+    updateSelectInput(session, "rdata", 
+                      selected = paste(input$new.db.name,"RData",sep = "."),
+                      choices = c(list.files("../databases", ".RData"),
+                                  "BUILD NEW DATABASE"))
+    getDatabaseSet()
+    output$db.build <- NULL
+    output$gmt.upload <- NULL
+  })
   
   output$db.list <- renderTable({
     getDatabaseSet()

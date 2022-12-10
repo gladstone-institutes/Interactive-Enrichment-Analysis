@@ -84,8 +84,10 @@ dashboardPage(
           selected = NULL,
           multiple = F
         ),
+        uiOutput("db.build"),
         textOutput("db.list.title"),
         tableOutput("db.list"),
+        uiOutput("gmt.upload"),
         htmlOutput("db.ready")
       ),
       box(id = "ds",

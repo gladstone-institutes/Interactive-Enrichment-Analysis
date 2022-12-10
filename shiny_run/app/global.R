@@ -1,3 +1,5 @@
+options(shiny.maxRequestSize=10*1024^2) #10MB file upload size limit
+
 #Defaults and Parameters
 minGSSize.default <- 3 # min database geneset size (see clusterProfiler)
 maxGSSize.default <- 500 # max database geneset size (see clusterProfiler)
@@ -59,6 +61,10 @@ history.go(0)
 "
 
 # Check databases
+# gmt.list <- list.files("../databases/gmts", ".gmt")
+# if(length(gmt.list) > 1)
+#   gmt.list <- c(gmt.list,"SELECT ALL")
+# gmt.list <- c(gmt.list,"ADD NEW GMT FILES")
 rdata.list <- list.files("../databases", ".RData")
 rdata.list <- c(rdata.list,"BUILD NEW DATABASE")
 

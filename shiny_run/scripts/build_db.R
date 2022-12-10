@@ -9,7 +9,7 @@ build_db <- function(gmt.list, db.name){
   #read gmt files and format gmt df objects
   for(g in gmt.list) {
     g.name <- gsub(".gmt","", g)
-    g.fn <- file.path("shiny_run","databases","gmts",g)
+    g.fn <- file.path("..","databases","gmts",g)
     g.tg <- rWikiPathways::readGMT(g.fn)
     g.df <- g.tg
     # special handling
@@ -34,6 +34,8 @@ build_db <- function(gmt.list, db.name){
   }
   
   db.name.list <- gsub(".gmt","", gmt.list)
-  db.fn <- file.path("shiny_run","databases",paste(db.name,"RData", sep = "."))
+  db.fn <- file.path("..","databases",paste(db.name,"RData", sep = "."))
   save(list=db.name.list, file=db.fn)
+  
+  return()
 }
