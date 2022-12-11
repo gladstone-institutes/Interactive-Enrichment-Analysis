@@ -1,7 +1,7 @@
 # Fetches GMT files for building database collections (GH Actions)
 
 ## Datestamp for downloads
-DATE=$(date -u +%Y%m%d) #change argto --utc (linux), -u (macOS)
+DATE=$(date -utc +%Y%m%d) #change argto --utc (linux), -u (macOS)
 
 ## WikiPathways
 WP_REL=$(curl --silent https://wikipathways-data.wmcloud.org/current/gmt/ | grep -o -m 1 'wikipathways-\d*' | sed 's/wikipathways-//' | head -1)  
