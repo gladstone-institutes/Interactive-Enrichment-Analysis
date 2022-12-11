@@ -36,9 +36,7 @@ jobs:
 
       - name: Build database
         run: |
-          cd shiny_run/scripts/
-          Rscript build_db_ghaction.R
-          cd ../../
+          Rscript -e "source('shiny_run/scripts/build_db_ghaction.R')"
 
       - name: Commit report
         run: |
