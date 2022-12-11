@@ -32,13 +32,13 @@ jobs:
         run: |
           install.packages(c("dplyr","magrittr","BiocManager"))
           BiocManager::install("rWikiPathways", ask = FALSE)
-          source("shiny_run/scripts/build_db.R")
         shell: Rscript {0}
 
       - name: Build database
         run: |
           DATE="$(date --utc +%Y%m%d)"
           cd shiny_run/scripts/
+          Rscript build_db.R
           Rscript -e 'build_db(list.files("shiny_run/databases/gmts", ".*_hs_.*.gmt"), paste0("Hs_","$DATE"))'
           Rscript -e 'build_db(list.files("shiny_run/databases/gmts", ".*_mm_.*.gmt"), paste0("Mm_","$DATE"))'
           cd ../../
