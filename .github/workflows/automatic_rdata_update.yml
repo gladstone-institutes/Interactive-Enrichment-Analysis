@@ -1,0 +1,58 @@
+name: Update database collections
+
+on:
+  schedule:
+  - cron: "0 0 15 * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true 
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+          ref: main
+      - name: Fetch GMT files
+        id: gmts
+        run: |
+          sudo apt-get install libcurl4-openssl-dev 
+          ./shiny_run/scripts/fetch_gmts.sh     
+        
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install packages
+        run: |
+          install.packages(c("dplyr","magrittr"))
+          remotes::install_cran("BiocManager")
+          BiocManager::install("rWikiPathways", ask = FALSE)
+          source("shiny_run/scripts/build_db.R")
+        shell: Rscript {0}
+
+      - name: Build database
+        run: |
+          DATE=$(date -utc +%Y%m%d)
+          GMT_LIST_HS=list.files("shiny_run/databases/gmts", ".*_hs_.*.gmt")
+          GMT_LIST_MM=list.files("shiny_run/databases/gmts", ".*_mm_.*.gmt")
+          cd shiny_run/scripts/
+          Rscript -e 'build_db($GMT_LIST_HS, $DATE)'
+          Rscript -e 'build_db($GMT_LIST_MM, $DATE)'
+          cd ../../
+
+      - name: Commit report
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add shiny_run/databases/*.RData
+          if git diff --exit-code --staged; then
+              echo "No changes"
+          else
+              git commit -m 'Update RData database collections'
+              git push
+          fi
