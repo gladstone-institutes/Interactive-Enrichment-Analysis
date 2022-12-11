@@ -39,8 +39,8 @@ jobs:
         run: |
           DATE="$(date --utc +%Y%m%d)"
           cd shiny_run/scripts/
-          Rscript -e 'build_db(list.files("shiny_run/databases/gmts", ".*_hs_.*.gmt"), paste0("Hs_",$DATE))'
-          Rscript -e 'build_db(list.files("shiny_run/databases/gmts", ".*_mm_.*.gmt"), paste0("Mm_",$DATE))'
+          Rscript -e 'build_db(list.files("shiny_run/databases/gmts", ".*_hs_.*.gmt"), paste0("Hs_","$DATE"))'
+          Rscript -e 'build_db(list.files("shiny_run/databases/gmts", ".*_mm_.*.gmt"), paste0("Mm_","$DATE"))'
           cd ../../
 
       - name: Commit report
