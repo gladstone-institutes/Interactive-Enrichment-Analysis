@@ -4,7 +4,7 @@ library(rWikiPathways)
 library(dplyr)
 library(magrittr)
 
-#GH Action version generates gmt.list and db.name
+#GH Action version generates gmt.list and db.name at runtime
 orgs <- c("Hs","Mm")
 for(o in orgs){
   Sys.setenv(TZ="GMT")
