@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true 
 
 jobs:
-  dependencies:
+  download-and-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +37,7 @@ jobs:
 
       - name: Build database
         run: |
-          DATE=$(date -utc +%Y%m%d)
+          DATE=$(date --utc +%Y%m%d)
           GMT_LIST_HS=list.files("shiny_run/databases/gmts", ".*_hs_.*.gmt")
           GMT_LIST_MM=list.files("shiny_run/databases/gmts", ".*_mm_.*.gmt")
           cd shiny_run/scripts/
