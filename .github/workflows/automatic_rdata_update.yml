@@ -23,7 +23,7 @@ jobs:
         id: gmts
         run: |
           sudo apt-get install libcurl4-openssl-dev 
-          ./shiny_run/scripts/fetch_gmts.sh     
+          shiny_run/scripts/fetch_gmts.sh     
         
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
