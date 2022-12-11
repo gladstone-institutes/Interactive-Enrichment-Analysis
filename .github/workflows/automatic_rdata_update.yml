@@ -44,6 +44,7 @@ jobs:
           git config --global user.email 'action@github.com'
           if [ "$(ls -A shiny_run/databases/temp)" ]; then
             git rm -f shiny_run/databases/archive/*.RData
+            mkdir shiny_run/databases/archive
             mv shiny_run/databases/*.RData shiny_run/databases/archive/
             git add -f shiny_run/databases/archive/*.RData
             mv shiny_run/databases/temp/*.RData shiny_run/databases/
