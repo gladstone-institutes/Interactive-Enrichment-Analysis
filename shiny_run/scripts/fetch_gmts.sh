@@ -4,7 +4,7 @@
 DATE=$(date --utc +%Y%m%d) #change argto --utc (linux), -u (macOS)
 
 ## WikiPathways
-WP_REL=$(curl --silent https://wikipathways-data.wmcloud.org/current/gmt/ | grep -o -m 1 'wikipathways-\d*' | sed 's/wikipathways-//' | head -1)  
+WP_REL=$(curl --silent https://wikipathways-data.wmcloud.org/current/gmt/ | grep -o -m 1 'wikipathways-\d*' | sed 's/wikipathways-//' | head -n 1)  
 wget -O "shiny_run/databases/gmts/wp_hs_"${DATE}".gmt" "https://wikipathways-data.wmcloud.org/current/gmt/wikipathways-"${WP_REL}"-gmt-Homo_sapiens.gmt"
 wget -O "shiny_run/databases/gmts/wp_mm_"${DATE}".gmt" "https://wikipathways-data.wmcloud.org/current/gmt/wikipathways-"${WP_REL}"-gmt-Mus_musculus.gmt"
 
