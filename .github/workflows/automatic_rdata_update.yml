@@ -33,6 +33,11 @@ jobs:
           install.packages(c("dplyr","magrittr","BiocManager"))
           BiocManager::install("rWikiPathways", ask = FALSE)
         shell: Rscript {0}
+        
+      - name: Rotate archive
+        run: |
+          rm -f shiny_run/databases/archive/*.RData
+          mv shiny_run/databases/*.RData shiny_run/databases/archive/.
 
       - name: Build database
         run: |
