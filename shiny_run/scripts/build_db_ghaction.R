@@ -40,6 +40,7 @@ for(o in orgs){
   }
   
   db.name.list <- gsub(".gmt","", gmt.list)
-  db.fn <- file.path("shiny_run","databases",paste(db.name,"RData", sep = "."))
+  dir.create(file.path("shiny_run","databases","temp"))
+  db.fn <- file.path("shiny_run","databases","temp",paste(db.name,"RData", sep = "."))
   save(list=db.name.list, file=db.fn)
 }
