@@ -30,8 +30,7 @@ jobs:
 
       - name: Install packages
         run: |
-          install.packages(c("dplyr","magrittr"))
-          remotes::install_cran("BiocManager")
+          install.packages(c("dplyr","magrittr","BiocManager"))
           BiocManager::install("rWikiPathways", ask = FALSE)
           source("shiny_run/scripts/build_db.R")
         shell: Rscript {0}
