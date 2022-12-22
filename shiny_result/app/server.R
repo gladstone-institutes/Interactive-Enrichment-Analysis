@@ -213,8 +213,8 @@ shinyServer(function(input, output, session) {
   #update database-dependent plot options
   observeEvent(input$database, {
     #plot2
-    plot2.gsea.choices = c("GSEA score","Linkouts","STRING network")
-    plot2.ora.choices = c("Linkouts","STRING network")
+    plot2.gsea.choices = c("GSEA score","Linkouts")
+    plot2.ora.choices = c("Linkouts")
     if(input$method == "gsea"){
       plot2.gsea.choices <- appendPerDatabase(plot2.gsea.choices)
       updateSelectInput(session, "plot2", choices = plot2.gsea.choices )
@@ -241,8 +241,8 @@ shinyServer(function(input, output, session) {
       server = TRUE
     )
     #plot2
-    plot2.gsea.choices = c("GSEA score","Linkouts","STRING network")
-    plot2.ora.choices = c("Linkouts","STRING network")
+    plot2.gsea.choices = c("GSEA score","Linkouts")
+    plot2.ora.choices = c("Linkouts")
     if(input$method == "gsea"){
       plot2.gsea.choices <- appendPerDatabase(plot2.gsea.choices)
       updateSelectInput(session, "plot2", choices = plot2.gsea.choices )

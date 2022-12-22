@@ -213,7 +213,7 @@ dashboardPage(
                    selectInput(
                      "plot2",
                      "Choose a plot type for a selected result:",
-                     choices =c("GSEA score","STRING network")
+                     choices =c("GSEA score")
                    )
             )
           ),
