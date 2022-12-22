@@ -14,9 +14,6 @@ wget -O "shiny_run/databases/gmts/pfocr_hs_"${DATE}".gmt" "https://wikipathways-
 wget -O "shiny_run/databases/gmts/pfocr_mm_"${DATE}".gmt" "https://wikipathways-data.wmcloud.org/pfocr/pfocr-"${PFOCR_REL}"-gmt-Mus_musculus.gmt"
 
 #Gene Ontology
-GO_HS_REL=$(curl --silent https://www.gsea-msigdb.org/gsea/msigdb/human/collections.jsp | grep -o 'c5\.go\.bp\.v.*\.entrez\.gmt' | sed 's/c5\.go\.bp\.v//;s/\.entrez\.gmt//')
-GO_MM_REL=$(curl --silent https://www.gsea-msigdb.org/gsea/msigdb/mouse/collections.jsp | grep -o 'm5\.go\.bp\.v.*\.entrez\.gmt' | sed 's/m5\.go\.bp\.v//;s/\.entrez\.gmt//')
-wget -O "shiny_run/databases/gmts/go_hs_"${DATE}".gmt" "https://data.broadinstitute.org/gsea-msigdb/msigdb/release/"${GO_HS_REL}"/c5.go.bp.v"${GO_HS_REL}".entrez.gmt"
-wget -O "shiny_run/databases/gmts/go_mm_"${DATE}".gmt" "https://data.broadinstitute.org/gsea-msigdb/msigdb/release/"${GO_MM_REL}"/m5.go.bp.v"${GO_MM_REL}".entrez.gmt"
-
+wget -O "shiny_run/databases/gmts/go_hs_"${DATE}".gmt" "http://download.baderlab.org/EM_Genesets/current_release/Human/entrezgene/GO/Human_GO_bp_no_GO_iea_entrezgene.gmt"
+wget -O "shiny_run/databases/gmts/go_mm_"${DATE}".gmt" "http://download.baderlab.org/EM_Genesets/current_release/Mouse/entrezgene/GO/MOUSE_GO_bp_no_GO_iea_entrezgene.gmt"
 
