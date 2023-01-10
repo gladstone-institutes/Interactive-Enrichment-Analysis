@@ -19,7 +19,7 @@ for(o in orgs){
     g.tg <- rWikiPathways::readGMT(g.fn)
     g.df <- g.tg
     # special handling
-    if(startsWith(g.tg$term[1], "GOBP_")){ #GO GMT
+    if(grepl("%GOBP%", g.tg$term[1])){ #GO GMT
       g.df <- rWikiPathways::readPathwayGMT(g.fn) %>%
         dplyr::rename(term = wpid) %>%
         dplyr::mutate(name = paste0(toupper(substr(name,1,1)),tolower(substr(name,2,nchar(name))))) %>%
