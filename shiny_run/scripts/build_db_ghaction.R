@@ -20,11 +20,10 @@ for(o in orgs){
     g.df <- g.tg
     # special handling
     if(startsWith(g.tg$term[1], "GOBP_")){ #GO GMT
-      g.df <- g.tg %>%
-        dplyr::mutate(term = gsub("GOBP_","",term)) %>%
-        dplyr::mutate(term = gsub("_"," ",term)) %>%
-        dplyr::mutate(term = tolower(term)) %>%
-        dplyr::mutate(name = term)
+      g.df <- rWikiPathways::readPathwayGMT(g.fn) %>%
+        dplyr::rename(term = wpid) %>%
+        dplyr::mutate(name = paste0(toupper(substr(name,1,1)),tolower(substr(name,2,nchar(name))))) %>%
+        dplyr::select(c(name, term, gene))
     } else if (grepl("%WikiPathways_", g.tg$term[1])) { #WP GMT
       g.df <- rWikiPathways::readPathwayGMT(g.fn) %>%
         dplyr::rename(term = wpid) %>%
