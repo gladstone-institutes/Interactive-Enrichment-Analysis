@@ -186,6 +186,14 @@ A second shiny app is allows you to interactively explore results and
 download individual files. Its side panel is organized in the same way
 as the output folders.
 
+To relaunch the results app at any time, navigate to the top-level directory and
+-   **Copy/paste these lines into the Console and hit return:**
+
+```
+options(shiny.launch.browser = .rs.invokeShinyWindowExternal)
+source("view_results.R")
+```
+
 #### **Data Tab**
 
 <img src="shiny_run/assets/shiny_results_data_ora.png" width="600" />
