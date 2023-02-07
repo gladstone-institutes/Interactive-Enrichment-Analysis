@@ -70,7 +70,7 @@ new versions are released.*
 A sample dataset `E-GEOD-30573.csv` ([Voineagu
 2011](https://europepmc.org/article/MED/21614001)) is provided to
 illustrate the required format. *A `gene` column is always required.*
-Columns named `rank`, `p.value`, and `fold.change` are also recognized
+Columns named `rank`, `p.value`, and `fold.change` (log2FoldChange) are also recognized
 for additional analysis options. All other columns are ignored.
 
 -   **In the *Datasets* panel, choose one more more datasets to analyze
