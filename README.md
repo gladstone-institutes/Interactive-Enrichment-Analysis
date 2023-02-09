@@ -84,10 +84,10 @@ analyzed in separate runs.
 
 The supported formats include:
 
-   * a simple list of genes (for ORA only)
-   * a list of genes with a `rank` column (for GSEA only)
-   * a list of genes with a `p.value` column (for GSEA and ORA)
-   * a list of genes with `p.value` and `fold.change` columns (for GSEA
+     - a simple list of genes (for ORA only)
+     - a list of genes with a `rank` column (for GSEA only)
+     - a list of genes with a `p.value` column (for GSEA and ORA)
+     - a list of genes with `p.value` and `fold.change` columns (for GSEA
     and ORA)
 
 *Caution: For a given run, all datasets are assumed to have the same
