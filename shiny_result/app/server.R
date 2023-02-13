@@ -405,7 +405,7 @@ shinyServer(function(input, output, session) {
         "btn-primary",
         "https://upload.wikimedia.org/wikipedia/commons/3/34/Wplogo_500.png",
         "View the selected pathway at WikiPathways",
-        paste0('https://new.wikipathways.org/pathways/',
+        paste0('https://www.wikipathways.org/pathways/',
                res.object.id),
         "WikiPathways")
     } else if (grepl("^PMC\\d+__", res.object.id)) { #PFOCR
