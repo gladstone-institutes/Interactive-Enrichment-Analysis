@@ -526,7 +526,7 @@ shinyServer(function(input, output, session) {
       status <- sapply(p.load.libs,require,character.only = TRUE)
       #bioc 
       bioc.load.libs <- c(bioc.load.libs,  rv$params$org.db.name)
-      BiocManager::install(bioc.load.libs, update = FALSE)
+      BiocManager::install(bioc.load.libs, update=FALSE, force=TRUE)
       invisible(lapply(bioc.load.libs, function(x) library(x, character.only=TRUE)))
       if(all(status)){
         rv$lib.status <- TRUE
