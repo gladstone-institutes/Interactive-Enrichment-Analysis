@@ -21,6 +21,10 @@ run_gsea<-function(dataset.name, db.name, output.name="run"){
   geneList <- readRDS(file.path(output.dir, "gsea",gl.fn))
 
   # Sorted named list for clusterProfiler, a.k.a. geneList
+  ## pre-ranking
+  # geneList <- geneList %>%
+  #   mutate(rank = rank(rank,  ties.method = "random")) %>%
+  #   arrange(desc(rank))
   ranked.genes.entrez.nl<-geneList$rank
   names(ranked.genes.entrez.nl)<-geneList$ENTREZID
   geneList <- sort(ranked.genes.entrez.nl, decreasing = T)
