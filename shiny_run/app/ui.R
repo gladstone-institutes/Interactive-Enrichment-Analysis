@@ -110,6 +110,7 @@ dashboardPage(
         uiOutput("run.params"),
         uiOutput("ora.params"),
         htmlOutput("analysis.plan"),
+        uiOutput("plan.params"),
         htmlOutput("ds.ready")
       ),
       uiOutput("progress")

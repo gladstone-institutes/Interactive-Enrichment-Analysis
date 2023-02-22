@@ -23,30 +23,30 @@ plot_results<- function(resObject, geneList, ds.noext, output.dir, db.name, meth
   ggplot2::ggsave(p, file = file.path(output.dir, methodType,"plots",dotcnt.fn), 
          width = 2400, height = 2400, units = "px", device='pdf')
   
-  p <- enrichplot::cnetplot(resObject, foldChange=geneList,
-                categorySize="geneNum", 
-                cex_label_category = 0.8, 
-                cex_label_gene = 1.0)
-  cnet1.fn <- paste(ds.noext, db.name, methodType,"cnet1.pdf", sep = "_")
-  ggplot2::ggsave(p, file = file.path(output.dir, methodType,"plots",cnet1.fn), 
-         width = 2400, height = 2400, units = "px", device='pdf')
-  
-  p <- enrichplot::cnetplot(resObject, foldChange=geneList, 
-                circular = TRUE, colorEdge = TRUE, 
-                cex_label_category = 0.8, 
-                cex_label_gene = 1.0) 
-  cnet2.fn <- paste(ds.noext, db.name, methodType,"cnet2.pdf", sep = "_")
-  ggplot2::ggsave(p, file = file.path(output.dir, methodType,"plots",cnet2.fn), 
-         width = 2400, height = 2400, units = "px", device='pdf')
-  
-  data.emap <- pairwise_termsim(resObject)
-  p <- enrichplot::emapplot(data.emap, 
-                showCategory = 20,
-                cex_label_category=0.7,
-                layout="nicely") #alt layouts: "kk","sugiyama","nicely","fr", "gem","lgl","mds"
-  emap.fn <- paste(ds.noext, db.name, methodType,"emap.pdf", sep = "_")
-  ggplot2::ggsave(p, file = file.path(output.dir, methodType,"plots",emap.fn), 
-         width = 2400, height = 2400, units = "px", device='pdf')
+  # p <- enrichplot::cnetplot(resObject, foldChange=geneList,
+  #               categorySize="geneNum", 
+  #               cex_label_category = 0.8, 
+  #               cex_label_gene = 1.0)
+  # cnet1.fn <- paste(ds.noext, db.name, methodType,"cnet1.pdf", sep = "_")
+  # ggplot2::ggsave(p, file = file.path(output.dir, methodType,"plots",cnet1.fn), 
+  #        width = 2400, height = 2400, units = "px", device='pdf')
+  # 
+  # p <- enrichplot::cnetplot(resObject, foldChange=geneList, 
+  #               circular = TRUE, colorEdge = TRUE, 
+  #               cex_label_category = 0.8, 
+  #               cex_label_gene = 1.0) 
+  # cnet2.fn <- paste(ds.noext, db.name, methodType,"cnet2.pdf", sep = "_")
+  # ggplot2::ggsave(p, file = file.path(output.dir, methodType,"plots",cnet2.fn), 
+  #        width = 2400, height = 2400, units = "px", device='pdf')
+  # 
+  # data.emap <- pairwise_termsim(resObject)
+  # p <- enrichplot::emapplot(data.emap, 
+  #               showCategory = 20,
+  #               cex_label_category=0.7,
+  #               layout="nicely") #alt layouts: "kk","sugiyama","nicely","fr", "gem","lgl","mds"
+  # emap.fn <- paste(ds.noext, db.name, methodType,"emap.pdf", sep = "_")
+  # ggplot2::ggsave(p, file = file.path(output.dir, methodType,"plots",emap.fn), 
+  #        width = 2400, height = 2400, units = "px", device='pdf')
   
   
   # # GSEA ONLY

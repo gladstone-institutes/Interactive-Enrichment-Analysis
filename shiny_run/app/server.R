@@ -150,6 +150,7 @@ shinyServer(function(input, output, session) {
     output$sample.ds.title <- NULL
     output$run.params <- NULL
     output$ora.params <- NULL
+    output$plan.params <- NULL
     rv$ds.status <- FALSE
     for (input.ds in input$datasets){
       if(input.ds =="ADD NEW DATASETS"){
@@ -178,6 +179,14 @@ shinyServer(function(input, output, session) {
     ds.names <- names(data.df)
     ds.names.in <- intersect(analyzed.columns, ds.names)
     ds.names.out <- setdiff(analyzed.columns, ds.names)
+    #GUESS FROMTYPE -- cause refresh bug
+    # sample.type <- data.df$gene[1]
+    # for (i in seq_along(supported.idTypes.patterns)) {
+    #   if (grepl(supported.idTypes.patterns[i], sample.type)){
+    #     rv$params$fromType <- names(supported.idTypes.patterns[i])
+    #     break #at most specific match
+    #   }
+    # }
     #GENE COLUMN CHECK
     if(!'gene' %in% ds.names.in){
       output$ds.msg <- renderText({
@@ -200,23 +209,6 @@ shinyServer(function(input, output, session) {
                             "<i>",paste(ds.names.in, collapse =", "),"</i>",
                             "</b>",output.ds.msg.optional,"</p>")
       output$ds.msg <- renderText({ output.ds.msg })
-      #SET METHODS and PLAN
-      rv$params$run.ora <- TRUE
-      rv$plan <- "Analysis plan: <b>run ORA only</b> (GSEA requires <i>rank</i> or <i>p.value</i> column)"
-      if('p.value' %in% ds.names.in | 'rank' %in% ds.names.in ){
-        rv$params$run.gsea <- TRUE
-        rv$plan <- "Analysis plan: <b>run ORA and GSEA</b>"
-      } else {
-        rv$params$run.gsea <- FALSE
-      }
-      #SET FROMTYPE
-      sample.type <- data.df$gene[1]
-      for (i in seq_along(supported.idTypes.patterns)) {
-        if (grepl(supported.idTypes.patterns[i], sample.type)){
-          rv$params$fromType <- names(supported.idTypes.patterns[i])
-          break #at most specific match
-        } 
-      }
       #SET PARAMS
       #choose id type (fromType for ID mapping)
       output$run.params <- renderUI({
@@ -273,6 +265,7 @@ shinyServer(function(input, output, session) {
           )
         )
       })
+      rv$plan <- "Here are your analysis options:"
       # ORA ONLY: fold.change and p.value
       #set min/maxGSSize
       if ('fold.change' %in% ds.names & 'p.value' %in% ds.names){
@@ -309,12 +302,67 @@ shinyServer(function(input, output, session) {
           )
         })
       } # end if ORA
+      #SET METHODS Checkbox and PLAN
+      if (!'p.value' %in% ds.names.in && !'rank' %in% ds.names.in){
+        output$plan.params <- renderUI({
+          tagList(
+            checkboxInput(
+              "runORA",
+              "Run ORA",
+              value = TRUE
+            ),
+            shinyBS::bsTooltip("runORA", 
+                               "Whether to run ORA analysis", 
+                               placement = "bottom", trigger = "hover")
+          )
+        })
+      } else if(!'p.value' %in% ds.names.in && 'rank' %in% ds.names.in){
+        output$plan.params <- renderUI({
+          tagList(
+            checkboxInput(
+              "runGSEA",
+              "Run GSEA",
+              value = TRUE
+            ),
+            shinyBS::bsTooltip("runGSEA", 
+                               "Whether to run GSEA", 
+                               placement = "bottom", trigger = "hover")
+          )
+        })
+      } else {
+        output$plan.params <- renderUI({
+          tagList(
+            checkboxInput(
+              "runORA",
+              "Run ORA",
+              value = TRUE
+            ),
+            shinyBS::bsTooltip("runORA", 
+                               "Whether to run ORA analysis", 
+                               placement = "bottom", trigger = "hover"),
+            checkboxInput(
+              "runGSEA",
+              "Run GSEA",
+              value = TRUE
+            ),
+            shinyBS::bsTooltip("runGSEA", 
+                               "Whether to run GSEA", 
+                               placement = "bottom", trigger = "hover")
+          )
+        })
+      }
       # dataset is ready if we get to the end of this function
       rv$ds.status <- TRUE
     } # end if gene column
   }
   
   # Stash params
+  observeEvent(input$runORA, {
+    rv$params$run.ora <- input$runORA
+  })  
+  observeEvent(input$runGSEA, {
+    rv$params$run.gsea <- input$runGSEA
+  })  
   observeEvent(input$fromtype, {
     rv$params$fromType <- input$fromtype
   })
@@ -445,9 +493,9 @@ shinyServer(function(input, output, session) {
       run.db.list <- strsplit(rv$params$db.list, ",")[[1]]
       run.ds.list <- input$datasets
       steps <- 1 + #libs
-        length(run.ds.list) + #proc_datasets
-        length(run.ds.list) * length(run.db.list) #run_ora
-      i <- 0
+        length(run.ds.list) #proc_datasets
+      if (rv$params$run.ora)
+        steps <- steps + length(run.ds.list) * length(run.db.list) #run_ora
       if (rv$params$run.gsea)
         steps <- steps + length(run.ds.list) * length(run.db.list) #run_gsea
       
@@ -463,7 +511,7 @@ shinyServer(function(input, output, session) {
       shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
       
       #load libs
-      i <- i + 1
+      i <- 1
       setProgress(i/steps, detail = paste("Step",i,"of",steps))
       prog <- paste(paste0(i,"."),
                     "Loading required R libraries (this may take a while the first time)",
@@ -520,26 +568,29 @@ shinyServer(function(input, output, session) {
           #also save params
           ds.noext <- strsplit(ds.name,"\\.")[[1]][1]
           output.dir <- file.path("../",output.name, ds.noext)
-          this.fn <- paste0(ds.noext, "__ora_params.rds")
-          saveRDS(rv$params, file.path(output.dir,"ora",this.fn)) 
+          if(rv$params$run.ora){
+            this.fn <- paste0(ds.noext, "__ora_params.rds")
+            saveRDS(rv$params, file.path(output.dir,"ora",this.fn))
+          }
           if(rv$params$run.gsea){
             this.fn <- paste0(ds.noext, "__gsea_params.rds")
             saveRDS(rv$params, file.path(output.dir,"gsea",this.fn)) 
           }
-
         }
         #run analyses on each dataset
         for (ds.name in run.ds.list){
           for (db.name in run.db.list){
-            i <- i + 1
-            setProgress(i/steps, detail = paste("Step",i,"of",steps))
-            prog <- paste(paste0(i,"."),
-              "Running ORA on",
-              ds.name, "against", db.name,
-              "<br />")
-            rv$logfile <- append(rv$logfile, prog)
-            shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
-            run_ora(ds.name, db.name, output.name)
+            if(rv$params$run.ora){
+              i <- i + 1
+              setProgress(i/steps, detail = paste("Step",i,"of",steps))
+              prog <- paste(paste0(i,"."),
+                            "Running ORA on",
+                            ds.name, "against", db.name,
+                            "<br />")
+              rv$logfile <- append(rv$logfile, prog)
+              shinyjs::html(id = 'run_progress', add = TRUE, html = prog)
+              run_ora(ds.name, db.name, output.name)
+            }
             if(rv$params$run.gsea){
               i <- i + 1
               setProgress(i/steps, detail = paste("Step",i,"of",steps))
