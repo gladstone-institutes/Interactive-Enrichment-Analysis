@@ -522,7 +522,7 @@ shinyServer(function(input, output, session) {
       options(install.packages.compile.from.source = "never")
       if (!require("pacman")) install.packages("pacman"); library(pacman)
       #cran 
-      p_load(p.load.libs, update = TRUE, try.bioconductor=TRUE, character.only = TRUE)
+      p_load(p.load.libs, try.bioconductor=TRUE, character.only = TRUE)
       status <- sapply(p.load.libs,require,character.only = TRUE)
       #bioc 
       bioc.load.libs <- c(bioc.load.libs,  rv$params$org.db.name)

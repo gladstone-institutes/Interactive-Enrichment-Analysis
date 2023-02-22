@@ -16,7 +16,7 @@ initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", "DT","BiocMan
 options(install.packages.check.source = "no")
 options(install.packages.compile.from.source = "never")
 if (!require("pacman")) install.packages("pacman"); library(pacman)
-p_load(initial.libs, update = TRUE, try.bioconductor=TRUE, character.only = TRUE)
+p_load(initial.libs, try.bioconductor=TRUE, character.only = TRUE)
 status <- sapply(initial.libs,require,character.only = TRUE)
   if(all(status)){
     print("All initial libraries successfully installed and loaded.")
