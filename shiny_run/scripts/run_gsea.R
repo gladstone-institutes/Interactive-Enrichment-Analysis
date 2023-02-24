@@ -57,5 +57,6 @@ run_gsea<-function(dataset.name, db.name, output.name="run"){
   write_xlsx(gseaResult.df,file.path(output.dir,"gsea",xlsx.fn))
   
   ## Plot
-  plot_results(gseaResult, geneList, file.prefix, output.dir, db.name, "gsea")
+  if (nrow(gseaResult.df  ) > 0)
+    plot_results(gseaResult, geneList, file.prefix, output.dir, db.name, "gsea")
 }
