@@ -63,6 +63,7 @@ run_ora<-function(dataset.name, db.name, output.name="run"){
   write_xlsx(enrichResult.df,file.path(output.dir,"ora",xlsx.fn))
   
   ## Plot
-  plot_results(enrichResult, gene, file.prefix, output.dir, db.name, "ora")
+  if (nrow(enrichResult.df) > 0)
+    plot_results(enrichResult, gene, file.prefix, output.dir, db.name, "ora")
 
 }
