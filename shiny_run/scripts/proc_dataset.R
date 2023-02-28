@@ -6,7 +6,8 @@ proc_dataset<-function(ds.name, org.db.name, fromType,
   
   # Objects from strings
   ds.fn <- file.path("../datasets",ds.name)
-  dataset <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
+  dataset <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F,
+                        fileEncoding="UTF-8-BOM")
   names(dataset) <- tolower(names(dataset)) #force lowercase
   dataset$gene <- as.character(dataset$gene) #force characters
   ds.noext <- strsplit(ds.name,"\\.")[[1]][1]

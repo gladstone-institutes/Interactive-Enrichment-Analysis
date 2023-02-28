@@ -165,7 +165,8 @@ shinyServer(function(input, output, session) {
     if (length(input$datasets) > 0){
       # output$debug.text<-renderText(paste(input$datasets,collapse = ","))
       ds.fn <- file.path("../datasets",input$datasets[1])
-      data.df <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F)
+      data.df <- read.table(ds.fn, sep = ",", header = T, stringsAsFactors = F,
+                            fileEncoding="UTF-8-BOM")
       names(data.df) <- tolower(names(data.df)) #force lowercase
       data.df$gene <- as.character(data.df$gene) #force characters
       checkTableData(data.df)
