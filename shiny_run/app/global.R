@@ -43,6 +43,7 @@ bioc.load.libs <- c(
   "DOSE",
   "enrichplot",
   "clusterProfiler",
+  "rWikiPathways",
   "EnhancedVolcano")
 
 jscode <- "
