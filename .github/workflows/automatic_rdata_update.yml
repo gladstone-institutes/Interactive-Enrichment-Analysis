@@ -31,7 +31,7 @@ jobs:
 
       - name: Install packages
         run: |
-          install.packages(c("dplyr","magrittr","BiocManager"))
+          install.packages(c("dplyr","magrittr","httr","jsonlite","BiocManager"))
           BiocManager::install("rWikiPathways", ask = FALSE)
         shell: Rscript {0}
         
