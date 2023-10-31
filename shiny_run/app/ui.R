@@ -33,15 +33,15 @@ dashboardPage(
       </ul></p>
       <p>Built by <a href="https://gladstone.org/science/bioinformatics-core"
       target="_blank">Gladstone Bioinformatics Core</a></p>
-      <p>Powered by <a href="http://bioconductor.org/packages/release/bioc/html/clusterProfiler.html"
+      <p>Powered by <a href="https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html"
       target="_blank">clusterProfiler</a>, 
       <a href="https://bioconductor.org/packages/release/bioc/html/enrichplot.html"
       target="_blank">enrichPlot</a>,
       <a href="https://CRAN.R-project.org/package=shiny"
       target="_blank">R Shiny</a>,
-      <a href="https://new.wikipathways.org"
+      <a href="https://wikipathways.org"
       target="_blank">WikiPathways</a>,
-      <a href="https://pfocrwikipathways.org"
+      <a href="https://pfocr.wikipathways.org"
       target="_blank">Pathway Figures OCR</a>,
       <a href="https://geneontology.org/"
       target="_blank">Gene Ontology</a>
