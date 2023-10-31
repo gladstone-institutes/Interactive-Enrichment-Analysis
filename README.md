@@ -415,4 +415,4 @@ our group if these tools prove useful.
   Error in runUrl(url, subdir = subdir, destdir = destdir, ...) :
   Failed to download URL https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis/archive/HEAD.tar.gz
 ```
- * Solution: Your working directory may be set to a read-only dir, e.g., "/". Try setting it to your home/user dir.
+ * Solution: Your working directory may be set to a read-only dir, e.g., "/". Try setting it to your user dir.
