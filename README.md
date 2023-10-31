@@ -408,3 +408,11 @@ our group if these tools prove useful.
 >
 > *We thank the Gladstone Bioinformatics Core for their interactive
 > enrichment analysis tools.*
+
+## Troubleshooting
+1. Error at launch
+```
+  Error in runUrl(url, subdir = subdir, destdir = destdir, ...) :
+  Failed to download URL https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis/archive/HEAD.tar.gz
+```
+ * Solution: Your working directory may be set to a read-only dir, e.g., "/". Try setting it to your home/user dir.
