@@ -416,3 +416,12 @@ our group if these tools prove useful.
   Failed to download URL https://github.com/gladstone-institutes/Interactive-Enrichment-Analysis/archive/HEAD.tar.gz
 ```
  * Solution: Your working directory may be set to a read-only dir, e.g., "/". Try setting it to your user dir.
+
+2. Error running GSEA
+```
+  Warning: Error in preparePathwaysAndStats: Not all stats values are finite numbers
+```
+ * Solution: You may have invalid p.values, e.g., zero is not an acceptable p.value. Replace these cases with a p.value smaller than any other in your dataset, then try again.
+
+3. Dataset not working or GSEA not offered as option
+ * Solution:  Double check that your columns names are exactly: `gene` `fold.change` and `p.value`. Other names will not be recognized by the tool.
