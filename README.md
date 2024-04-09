@@ -425,3 +425,9 @@ our group if these tools prove useful.
 
 3. Dataset not working or GSEA not offered as option
  * Solution:  Double check that your columns names are exactly: `gene` `fold.change` and `p.value`. Other names will not be recognized by the tool.
+
+4. Error running ORA
+```
+Error in <Anonymous>: 'geneSets' is not a slot in class "NULL"
+```
+ * There are no genes that pass your significance filter criteria and ID mapping to Entrez ID. Explore your dataset in Excel to choose alternative criteria, e.g., larger p.value and/or smaller fold.change.
