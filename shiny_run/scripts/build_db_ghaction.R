@@ -4,7 +4,7 @@ library(rWikiPathways)
 library(dplyr)
 library(magrittr)
 library(jsonlite)
-library(httr)
+library(httr2)
 
 #GH Action version generates gmt.list and db.name at runtime
 orgs <- c("Hs","Mm")
