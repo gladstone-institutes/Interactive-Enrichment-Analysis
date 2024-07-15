@@ -12,7 +12,7 @@ if(vcheck == 1){
   stop(sprintf("Please install R version %s or higher",relver))
 }
 # Check initial dependencies
-initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", "DT","BiocManager")
+initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", "DT","BiocManager","httr")
 options(install.packages.check.source = "no")
 options(install.packages.compile.from.source = "never")
 if (!require("pacman")) install.packages("pacman"); library(pacman)
