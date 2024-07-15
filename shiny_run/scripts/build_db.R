@@ -4,7 +4,7 @@ library(rWikiPathways)
 library(dplyr)
 library(magrittr)
 library(jsonlite)
-library(httr2)
+library(httr)
 
 build_db <- function(gmt.list, db.name){
   #getFigureInfo for PFOCR figure filenames i/o aliases for jpg links
