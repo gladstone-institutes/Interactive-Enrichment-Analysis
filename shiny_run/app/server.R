@@ -67,7 +67,7 @@ shinyServer(function(input, output, session) {
         rdata.fn <- file.path("../databases",input$rdata)
         db.list <- load(rdata.fn, globalenv())
         for (db in db.list){
-          db.colnames <- tolower(names(eval(parse(text=db))))
+          db.colnames <- tolower(names(get(db)))
           for (cn in c("name","term","gene")){
             if(!cn %in% db.colnames){
               stop(sprintf('%s is missing a %s column',db, cn))
