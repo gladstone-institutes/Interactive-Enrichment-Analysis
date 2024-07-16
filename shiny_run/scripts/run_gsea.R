@@ -14,7 +14,7 @@ run_gsea<-function(dataset.name, db.name, output.name="run"){
   maxGSSize <- params$maxGSSize
   
   # Object from string
-  database <- eval(parse(text=db.name))
+  database <- get(db.name)
   
   # geneList from file.prefix
   gl.fn <- paste0(file.prefix, "__gsea_input.rds")
@@ -40,7 +40,7 @@ run_gsea<-function(dataset.name, db.name, output.name="run"){
     pvalueCutoff = 0.1, #to limit results
     verbose=FALSE)
   if(!is.null(gseaResult))
-    gseaResult <- setReadable(gseaResult, eval(parse(text=org.db.name)), keyType = "ENTREZID")
+    gseaResult <- setReadable(gseaResult, get(org.db.name), keyType = "ENTREZID")
   
   # Save objects
   gl.fn <- paste(file.prefix, db.name,"gsea","geneList.rds", sep = "_")

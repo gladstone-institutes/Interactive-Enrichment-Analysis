@@ -118,7 +118,7 @@ map_ids <- function(input,org.db.name, fromType){
   #perform ID mapping
   output <- bitr(input$gene, fromType = fromType,
                  toType = toType.list, 
-                 OrgDb = eval(parse(text=org.db.name)))
+                 OrgDb = get(org.db.name))
   
   join_cols = c("gene")
   names(join_cols) <- fromType
