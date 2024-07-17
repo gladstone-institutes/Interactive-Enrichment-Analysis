@@ -428,6 +428,16 @@ our group if these tools prove useful.
 
 4. Error running ORA
 ```
-Error in <Anonymous>: 'geneSets' is not a slot in class "NULL"
+  Error in <Anonymous>: 'geneSets' is not a slot in class "NULL"
 ```
  * There are no genes that pass your significance filter criteria and ID mapping to Entrez ID. Explore your dataset in Excel to choose alternative criteria, e.g., larger p.value and/or smaller fold.change.
+
+5. Error launching results
+```
+  Error in library(plyr) : there is no package called ‘plyr’
+```
+ * Even after loading plyr, additional errors pop up for other libs in global.R/p.load.libs. This will occur if you attempt to launch the results app BEFORE the run app.  Solution: either run the provided sample dataset prior to viewing results, or launch the results app via the script which checks for dependencies:
+```
+options(shiny.launch.browser = .rs.invokeShinyWindowExternal)
+source("view_results.R")
+```
