@@ -285,7 +285,7 @@ a bar plot of results highlight various statistics for the most enriched results
 **Heatmap**
 
 Using ggplot2::geom_tile,
-a heatmap of results highlights overlapping genes among the most enriched results. 
+a heatmap of results highlights the top n genes by frequency among the top n results, ignoring significance cutoffs. 
 Plot options includes:
  * `Top n results` - How many results to include in the heatmap analysis (will 
  exclude results without shared genes)
