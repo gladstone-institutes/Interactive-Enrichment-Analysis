@@ -113,9 +113,9 @@ shinyCnetplot <- function(resObject, geneList, input, output){
 }
 
 # Heatmap #
-# - starts with top n results, identifies the top n genes by frequency within
-# those results (secondary sort on fold.change) and then makes a tile plot with 
-# fold.change fill color using a balanced Brewer RdYBu pallette
+# - starts with top n results (ignoring p.value), identifies the top n genes by 
+# frequency within those results (secondary sort on fold.change) and then makes 
+# a tile plot with fold.change fill color using a balanced Brewer RdYBu palette.
 shinyHeatmap <- function(resObject, data, input, output){
   
   #filter inputs options panel
