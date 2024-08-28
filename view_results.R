@@ -68,4 +68,6 @@ if (length(packages_to_install) > 0) {
 
 
 # Launch shiny app
-shiny::runApp('shiny_result/app', launch.browser= TRUE)
+script_dir <- dirname(normalizePath(sys.frame(1)$ofile))
+app_dir <- file.path(script_dir, 'shiny_result/app')
+shiny::runApp(app_dir, launch.browser = TRUE)
