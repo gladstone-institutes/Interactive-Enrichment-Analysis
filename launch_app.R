@@ -26,7 +26,21 @@ status <- sapply(initial.libs,require,character.only = TRUE)
      print(paste("ERROR: One or more libraries failed to install correctly.",
            status))
   }
-# Launch shiny app
-shiny::runGitHub('Interactive-Enrichment-Analysis', 'gladstone-institutes',
-                 subdir = 'shiny_run/app', destdir = file.path(getwd(),"Interactive-Enrichment-Analysis"),
-                 launch.browser= TRUE)
+
+# Install or launch shiny app
+local_dir <- file.path(getwd(), "Interactive-Enrichment-Analysis")
+
+# Check if already installed
+if (!dir.exists(local_dir)) {
+  message("Installation not found. Downloading and running the app...")
+  shiny::runGitHub('Interactive-Enrichment-Analysis', 
+                   'gladstone-institutes',
+                   subdir = 'shiny_run/app', 
+                   destdir = local_dir, 
+                   launch.browser = TRUE)
+} else {
+  message("Installation found. Launching the app...")
+  script_dir <- dirname(normalizePath(sys.frame(1)$ofile))
+  app_dir <- file.path(script_dir, 'shiny_run/app')
+  shiny::runApp(app_dir, launch.browser = TRUE)
+}
