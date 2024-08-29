@@ -353,7 +353,7 @@ In addition, the project is structured to facilitate sharing
 your results along with the interactive app! All the necessary files are
 maintained under the `shiny_result` folder. Share this folder (e.g., as
 a zip file, Dropbox or Box), or upload it to a cloud-hosted service
-(e.g., [shinyapps.io](https://www.shinyapps.io/)) and share a simply
+(e.g., [shinyapps.io](https://www.shinyapps.io/)) and share a simple
 URL. ***This is the best way to publish your enrichment results,
 allowing other researchers to browse your full results in spite of the
 limited space in publications.***
