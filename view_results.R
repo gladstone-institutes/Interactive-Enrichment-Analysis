@@ -14,7 +14,9 @@ if(vcheck == 1){
 }
 # Check initial dependencies
 message("Checking dependencies")
-initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", "DT","BiocManager")
+initial.libs <- c("shinydashboard", "shiny", "shinyjs", "shinyBS", 
+                  "rstudioapi", "DT","BiocManager", "devtools",
+                  "httr")
 options(install.packages.check.source = "no")
 options(install.packages.compile.from.source = "never")
 if (!require("pacman")) install.packages("pacman"); library(pacman)
