@@ -19,7 +19,7 @@ for(o in orgs){
   if(http_error(r.info)){
     stop("Failed to fetch PFOCR getFigureInfo.")
   }
-  json_content <- content(r.info, as = "text", encoding = "UTF-8")
+  json_content <- httr::content(r.info, as = "text", encoding = "UTF-8")
   json_list <- fromJSON(json_content, flatten = TRUE)
   df.pfocr <- as.data.frame(json_list) %>%
     dplyr::mutate(term = paste(figureInfo.pmcid,figureInfo.number,sep = "__")) %>%

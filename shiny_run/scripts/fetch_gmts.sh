@@ -9,7 +9,7 @@ wget -O "shiny_run/databases/gmts/wp_hs_"${DATE}".gmt" "https://data.wikipathway
 wget -O "shiny_run/databases/gmts/wp_mm_"${DATE}".gmt" "https://data.wikipathways.org/current/gmt/wikipathways-"${WP_REL}"-gmt-Mus_musculus.gmt"
 
 ##PFOCR
-PFOCR_DATE=$(curl --silent https://data.wikipathways.org/pfocr/ | grep -oP '<a class=file-link href="\K\d+' | tail -n 1)
+PFOCR_DATE=$(curl --silent https://data.wikipathways.org/pfocr/current/ | grep 'pfocr-[0-9]\{8\}-gmt-Homo_sapiens\.gmt' | sed -E 's/.*pfocr-([0-9]{8})-gmt-Homo_sapiens\.gmt.*/\1/' | tail -n 1)
 wget -O "shiny_run/databases/gmts/pfocr_hs_"${DATE}".gmt" "https://data.wikipathways.org/pfocr/"${PFOCR_DATE}"/pfocr-"${PFOCR_DATE}"-gmt-Homo_sapiens.gmt"
 wget -O "shiny_run/databases/gmts/pfocr_mm_"${DATE}".gmt" "https://data.wikipathways.org/pfocr/"${PFOCR_DATE}"/pfocr-"${PFOCR_DATE}"-gmt-Mus_musculus.gmt"
 
