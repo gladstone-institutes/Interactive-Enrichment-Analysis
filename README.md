@@ -17,7 +17,7 @@ Follow the steps provided on that page and then return here.**
 
 *Note: At a minimum you will need the version of R required by [Bioconductor](https://www.bioconductor.org/install/).*
 
-## Launch
+## First Launch
 
 The `launch_app.R` script will check your R dependencies and launch an interactive session.
 
