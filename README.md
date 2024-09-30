@@ -45,7 +45,7 @@ open any of the `shiny_run/app/` files and choose `Run App > Run in Window`*
 If you’d like to run additional datasets or try alternative settings within the same installation of IEA after closing the window, then…
 - **Launch RStudio**
 - **Set your working directory** _(Note: same folder as before, which now contains Interactive-Enrichment-Analysis/)_
-- **Open `lauch_app.R`**
+- **Open `launch_app.R`**
 - **Click on “Source” button** _(top-right of code panel)_
 
 ## Databases
