@@ -40,7 +40,7 @@ if (!dir.exists(local_dir)) {
                    launch.browser = TRUE)
 } else {
   message("Installation found. Launching the app...")
-  script_dir <- dirname(normalizePath(sys.frame(1)$ofile))
+  script_dir <- list.dirs(path = local_dir, full.names = TRUE, recursive = FALSE)[1]
   app_dir <- file.path(script_dir, 'shiny_run/app')
   shiny::runApp(app_dir, launch.browser = TRUE)
 }
