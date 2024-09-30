@@ -22,6 +22,7 @@ Follow the steps provided on that page and then return here.**
 The `launch_app.R` script will check your R dependencies and launch an interactive session.
 
 -   **Open RStudio**
+-   **Set your working directory**
 -   **Copy/paste these lines into the Console and hit return:**
 
 ```
@@ -39,6 +40,13 @@ Directory (*Files* tab in RStudio) and launch the tool in your browser.
 perform `git pull` to update the code and database collections. Install the 
 minimal dependencies listed in `launch_app.R` and launch from RStudio (i.e., 
 open any of the `shiny_run/app/` files and choose `Run App > Run in Window`*
+
+### Subsequent runs
+If you’d like to run additional datasets or try alternative settings within the same installation of IEA after closing the window, then…
+- **Launch RStudio**
+- **Set your working directory** _(Note: same folder as before, which now contains Interactive-Enrichment-Analysis/)_
+- **Open `lauch_app.R`**
+- **Click on “Source” button** _(top-right of code panel)_
 
 ## Databases
 
@@ -179,6 +187,13 @@ includes a folder of `plots`. Results include TSV and XLSX tables of
 enriched terms and pathway, as well as RDS versions of the complete
 input and output for each clusterProfiler run and a log file. Plots
 include volcano, dot, cnet, heatmap, upset, and more.*
+
+### Subsequent views
+If you’d like to return to view a prior set of results after closing the window, then…
+
+- **Launch RStudio**
+- **Open `view_results.R`**
+- **Click on “Run App” button** _(top-right of code panel)_
 
 ## View Results
 
