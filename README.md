@@ -456,3 +456,9 @@ our group if these tools prove useful.
 options(shiny.launch.browser = .rs.invokeShinyWindowExternal)
 source("view_results.R")
 ```
+
+6. Error loading new dataset
+```
+  Error: replacement has 0 rows, data has ###
+```
+ * Likely an unexpected CSV file source. Solution: Try opening the CSV in Excel and then saving again with new name to fix the file. 
