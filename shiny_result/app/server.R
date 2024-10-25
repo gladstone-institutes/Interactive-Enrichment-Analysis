@@ -453,7 +453,7 @@ shinyServer(function(input, output, session) {
                 "Drugst.One")),
             "Pathway Figure" = paste0(
               custom.linkout.button,
-              '<img src="https://www.ncbi.nlm.nih.gov/pmc/articles/',
+              '<img src="https://europepmc.org/articles/',
               strsplit(res.object.id, "__")[[1]][1],
               '/bin/',
               strsplit(res.object.id, "__")[[1]][2],
