@@ -42,6 +42,9 @@ build_db <- function(gmt.list, db.name){
         dplyr::left_join(df.pfocr, by=c("term"),relationship = "many-to-many") %>%
         dplyr::mutate(term = figid) %>%
         dplyr::select(term, name, gene)
+    } else { #duplicate term to make name column
+      g.df <- g.df %>%
+        mutate(name = term)
     }
     
     assign(g.name, g.df)
