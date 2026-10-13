@@ -267,21 +267,23 @@ shinyServer(function(input, output, session) {
         # Define what SHOULD be visible for each result type
         if (is(resultObj, "gseaResult")) {
           visibleNames <- c("ID", "Description", "setSize", "enrichmentScore", "NES", "pvalue", "qvalue")
-        } else {
-          # ORA: enrichResult / compareClusterResult
+        } else if (is(resultObj, "enrichResult")) {
           visibleNames <- c("ID", "Description", "GeneRatio", "BgRatio", "pvalue", "p.adjust", "qvalue")
+        } else {
+            warning("Unrecognized enrichment result class: ", paste(class(resultObj), collapse = ", "),
+                    " — showing all columns.")
+          visibleNames <- colNames
         }
         
         # Hide everything else, by name
         hideNames <- setdiff(colNames, visibleNames)
         hideIdx <- match(hideNames, colNames) - 1   # 0-based for DT
-        hideIdx <- hideIdx[!is.na(hideIdx)]
+
+        descIdx <- match("Description", colNames) - 1 #get index for Description
         
-        descIdx <- match("Description", colNames) - 1
-        
-        # Build columnDefs as a plain list (not folded into buttons)
+        # Build columnDefs as a plain list
         colDefsList <- list()
-        if (length(hideIdx) > 0) {
+        if (length(hideIdx) > 0) { 
           colDefsList <- c(colDefsList, list(list(targets = hideIdx, visible = FALSE, defaultContent = "-")))
         }
         if (!is.na(descIdx)) {
