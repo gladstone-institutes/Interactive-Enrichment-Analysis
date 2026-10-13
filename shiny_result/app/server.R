@@ -255,39 +255,69 @@ shinyServer(function(input, output, session) {
   #render table result
   output$table.result <- DT::renderDataTable(
     server = FALSE, # FALSE to support download of all table rows
-    withProgress(message = 'Updating table...', detail = "",
-                 style = getShinyOption("progress.style", default = "notification"),
-                 value = NULL, { 
-    DT::datatable({ as.data.frame(getResultObj()) },
-                  rownames=FALSE,
-                  selection = list(mode = 'single', selected = c(1)),
-                  extensions = 'Buttons',
-                  options = list(
-                    dom = 'Bfrtip',
-                    pageLength = 10,
-                    # scrollX=TRUE,
-                    search = list(regex = TRUE, caseInsensitive = TRUE),
-                    columnDefs = list(
-                      list(targets = c(7:10), visible = FALSE, defaultContent = "-"),
-                      list(targets=c(1), visible=TRUE, width='250',  #description
-                           render = JS(
-                             "function(data, type, row, meta) {",
-                             "return type === 'display' && data != null && data.length > 50 ?",
-                             "'<span title=\"' + data + '\">' + data.substr(0, 50) + '...</span>' : data;",
-                             "}")
-                      )
-                    ),
-                    buttons = list(list(
-                      extend = 'collection',
-                      buttons = list(
-                        list(extend = "excel", title = makeResultPrefix()),
-                        list(extend = "csv", title = makeResultPrefix()),
-                        list(extend = "copy", title = makeResultPrefix())),
-                      text = 'Download'
-                    ))
-                  )
-    )
-   })
+    withProgress(
+      message = 'Updating table...', detail = "",
+      style = getShinyOption("progress.style", default = "notification"),
+      value = NULL, {
+        
+        resultObj <- getResultObj()
+        df <- as.data.frame(resultObj)
+        colNames <- names(df)
+        
+        # Define what SHOULD be visible for each result type
+        if (is(resultObj, "gseaResult")) {
+          visibleNames <- c("ID", "Description", "setSize", "enrichmentScore", "NES", "pvalue", "qvalue")
+        } else {
+          # ORA: enrichResult / compareClusterResult
+          visibleNames <- c("ID", "Description", "GeneRatio", "BgRatio", "pvalue", "p.adjust", "qvalue")
+        }
+        
+        # Hide everything else, by name
+        hideNames <- setdiff(colNames, visibleNames)
+        hideIdx <- match(hideNames, colNames) - 1   # 0-based for DT
+        hideIdx <- hideIdx[!is.na(hideIdx)]
+        
+        descIdx <- match("Description", colNames) - 1
+        
+        # Build columnDefs as a plain list (not folded into buttons)
+        colDefsList <- list()
+        if (length(hideIdx) > 0) {
+          colDefsList <- c(colDefsList, list(list(targets = hideIdx, visible = FALSE, defaultContent = "-")))
+        }
+        if (!is.na(descIdx)) {
+          colDefsList <- c(colDefsList, list(list(
+            targets = descIdx, visible = TRUE, width = '250',
+            render = JS(
+              "function(data, type, row, meta) {",
+              "return type === 'display' && data != null && data.length > 50 ?",
+              "'<span title=\"' + data + '\">' + data.substr(0, 50) + '...</span>' : data;",
+              "}")
+          )))
+        }
+        
+        DT::datatable(
+          df,
+          rownames = FALSE,
+          selection = list(mode = 'single', selected = c(1)),
+          extensions = 'Buttons',
+          options = list(
+            dom = 'Bfrtip',
+            pageLength = 10,
+            # scrollX = TRUE,
+            search = list(regex = TRUE, caseInsensitive = TRUE),
+            columnDefs = colDefsList,
+            buttons = list(list(
+              extend = 'collection',
+              buttons = list(
+                list(extend = "excel", title = makeResultPrefix()),
+                list(extend = "csv", title = makeResultPrefix()),
+                list(extend = "copy", title = makeResultPrefix())
+              ),
+              text = 'Download'
+            ))
+          )
+        )
+      })
   )
   
   #plot1 result
