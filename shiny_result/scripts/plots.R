@@ -77,12 +77,13 @@ shinyEmapplot <- function(data.emap, input, output){
   
   # Map the UI's layout string to what this enrichplot version expects
   layoutFun <- switch(input$layout,
-                      "nicely" = igraph::layout_nicely,
-                      "kk"     = igraph::layout_with_kk,
-                      "fr"     = igraph::layout_with_fr,
-                      "circle" = igraph::layout_in_circle,
-                      # fallback: try passing the string through as-is
-                      input$layout
+                      "nicely"   = igraph::layout_nicely,
+                      "kk"       = igraph::layout_with_kk,
+                      "sugiyama" = igraph::layout_with_sugiyama,
+                      "fr"       = igraph::layout_with_fr,
+                      "gem"      = igraph::layout_with_gem,
+                      "lgl"      = igraph::layout_with_lgl,
+                      "mds"      = igraph::layout_with_mds
   )
   
   #plot
