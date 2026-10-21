@@ -75,15 +75,27 @@ shinyEmapplot <- function(data.emap, input, output){
   filterOptions(c("showCategory","label_format","category_label",
                   "category_node","color","layout"))
   
+  # Map the UI's layout string to what this enrichplot version expects
+  layoutFun <- switch(input$layout,
+                      "nicely" = igraph::layout_nicely,
+                      "kk"     = igraph::layout_with_kk,
+                      "fr"     = igraph::layout_with_fr,
+                      "circle" = igraph::layout_in_circle,
+                      # fallback: try passing the string through as-is
+                      input$layout
+  )
+  
   #plot
   enrichplot::emapplot(data.emap, 
                        showCategory = input$showCategory,
                        color = input$color,
-                       layout.params=list(layout=input$layout),
-                       cex.params = list(
-                         category_label=input$category_label/12, #pt to rem
-                         category_node = input$category_node
-                       )
+                       layout = layoutFun,
+                       size_category = input$category_node,
+                       node_label_size = input$category_label / 4 #mm to pt
+                       # cex.params = list(
+                       #   category_label=input$category_label/12, #pt to rem
+                       #   category_node = input$category_node
+                       # )
   )
 }
 
