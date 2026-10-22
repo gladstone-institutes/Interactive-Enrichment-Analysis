@@ -267,8 +267,8 @@ dashboardPage(
                                     choices = c('star', 'circle', 'gem', 'dh', 'graphopt',  
                                                 'mds', 'fr', 'kk', 'drl', 'lgl'),
                                     selected = "kk", width = 105),
-                        checkboxInput("cnet_circular","Circular",
-                                    value = FALSE, width = 80),
+                        # checkboxInput("cnet_circular","Circular",
+                        #             value = FALSE, width = 80),
                         checkboxInput("cnet_colorEdge","colorEdge",
                                     value =  TRUE, width = 80)
                         )

@@ -108,19 +108,44 @@ shinyCnetplot <- function(resObject, geneList, input, output){
   filterOptions(c("showCategory","category_label","gene_label","category_node",
                   "gene_node","cnet_layout", "cnet_circular", "cnet_colorEdge"))
   
+  # Map the UI's layout string to the function this enrichplot version expects
+  layoutFun <- switch(input$cnet_layout,
+                      "star"     = igraph::layout_as_star,
+                      "circle"   = igraph::layout_in_circle,
+                      "gem"      = igraph::layout_with_gem,
+                      "dh"       = igraph::layout_with_dh,
+                      "graphopt" = igraph::layout_with_graphopt,
+                      "mds"      = igraph::layout_with_mds,
+                      "fr"       = igraph::layout_with_fr,
+                      "kk"       = igraph::layout_with_kk,
+                      "drl"      = igraph::layout_with_drl,
+                      "lgl"      = igraph::layout_with_lgl
+  )
+  
+  #edgeColor <- if (isTRUE(input$cnet_colorEdge)) "steelblue" else "grey"
+  edgeColor <- if (isTRUE(input$cnet_colorEdge)) "category" else "grey"
+  
   #plot
   enrichplot::cnetplot(resObject, 
                        showCategory = input$showCategory,
-                       circular = input$cnet_circular, 
-                       colorEdge = input$cnet_colorEdge, 
-                       layout = input$cnet_layout,
-                       cex.params = list(
-                         foldChange=geneList,
-                         category_label=input$category_label/12, #pt to rem
-                         category_node = input$category_node,
-                         gene_label = input$gene_label/12,
-                         gene_node = input$gene_node
-                       )
+                       layout = layoutFun,
+                       color_edge = edgeColor,
+                       color_category = "#E5C494",   # beige, pathway/category nodes
+                       color_item = "#B3B3B3",        # grey, gene nodes
+                       size_category = input$category_node,
+                       size_item = input$gene_node,
+                       node_label = "share",
+                       node_label_size = input$category_label / 4
+                       # circular = input$cnet_circular, 
+                       # colorEdge = input$cnet_colorEdge, 
+                       # layout = input$cnet_layout,
+                       # cex.params = list(
+                       #   foldChange=geneList,
+                       #   category_label=input$category_label/12, #pt to rem
+                       #   category_node = input$category_node,
+                       #   gene_label = input$gene_label/12,
+                       #   gene_node = input$gene_node
+                       # )
   ) +
     theme(text = element_text(size = input$category_label))
 }
