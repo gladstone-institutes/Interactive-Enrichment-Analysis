@@ -485,20 +485,21 @@ shinyServer(function(input, output, session) {
                 "Drugst.One")),
             "Pathway Figure" = paste0(
               custom.linkout.button,
-              '<img src="https://europepmc.org/articles/',
+              '<img src="https://europepmc.org/api/fulltextRepo?pmcId=',
               strsplit(res.object.id, "__")[[1]][1],
-              '/bin/',
+              '&type=FILE&fileName=',
               strsplit(res.object.id, "__")[[1]][2],
-              '.jpg" style="max-width:450px;">'
+              '.jpg&mimeType=image/jpg" style="max-width:450px;">'
             ),
             "Gene Ontology" = paste0(
-              custom.linkout.button,
-              '<img src="http://amigo.geneontology.org/visualize?term_data_type=string&mode=amigo&inline=false&term_data=',
-              res.object.id,
-              '&format=png" style="max-width:450px;">',
-              '<br /><a href="http://amigo.geneontology.org/visualize?term_data_type=string&mode=amigo&inline=false&term_data=',
-              res.object.id,
-              '&format=svg" target="_blank" >open in new window</a>'
+              custom.linkout.button
+              #,
+              # '<img src="http://amigo.geneontology.org/visualize?term_data_type=string&mode=amigo&inline=false&term_data=',
+              # res.object.id,
+              # '&format=png" style="max-width:450px;">',
+              # '<br /><a href="http://amigo.geneontology.org/visualize?term_data_type=string&mode=amigo&inline=false&term_data=',
+              # res.object.id,
+              # '&format=svg" target="_blank" >open in new window</a>'
             )
     )
   }
